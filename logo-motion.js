@@ -1,11 +1,13 @@
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 const FORCE_ANIMATION_CLASS = "force-animation";
+const FEATURE_DISABLED_VALUE = "off";
+const EYE_COLOR_QUERY_PARAMETER = "eye-color";
+const EYE_COOLDOWN_QUERY_PARAMETER = "eye-cooldown";
 const MOTION_SAMPLE_SELECTOR = "[data-motion-variant]";
 const VISUAL_SELECTOR = ".sample-visual";
 const MOTION_RENDERED_CLASS = "motion-rendered";
 const STATIC_FALLBACK_ATTRIBUTE = "data-static-fallback";
-const STATIC_FALLBACK_ACTIVE_CLASS =
-  "static-fallback-active";
+const EYE_TRACKING_ACTIVE_CLASS = "eye-tracking-active";
 const SPEED_RANGE_SELECTOR = "[data-speed-range]";
 const SPEED_NUMBER_SELECTOR = "[data-speed-number]";
 const FRAME_BACK_SELECTOR = "[data-frame-back]";
@@ -15,6 +17,7 @@ const FRAME_NUMBER_SELECTOR = "[data-frame-number]";
 const FRAME_TOTAL_SELECTOR = "[data-frame-total]";
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 const MASTER_DURATION_MS = 6000;
+const MOTION_INTRO_HOLD_DURATION_MS = 1000;
 const MOTION_INTRO_DURATION_MS = 1500;
 const DEFAULT_PLAYBACK_RATE = 0.5;
 const ANIMATION_FRAME_RATE = 60;
@@ -52,8 +55,29 @@ const INTERSECTION_EPSILON = 0.0001;
 const INTERSECTION_MERGE_DISTANCE = 1;
 const EYE_GLOW_RADIUS = 66;
 const EYE_LENS_RADIUS = 47;
+const EYE_LENS_STROKE_WIDTH = 6;
 const EYE_DOT_RADIUS = 12;
+const EYE_DOT_MAX_TRAVEL_RADIUS =
+  EYE_LENS_RADIUS - EYE_DOT_RADIUS - EYE_LENS_STROKE_WIDTH;
+const EYE_TRACKING_TRAVEL_RATIO = 0.4;
+const EYE_DOT_TRAVEL_RADIUS =
+  EYE_DOT_MAX_TRAVEL_RADIUS * EYE_TRACKING_TRAVEL_RATIO;
+const EYE_TRACKING_RESPONSE_RADIUS = VIEWBOX_CENTER;
+const EYE_TRACKING_SMOOTHING_MS = 80;
+const EYE_TRACKING_SETTLE_DISTANCE = 0.01;
+const EYE_TRACKING_COOLDOWN_MS = 1400;
+const EYE_CENTER_OFFSET = Object.freeze({ x: 0, y: 0 });
 const EYE_OCCLUSION_RADIUS = 72;
+
+const motionQuery = new URLSearchParams(window.location.search);
+const FEATURE_SWITCHES = Object.freeze({
+  eyeColor:
+    motionQuery.get(EYE_COLOR_QUERY_PARAMETER) !==
+    FEATURE_DISABLED_VALUE,
+  eyeCooldown:
+    motionQuery.get(EYE_COOLDOWN_QUERY_PARAMETER) !==
+    FEATURE_DISABLED_VALUE,
+});
 
 const FILTER_CONFIG = Object.freeze({
   tight: Object.freeze({
@@ -182,10 +206,13 @@ const renderedMarks = [];
 let animationFrameId;
 let animationPhase = STATIC_PHASE;
 let animationPaused = false;
+let eyeTrackingCooldownId;
+let eyeTrackingFrameId;
 let motionIntroProgress = 1;
 let motionIntroStartTimestamp;
 let frameNumberControl;
 let playbackRate = DEFAULT_PLAYBACK_RATE;
+let previousEyeTrackingTimestamp;
 let previousAnimationTimestamp;
 
 function createSvgElement(name, attributes = {}) {
@@ -450,7 +477,7 @@ function createEye(filterIds, lensGradientId) {
       fill: `url(#${lensGradientId})`,
       r: EYE_LENS_RADIUS,
       stroke: BRAND_COLORS.core,
-      "stroke-width": 6,
+      "stroke-width": EYE_LENS_STROKE_WIDTH,
     }),
   );
   return eye;
@@ -649,6 +676,7 @@ function createProjectedMark(sample, index) {
     };
   });
   const weaveReferences = sampledBeams.map(() => []);
+  const eyeDot = createEyeDot(filterIds);
 
   svg.append(
     definitions,
@@ -657,20 +685,174 @@ function createProjectedMark(sample, index) {
     createEye(filterIds, lensGradientId),
     frontDepth,
     frontWeaveDepth,
-    createEyeDot(filterIds),
+    eyeDot,
   );
   sample.querySelector(VISUAL_SELECTOR).append(svg);
 
   return {
     baseWeaveDepth,
     beamReferences,
+    currentEyeOffset: EYE_CENTER_OFFSET,
     endpointGlowIds,
+    eyeDot,
     filterIds,
     frontWeaveDepth,
     sample,
+    svg,
+    targetEyeOffset: EYE_CENTER_OFFSET,
     variant,
     weaveReferences,
   };
+}
+
+function eyeOffsetForPointer(mark, clientX, clientY) {
+  const bounds = mark.svg.getBoundingClientRect();
+
+  if (bounds.width === 0 || bounds.height === 0) {
+    return { x: 0, y: 0 };
+  }
+
+  const localDeltaX =
+    (clientX - bounds.left - bounds.width / 2) *
+    (VIEWBOX_SIZE / bounds.width);
+  const localDeltaY =
+    (clientY - bounds.top - bounds.height / 2) *
+    (VIEWBOX_SIZE / bounds.height);
+  const responseScale =
+    EYE_DOT_TRAVEL_RADIUS / EYE_TRACKING_RESPONSE_RADIUS;
+  const targetX = localDeltaX * responseScale;
+  const targetY = localDeltaY * responseScale;
+  const targetDistance = Math.hypot(targetX, targetY);
+  const travelScale =
+    targetDistance > EYE_DOT_TRAVEL_RADIUS
+      ? EYE_DOT_TRAVEL_RADIUS / targetDistance
+      : 1;
+
+  return {
+    x: targetX * travelScale,
+    y: targetY * travelScale,
+  };
+}
+
+function trackEyes(pointerEvent) {
+  for (const mark of renderedMarks) {
+    if (FEATURE_SWITCHES.eyeColor) {
+      mark.eyeDot.classList.add(EYE_TRACKING_ACTIVE_CLASS);
+    }
+    mark.targetEyeOffset = eyeOffsetForPointer(
+      mark,
+      pointerEvent.clientX,
+      pointerEvent.clientY,
+    );
+  }
+
+  if (FEATURE_SWITCHES.eyeCooldown) {
+    scheduleEyeTrackingCooldown();
+  }
+  startEyeTrackingTransition();
+}
+
+function deactivateEyeTracking() {
+  eyeTrackingCooldownId = undefined;
+
+  for (const mark of renderedMarks) {
+    mark.eyeDot.classList.remove(EYE_TRACKING_ACTIVE_CLASS);
+    mark.targetEyeOffset = EYE_CENTER_OFFSET;
+  }
+
+  startEyeTrackingTransition();
+}
+
+function scheduleEyeTrackingCooldown() {
+  if (eyeTrackingCooldownId !== undefined) {
+    window.clearTimeout(eyeTrackingCooldownId);
+  }
+
+  eyeTrackingCooldownId = window.setTimeout(
+    deactivateEyeTracking,
+    EYE_TRACKING_COOLDOWN_MS,
+  );
+}
+
+function positionEyeDot(mark) {
+  const { x, y } = mark.currentEyeOffset;
+
+  mark.eyeDot.setAttribute(
+    "transform",
+    `translate(${formatCoordinate(x)} ${formatCoordinate(y)})`,
+  );
+}
+
+function easeEyeTracking(timestamp) {
+  const elapsed = Math.max(
+    timestamp - previousEyeTrackingTimestamp,
+    0,
+  );
+  const progress =
+    1 - Math.exp(-elapsed / EYE_TRACKING_SMOOTHING_MS);
+  let unsettled = false;
+
+  for (const mark of renderedMarks) {
+    const nextOffset = {
+      x:
+        mark.currentEyeOffset.x +
+        (mark.targetEyeOffset.x - mark.currentEyeOffset.x) *
+          progress,
+      y:
+        mark.currentEyeOffset.y +
+        (mark.targetEyeOffset.y - mark.currentEyeOffset.y) *
+          progress,
+    };
+    const remainingDistance = Math.hypot(
+      mark.targetEyeOffset.x - nextOffset.x,
+      mark.targetEyeOffset.y - nextOffset.y,
+    );
+
+    if (remainingDistance <= EYE_TRACKING_SETTLE_DISTANCE) {
+      mark.currentEyeOffset = mark.targetEyeOffset;
+    } else {
+      mark.currentEyeOffset = nextOffset;
+      unsettled = true;
+    }
+
+    positionEyeDot(mark);
+  }
+
+  if (unsettled) {
+    previousEyeTrackingTimestamp = timestamp;
+    eyeTrackingFrameId = window.requestAnimationFrame(
+      easeEyeTracking,
+    );
+    return;
+  }
+
+  previousEyeTrackingTimestamp = undefined;
+  eyeTrackingFrameId = undefined;
+}
+
+function startEyeTrackingTransition() {
+  if (eyeTrackingFrameId !== undefined) {
+    return;
+  }
+
+  previousEyeTrackingTimestamp = performance.now();
+  eyeTrackingFrameId = window.requestAnimationFrame(
+    easeEyeTracking,
+  );
+}
+
+function setupEyeTracking() {
+  const listenerOptions = { passive: true };
+  window.addEventListener(
+    "pointerdown",
+    trackEyes,
+    listenerOptions,
+  );
+  window.addEventListener(
+    "pointermove",
+    trackEyes,
+    listenerOptions,
+  );
 }
 
 function weaveReferenceFor(mark, beamIndex, referenceIndex) {
@@ -1633,7 +1815,11 @@ function animate(timestamp) {
     motionIntroStartTimestamp = timestamp;
   }
 
-  advanceAnimation(timestamp);
+  if (motionIntroHolding(timestamp)) {
+    previousAnimationTimestamp = undefined;
+  } else {
+    advanceAnimation(timestamp);
+  }
   updateMotionIntro(timestamp);
   renderPhase(animationPhase, motionIntroProgress);
   animationFrameId = window.requestAnimationFrame(animate);
@@ -1670,6 +1856,15 @@ function smootherStep(progress) {
   );
 }
 
+function motionIntroHolding(timestamp) {
+  return (
+    motionIntroProgress < 1 &&
+    motionIntroStartTimestamp !== undefined &&
+    timestamp - motionIntroStartTimestamp <
+      MOTION_INTRO_HOLD_DURATION_MS
+  );
+}
+
 function updateMotionIntro(timestamp) {
   if (
     motionIntroProgress >= 1 ||
@@ -1678,7 +1873,12 @@ function updateMotionIntro(timestamp) {
     return;
   }
 
-  const elapsed = timestamp - motionIntroStartTimestamp;
+  const elapsed = Math.max(
+    timestamp -
+      motionIntroStartTimestamp -
+      MOTION_INTRO_HOLD_DURATION_MS,
+    0,
+  );
   const progress = Math.min(
     elapsed / MOTION_INTRO_DURATION_MS,
     1,
@@ -1795,18 +1995,11 @@ function updateMotion() {
   const hasStaticFallback = renderedMarks.some((mark) =>
     mark.sample.hasAttribute(STATIC_FALLBACK_ATTRIBUTE),
   );
-  motionIntroProgress =
-    motionAllowed && hasStaticFallback ? 0 : 1;
+  motionIntroProgress = hasStaticFallback ? 0 : 1;
   motionIntroStartTimestamp = undefined;
   renderPhase(animationPhase, motionIntroProgress);
 
   for (const mark of renderedMarks) {
-    mark.sample.classList.toggle(
-      STATIC_FALLBACK_ACTIVE_CLASS,
-      mark.sample.hasAttribute(
-        STATIC_FALLBACK_ATTRIBUTE,
-      ) && !motionAllowed,
-    );
     mark.sample.classList.add(MOTION_RENDERED_CLASS);
   }
 
@@ -2040,3 +2233,4 @@ setupSpeedControls();
 setupTransportControls();
 setupFrameCounter();
 renderMotionMarks();
+setupEyeTracking();

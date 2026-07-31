@@ -50,6 +50,18 @@ body {
   pointer-events: none;
 }
 
+.projected-eye-dot {
+  --eye-tracking-color-transition-duration: 240ms;
+}
+
+.projected-eye-dot circle {
+  transition: fill var(--eye-tracking-color-transition-duration) ease-out;
+}
+
+.projected-eye-dot.eye-tracking-active circle {
+  fill: var(--laser-eye-tracking);
+}
+
 .home-body {
   background: var(--home-background);
   overflow: hidden;
@@ -130,17 +142,6 @@ body {
 .home-mark.motion-rendered .home-static-mark {
   visibility: hidden;
   opacity: 0;
-}
-
-.home-mark.motion-rendered.static-fallback-active .sample-visual,
-.home-mark.motion-rendered.static-fallback-active .home-motion-placeholder {
-  visibility: hidden;
-  opacity: 0;
-}
-
-.home-mark.motion-rendered.static-fallback-active .home-static-mark {
-  visibility: visible;
-  opacity: 1;
 }
 
 .home-signature {
@@ -340,12 +341,16 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html:not(.force-animation) .home-motion-placeholder {
+  html:not(.force-animation)
+    .home-mark:not(.motion-rendered)
+    .home-motion-placeholder {
     visibility: hidden;
     opacity: 0;
   }
 
-  html:not(.force-animation) .home-static-mark {
+  html:not(.force-animation)
+    .home-mark:not(.motion-rendered)
+    .home-static-mark {
     visibility: visible;
     opacity: 1;
   }
