@@ -1123,8 +1123,20 @@ function createBeamWeavePlan(
 ) {
   const totalLength =
     pathLengths[pathLengths.length - 1];
+  const overlayRangeStart =
+    CAP_SHELL_RADIUS * points[0].scale;
+  const overlayRangeEnd =
+    totalLength -
+    CAP_SHELL_RADIUS * points[points.length - 1].scale;
+  const protectedOverlayContacts = overlayContacts
+    .map((contact) => ({
+      ...contact,
+      end: Math.min(contact.end, overlayRangeEnd),
+      start: Math.max(contact.start, overlayRangeStart),
+    }))
+    .filter((contact) => contact.end > contact.start);
   const mergedOverlayIntervals = mergeDistanceIntervals(
-    overlayContacts,
+    protectedOverlayContacts,
     totalLength,
   );
   const baseIntervals = complementDistanceIntervals(
@@ -1136,12 +1148,18 @@ function createBeamWeavePlan(
     pathLengths,
     baseIntervals,
   );
-  const overlays = overlayContacts.map((contact) => {
+  const overlays = protectedOverlayContacts.map((contact) => {
     const expandedIntervals = mergeDistanceIntervals(
       [
         {
-          end: contact.end + WEAVE_JOIN_OVERLAP,
-          start: contact.start - WEAVE_JOIN_OVERLAP,
+          end: Math.min(
+            contact.end + WEAVE_JOIN_OVERLAP,
+            overlayRangeEnd,
+          ),
+          start: Math.max(
+            contact.start - WEAVE_JOIN_OVERLAP,
+            overlayRangeStart,
+          ),
         },
       ],
       totalLength,
