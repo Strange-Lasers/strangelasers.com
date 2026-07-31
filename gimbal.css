@@ -1,0 +1,147 @@
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  background: #000;
+}
+
+.gimbal-page {
+  overflow: hidden;
+}
+
+.gimbal-stage {
+  position: relative;
+  display: grid;
+  min-height: 100vh;
+  min-height: 100svh;
+  place-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  background: radial-gradient(
+    ellipse at center,
+    #151515 0%,
+    #0a0a0a 58%,
+    #000 100%
+  );
+}
+
+.gimbal-stage .sample-visual {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: min(82vmin, 56rem);
+  aspect-ratio: 1;
+  min-height: 0;
+  place-items: center;
+}
+
+.gimbal-stage .mark {
+  width: 100%;
+  outline: 1px solid rgb(255 255 255 / 30%);
+  outline-offset: -1px;
+}
+
+.gimbal-controls {
+  position: fixed;
+  z-index: 2;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  left: max(1rem, env(safe-area-inset-left));
+  display: grid;
+  grid-template-columns: auto minmax(7rem, 12rem) auto;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid rgb(255 255 255 / 16%);
+  border-radius: 0.65rem;
+  background: rgb(0 0 0 / 76%);
+  color: rgb(255 255 255 / 78%);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.gimbal-controls input[type="range"] {
+  width: 100%;
+  accent-color: var(--laser-cyan-highlight);
+}
+
+.gimbal-speed-number {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.gimbal-controls input[type="number"] {
+  padding: 0.35rem 0.4rem;
+  border: 1px solid rgb(255 255 255 / 22%);
+  border-radius: 0.35rem;
+  background: #080808;
+  color: #fff;
+  font: inherit;
+  letter-spacing: 0;
+  text-align: right;
+}
+
+.gimbal-speed-number input {
+  width: 4.25rem;
+}
+
+.gimbal-transport {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.gimbal-transport button {
+  min-height: 2rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid rgb(255 255 255 / 22%);
+  border-radius: 0.35rem;
+  background: #080808;
+  color: rgb(255 255 255 / 78%);
+  cursor: pointer;
+  font: inherit;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.gimbal-transport button:hover {
+  border-color: rgb(120 235 255 / 58%);
+  color: #fff;
+}
+
+.gimbal-transport button:active {
+  background: rgb(120 235 255 / 14%);
+}
+
+.gimbal-frame-counter {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  justify-content: end;
+  gap: 0.35rem;
+}
+
+.gimbal-frame-counter input {
+  width: 4.25rem;
+}
+
+.gimbal-controls input:focus-visible,
+.gimbal-controls button:focus-visible {
+  outline: 2px solid var(--laser-cyan-highlight);
+  outline-offset: 3px;
+}
+
+@media (max-width: 38rem) {
+  .gimbal-stage .sample-visual {
+    width: min(92vmin, 36rem);
+  }
+
+  .gimbal-controls {
+    right: max(0.75rem, env(safe-area-inset-right));
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+    left: max(0.75rem, env(safe-area-inset-left));
+    grid-template-columns: auto minmax(5rem, 1fr) auto;
+  }
+}

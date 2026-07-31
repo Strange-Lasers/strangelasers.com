@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="logo-title logo-desc">
+  <title id="logo-title">Strange Lasers Balanced Cathode mark</title>
+  <desc id="logo-desc">An aligned Counterflow laser eye rendered as symmetrical cathode tubes with dark housings and center-balanced light</desc>
+  <defs>
+    <radialGradient id="background" cx="50%" cy="45%" r="72%">
+      <stop offset="0" stop-color="#102339"/>
+      <stop offset="0.55" stop-color="#091525"/>
+      <stop offset="1" stop-color="#050b14"/>
+    </radialGradient>
+    <linearGradient id="infrared-beam" gradientUnits="userSpaceOnUse" x1="96" y1="120" x2="416" y2="234">
+      <stop offset="0" stop-color="#e9fdff"/>
+      <stop offset="0.1" stop-color="#78ebff"/>
+      <stop offset="1" stop-color="#11bfe9"/>
+    </linearGradient>
+    <linearGradient id="gold-beam" gradientUnits="userSpaceOnUse" x1="416" y1="392" x2="96" y2="278">
+      <stop offset="0" stop-color="#edf1ff"/>
+      <stop offset="0.1" stop-color="#91a9ff"/>
+      <stop offset="1" stop-color="#4b67e8"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="13"/>
+    </filter>
+    <linearGradient id="rear-balanced" gradientUnits="userSpaceOnUse" x1="64" y1="0" x2="448" y2="0">
+      <stop offset="0" stop-color="#11bfe9"/>
+      <stop offset="0.5" stop-color="#78ebff"/>
+      <stop offset="1" stop-color="#11bfe9"/>
+    </linearGradient>
+    <linearGradient id="front-balanced" gradientUnits="userSpaceOnUse" x1="64" y1="0" x2="448" y2="0">
+      <stop offset="0" stop-color="#4b67e8"/>
+      <stop offset="0.5" stop-color="#91a9ff"/>
+      <stop offset="1" stop-color="#4b67e8"/>
+    </linearGradient>
+    <filter id="tight-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+    <filter id="wide-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" fill="url(#background)"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M70 362C110 84 402 84 442 362" stroke="#11bfe9" stroke-width="62" opacity="0.16" filter="url(#tight-glow)"/>
+    <path d="M70 362C110 84 402 84 442 362" stroke="#02060b" stroke-width="50"/>
+    <path d="M70 362C110 84 402 84 442 362" stroke="url(#rear-balanced)" stroke-width="38"/>
+    <path d="M70 362C110 84 402 84 442 362" stroke="#f7fdff" stroke-width="7" opacity="0.82"/>
+    <path d="M70 362C110 84 402 84 442 362" stroke="#f7fdff" stroke-width="2" opacity="0.98"/>
+    <path d="M64 142C124 426 388 426 448 142" stroke="#4b67e8" stroke-width="62" opacity="0.16" filter="url(#tight-glow)"/>
+    <path d="M64 142C124 426 388 426 448 142" stroke="#02060b" stroke-width="50"/>
+    <path d="M64 142C124 426 388 426 448 142" stroke="url(#front-balanced)" stroke-width="38"/>
+    <path d="M64 142C124 426 388 426 448 142" stroke="#f7fdff" stroke-width="7" opacity="0.82"/>
+    <path d="M64 142C124 426 388 426 448 142" stroke="#f7fdff" stroke-width="2" opacity="0.98"/>
+    <circle cx="64" cy="142" r="9" fill="#f7fdff"/>
+    <rect x="439" y="133" width="18" height="18" fill="#f7fdff"/>
+    <rect x="61" y="353" width="18" height="18" fill="#f7fdff"/>
+    <circle cx="442" cy="362" r="9" fill="#f7fdff"/>
+    <circle cx="256" cy="256" r="61" fill="#050b14" opacity="0.72" filter="url(#tight-glow)"/>
+    <circle cx="256" cy="256" r="52" fill="#050b14" stroke="#02060b" stroke-width="10"/>
+    <circle cx="256" cy="256" r="47" fill="#050b14" stroke="#f7fdff" stroke-width="5"/>
+    <circle cx="256" cy="256" r="12" fill="#f7fdff"/>
+  </g>
+</svg>

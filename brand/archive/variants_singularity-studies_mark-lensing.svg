@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="logo-title logo-desc">
+  <title id="logo-title">Strange Lasers Lensing mark</title>
+  <desc id="logo-desc">Parallel laser paths bend around a dark central singularity</desc>
+  <defs>
+    <radialGradient id="background" cx="50%" cy="45%" r="72%">
+      <stop offset="0" stop-color="#102435"/>
+      <stop offset="0.55" stop-color="#091724"/>
+      <stop offset="1" stop-color="#050c13"/>
+    </radialGradient>
+    <linearGradient id="infrared-beam" gradientUnits="userSpaceOnUse" x1="96" y1="120" x2="416" y2="234">
+      <stop offset="0" stop-color="#e9fdff"/>
+      <stop offset="0.1" stop-color="#79e9ff"/>
+      <stop offset="1" stop-color="#13bde8"/>
+    </linearGradient>
+    <linearGradient id="gold-beam" gradientUnits="userSpaceOnUse" x1="416" y1="392" x2="96" y2="278">
+      <stop offset="0" stop-color="#fff8cf"/>
+      <stop offset="0.1" stop-color="#ffd768"/>
+      <stop offset="1" stop-color="#f5a623"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="13"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" fill="url(#background)"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M48 196H166C216 196 212 152 256 152C300 152 296 196 346 196H464" stroke="#13bde8" stroke-width="69" opacity="0.18" filter="url(#glow)"/>
+    <path d="M48 196H166C216 196 212 152 256 152C300 152 296 196 346 196H464" stroke="#0e4150" stroke-width="45" transform="translate(8 9)"/>
+    <path d="M48 196H166C216 196 212 152 256 152C300 152 296 196 346 196H464" stroke="url(#infrared-beam)" stroke-width="35"/>
+    <path d="M48 196H166C216 196 212 152 256 152C300 152 296 196 346 196H464" stroke="#f8ffff" stroke-width="4" opacity="0.72"/>
+    <path d="M48 316H166C216 316 212 360 256 360C300 360 296 316 346 316H464" stroke="#f5a623" stroke-width="69" opacity="0.18" filter="url(#glow)"/>
+    <path d="M48 316H166C216 316 212 360 256 360C300 360 296 316 346 316H464" stroke="#54340d" stroke-width="45" transform="translate(8 9)"/>
+    <path d="M48 316H166C216 316 212 360 256 360C300 360 296 316 346 316H464" stroke="url(#gold-beam)" stroke-width="35"/>
+    <path d="M48 316H166C216 316 212 360 256 360C300 360 296 316 346 316H464" stroke="#f8ffff" stroke-width="4" opacity="0.72"/>
+    <rect x="39" y="187" width="18" height="18" fill="#f8ffff"/>
+    <circle cx="464" cy="316" r="9" fill="#f8ffff"/>
+    <circle cx="256" cy="256" r="62" fill="#050c13" opacity="0.75" filter="url(#glow)"/>
+    <circle cx="256" cy="256" r="48" fill="#050c13" stroke="#f8ffff" stroke-width="7"/>
+    <circle cx="256" cy="256" r="11" fill="#f8ffff"/>
+  </g>
+</svg>

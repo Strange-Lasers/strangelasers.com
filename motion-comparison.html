@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#050b14">
+    <meta
+      name="description"
+      content="Three motion studies for the Strange Lasers mark"
+    >
+    <title>Strange Lasers | Motion study</title>
+    <link rel="icon" href="mark.svg" type="image/svg+xml">
+    <script src="site-init.js"></script>
+    <link rel="stylesheet" href="palette.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="motion-comparison.css">
+  </head>
+  <body class="comparison-body">
+    <main class="comparison-page">
+      <header class="comparison-header">
+        <a class="comparison-home" href="index.html">Strange Lasers</a>
+        <p class="comparison-kicker">Motion study</p>
+        <h1>One mark, three machines</h1>
+        <p class="comparison-intro">Each study uses the same depth-aware beam renderer, fixed eye, speed, and master loop. Only the mechanical relationship between the two arcs changes.</p>
+      </header>
+
+      <section class="motion-stack" aria-label="Animation comparisons">
+        <article
+          class="motion-sample motion-sample--rigid"
+          data-motion-variant="rigid"
+        >
+          <div class="sample-visual" aria-hidden="true"></div>
+          <div class="sample-copy">
+            <p class="sample-number">01</p>
+            <h2>Rigid rotor</h2>
+            <p>Both arcs share one phase and one rotating axis, preserving Counterflow as a single solid assembly.</p>
+          </div>
+        </article>
+
+        <article
+          class="motion-sample motion-sample--gimbal"
+          data-motion-variant="gimbal"
+        >
+          <div class="sample-visual" aria-hidden="true"></div>
+          <div class="sample-copy">
+            <p class="sample-number">02</p>
+            <h2>Quarter-turn gimbal</h2>
+            <p>The axis is shared, while the purple arc remains exactly one quarter-turn ahead of the cyan arc.</p>
+          </div>
+        </article>
+
+        <article
+          class="motion-sample motion-sample--counter"
+          data-motion-variant="counter"
+        >
+          <div class="sample-visual" aria-hidden="true"></div>
+          <div class="sample-copy">
+            <p class="sample-number">03</p>
+            <h2>Synchronized counter-rotation</h2>
+            <p>The axis is shared and the arcs turn at equal speed in opposite directions, meeting on a strict rhythm.</p>
+          </div>
+        </article>
+      </section>
+
+      <p class="comparison-note">Motion follows your system setting. Add <code>?animate</code> to override reduced motion.</p>
+    </main>
+    <script src="logo-motion.js"></script>
+  </body>
+</html>

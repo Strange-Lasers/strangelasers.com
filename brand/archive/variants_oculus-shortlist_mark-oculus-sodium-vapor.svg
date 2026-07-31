@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="logo-title logo-desc">
+  <title id="logo-title">Strange Lasers Oculus mark, Sodium vapor</title>
+  <desc id="logo-desc">A mysterious laser eye in the Sodium vapor colorway</desc>
+  <defs>
+    <radialGradient id="background" cx="50%" cy="45%" r="72%">
+      <stop offset="0" stop-color="#2a210d"/>
+      <stop offset="0.55" stop-color="#171106"/>
+      <stop offset="1" stop-color="#0e0b05"/>
+    </radialGradient>
+    <linearGradient id="infrared-beam" gradientUnits="userSpaceOnUse" x1="96" y1="120" x2="416" y2="234">
+      <stop offset="0" stop-color="#fff7dc"/>
+      <stop offset="0.1" stop-color="#ded2ae"/>
+      <stop offset="1" stop-color="#a7a08d"/>
+    </linearGradient>
+    <linearGradient id="gold-beam" gradientUnits="userSpaceOnUse" x1="416" y1="392" x2="96" y2="278">
+      <stop offset="0" stop-color="#fff3bf"/>
+      <stop offset="0.1" stop-color="#ffc248"/>
+      <stop offset="1" stop-color="#d88b12"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="13"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" fill="url(#background)"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M70 374C110 92 392 76 442 350" stroke="#a7a08d" stroke-width="74" opacity="0.18" filter="url(#glow)"/>
+    <path d="M70 374C110 92 392 76 442 350" stroke="#3f3a2e" stroke-width="50" transform="translate(8 9)"/>
+    <path d="M70 374C110 92 392 76 442 350" stroke="url(#infrared-beam)" stroke-width="40"/>
+    <path d="M70 374C110 92 392 76 442 350" stroke="#fff9e8" stroke-width="4" opacity="0.72"/>
+    <path d="M66 146C124 422 388 430 448 138" stroke="#d88b12" stroke-width="74" opacity="0.18" filter="url(#glow)"/>
+    <path d="M66 146C124 422 388 430 448 138" stroke="#57370a" stroke-width="50" transform="translate(8 9)"/>
+    <path d="M66 146C124 422 388 430 448 138" stroke="url(#gold-beam)" stroke-width="40"/>
+    <path d="M66 146C124 422 388 430 448 138" stroke="#fff9e8" stroke-width="4" opacity="0.72"/>
+    <circle cx="70" cy="374" r="9" fill="#fff9e8"/>
+    <rect x="439" y="129" width="18" height="18" fill="#fff9e8"/>
+    <circle cx="256" cy="256" r="61" fill="#0e0b05" opacity="0.75" filter="url(#glow)"/>
+    <circle cx="256" cy="256" r="47" fill="#0e0b05" stroke="#fff9e8" stroke-width="7"/>
+    <circle cx="256" cy="256" r="12" fill="#fff9e8"/>
+  </g>
+</svg>

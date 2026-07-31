@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="logo-title logo-desc">
+  <title id="logo-title">Strange Lasers Portal mark</title>
+  <desc id="logo-desc">Nested broken laser horizons form a tunnel around a bright core</desc>
+  <defs>
+    <radialGradient id="background" cx="50%" cy="45%" r="72%">
+      <stop offset="0" stop-color="#172135"/>
+      <stop offset="0.55" stop-color="#0c1220"/>
+      <stop offset="1" stop-color="#070a11"/>
+    </radialGradient>
+    <linearGradient id="infrared-beam" gradientUnits="userSpaceOnUse" x1="96" y1="120" x2="416" y2="234">
+      <stop offset="0" stop-color="#f5fbff"/>
+      <stop offset="0.1" stop-color="#a9d9ff"/>
+      <stop offset="1" stop-color="#4aa8f4"/>
+    </linearGradient>
+    <linearGradient id="gold-beam" gradientUnits="userSpaceOnUse" x1="416" y1="392" x2="96" y2="278">
+      <stop offset="0" stop-color="#fff1df"/>
+      <stop offset="0.1" stop-color="#ffad72"/>
+      <stop offset="1" stop-color="#f0642d"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="13"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" fill="url(#background)"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M92 198A174 174 0 1 1 132 388" stroke="#4aa8f4" stroke-width="61" opacity="0.18" filter="url(#glow)"/>
+    <path d="M92 198A174 174 0 1 1 132 388" stroke="#1c3b58" stroke-width="37" transform="translate(8 9)"/>
+    <path d="M92 198A174 174 0 1 1 132 388" stroke="url(#infrared-beam)" stroke-width="27"/>
+    <path d="M92 198A174 174 0 1 1 132 388" stroke="#fbfdff" stroke-width="4" opacity="0.72"/>
+    <path d="M390 160A132 132 0 1 0 378 368" stroke="#f0642d" stroke-width="64" opacity="0.18" filter="url(#glow)"/>
+    <path d="M390 160A132 132 0 1 0 378 368" stroke="#562613" stroke-width="40" transform="translate(8 9)"/>
+    <path d="M390 160A132 132 0 1 0 378 368" stroke="url(#gold-beam)" stroke-width="30"/>
+    <path d="M390 160A132 132 0 1 0 378 368" stroke="#fbfdff" stroke-width="4" opacity="0.72"/>
+    <path d="M178 214A86 86 0 1 1 196 318" stroke="#4aa8f4" stroke-width="58" opacity="0.18" filter="url(#glow)"/>
+    <path d="M178 214A86 86 0 1 1 196 318" stroke="#1c3b58" stroke-width="34" transform="translate(8 9)"/>
+    <path d="M178 214A86 86 0 1 1 196 318" stroke="url(#infrared-beam)" stroke-width="24"/>
+    <path d="M178 214A86 86 0 1 1 196 318" stroke="#fbfdff" stroke-width="4" opacity="0.72"/>
+    <rect x="83" y="189" width="18" height="18" fill="#fbfdff"/>
+    <circle cx="378" cy="368" r="9" fill="#fbfdff"/>
+    <circle cx="256" cy="256" r="49" fill="#070a11" opacity="0.75" filter="url(#glow)"/>
+    <circle cx="256" cy="256" r="35" fill="#070a11" stroke="#fbfdff" stroke-width="7"/>
+    <circle cx="256" cy="256" r="10" fill="#fbfdff"/>
+  </g>
+</svg>

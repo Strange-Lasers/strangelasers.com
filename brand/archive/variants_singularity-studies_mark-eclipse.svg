@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="logo-title logo-desc">
+  <title id="logo-title">Strange Lasers Eclipse mark</title>
+  <desc id="logo-desc">A broken event horizon surrounds an eclipsed laser crossing</desc>
+  <defs>
+    <radialGradient id="background" cx="50%" cy="45%" r="72%">
+      <stop offset="0" stop-color="#2b1010"/>
+      <stop offset="0.55" stop-color="#170909"/>
+      <stop offset="1" stop-color="#0d0505"/>
+    </radialGradient>
+    <linearGradient id="infrared-beam" gradientUnits="userSpaceOnUse" x1="96" y1="120" x2="416" y2="234">
+      <stop offset="0" stop-color="#fff2da"/>
+      <stop offset="0.1" stop-color="#ffad54"/>
+      <stop offset="1" stop-color="#ff4a20"/>
+    </linearGradient>
+    <linearGradient id="gold-beam" gradientUnits="userSpaceOnUse" x1="416" y1="392" x2="96" y2="278">
+      <stop offset="0" stop-color="#fffad8"/>
+      <stop offset="0.1" stop-color="#ffe071"/>
+      <stop offset="1" stop-color="#ffc928"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="13"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" fill="url(#background)"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M52 256H174M338 256H460" stroke="#ffc928" stroke-width="67" opacity="0.18" filter="url(#glow)"/>
+    <path d="M52 256H174M338 256H460" stroke="#59430d" stroke-width="43" transform="translate(8 9)"/>
+    <path d="M52 256H174M338 256H460" stroke="url(#gold-beam)" stroke-width="33"/>
+    <path d="M52 256H174M338 256H460" stroke="#fff9e9" stroke-width="4" opacity="0.72"/>
+    <path d="M126 368A168 168 0 1 1 414 350" stroke="#ff4a20" stroke-width="72" opacity="0.18" filter="url(#glow)"/>
+    <path d="M126 368A168 168 0 1 1 414 350" stroke="#5b1d10" stroke-width="48" transform="translate(8 9)"/>
+    <path d="M126 368A168 168 0 1 1 414 350" stroke="url(#infrared-beam)" stroke-width="38"/>
+    <path d="M126 368A168 168 0 1 1 414 350" stroke="#fff9e9" stroke-width="4" opacity="0.72"/>
+    <rect x="43" y="247" width="18" height="18" fill="#fff9e9"/>
+    <circle cx="460" cy="256" r="9" fill="#fff9e9"/>
+    <circle cx="256" cy="256" r="75" fill="#0d0505" stroke="#fff9e9" stroke-width="8"/>
+    <circle cx="273" cy="238" r="17" fill="#fff9e9"/>
+  </g>
+</svg>

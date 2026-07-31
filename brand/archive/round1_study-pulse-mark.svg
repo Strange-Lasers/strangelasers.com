@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="logo-title logo-desc">
+  <title id="logo-title">Strange Lasers Pulse train mark</title>
+  <desc id="logo-desc">A Counterflow laser eye rendered as segmented laser signals traveling in opposing directions</desc>
+  <defs>
+    <radialGradient id="background" cx="50%" cy="45%" r="72%">
+      <stop offset="0" stop-color="#102339"/>
+      <stop offset="0.55" stop-color="#091525"/>
+      <stop offset="1" stop-color="#050b14"/>
+    </radialGradient>
+    <linearGradient id="infrared-beam" gradientUnits="userSpaceOnUse" x1="96" y1="120" x2="416" y2="234">
+      <stop offset="0" stop-color="#e9fdff"/>
+      <stop offset="0.1" stop-color="#78ebff"/>
+      <stop offset="1" stop-color="#11bfe9"/>
+    </linearGradient>
+    <linearGradient id="gold-beam" gradientUnits="userSpaceOnUse" x1="416" y1="392" x2="96" y2="278">
+      <stop offset="0" stop-color="#edf1ff"/>
+      <stop offset="0.1" stop-color="#91a9ff"/>
+      <stop offset="1" stop-color="#4b67e8"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="13"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" fill="url(#background)"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M70 362C110 84 402 84 442 362" stroke="#11bfe9" stroke-width="64" stroke-dasharray="66 18" opacity="0.15" filter="url(#glow)"/>
+    <path d="M70 362C110 84 402 84 442 362" stroke="#0e4352" stroke-width="42" stroke-dasharray="66 18"/>
+    <path d="M70 362C110 84 402 84 442 362" stroke="url(#infrared-beam)" stroke-width="32" stroke-dasharray="66 18"/>
+    <path d="M70 362C110 84 402 84 442 362" stroke="#f7fdff" stroke-width="3" stroke-dasharray="66 18" opacity="0.82"/>
+    <path d="M64 142C124 426 388 426 448 142" stroke="#4b67e8" stroke-width="64" stroke-dasharray="66 18" opacity="0.15" filter="url(#glow)"/>
+    <path d="M64 142C124 426 388 426 448 142" stroke="#1d2b62" stroke-width="42" stroke-dasharray="66 18"/>
+    <path d="M64 142C124 426 388 426 448 142" stroke="url(#gold-beam)" stroke-width="32" stroke-dasharray="66 18"/>
+    <path d="M64 142C124 426 388 426 448 142" stroke="#f7fdff" stroke-width="3" stroke-dasharray="66 18" opacity="0.82"/>
+    <circle cx="64" cy="142" r="9" fill="#f7fdff"/>
+    <rect x="439" y="133" width="18" height="18" fill="#f7fdff"/>
+    <rect x="61" y="353" width="18" height="18" fill="#f7fdff"/>
+    <circle cx="442" cy="362" r="9" fill="#f7fdff"/>
+    <circle cx="256" cy="256" r="61" fill="#050b14" opacity="0.75" filter="url(#glow)"/>
+    <circle cx="256" cy="256" r="47" fill="#050b14" stroke="#f7fdff" stroke-width="7"/>
+    <circle cx="256" cy="256" r="12" fill="#f7fdff"/>
+  </g>
+</svg>

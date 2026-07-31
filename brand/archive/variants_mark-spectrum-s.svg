@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="logo-title logo-desc">
+  <title id="logo-title">Strange Lasers mark, curved spectrum S design colorway</title>
+  <desc id="logo-desc">A continuous curved laser draws an S through impossible space</desc>
+  <defs>
+    <radialGradient id="background" cx="50%" cy="45%" r="72%">
+      <stop offset="0" stop-color="#10251a"/>
+      <stop offset="0.55" stop-color="#0a1a12"/>
+      <stop offset="1" stop-color="#07110c"/>
+    </radialGradient>
+    <linearGradient id="infrared-beam" gradientUnits="userSpaceOnUse" x1="96" y1="120" x2="416" y2="234">
+      <stop offset="0" stop-color="#f5ffd2"/>
+      <stop offset="0.1" stop-color="#d8ff79"/>
+      <stop offset="1" stop-color="#a8f51d"/>
+    </linearGradient>
+    <linearGradient id="gold-beam" gradientUnits="userSpaceOnUse" x1="416" y1="392" x2="96" y2="278">
+      <stop offset="0" stop-color="#e8fff4"/>
+      <stop offset="0.1" stop-color="#7fffc2"/>
+      <stop offset="1" stop-color="#20db8e"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="13"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" fill="url(#background)"/>
+  <g fill="none" stroke-linecap="square" stroke-linejoin="round">
+    <path d="M400 112H182C138 112 112 132 112 166C112 194 130 210 166 224L346 288C382 302 400 323 400 352C400 384 374 400 330 400H112" stroke="#a8f51d" stroke-width="78" opacity="0.18" filter="url(#glow)"/>
+    <path d="M400 112H182C138 112 112 132 112 166C112 194 130 210 166 224L346 288C382 302 400 323 400 352C400 384 374 400 330 400H112" stroke="#0f5138" stroke-width="58" transform="translate(11 12)"/>
+    <path d="M400 112H182C138 112 112 132 112 166C112 194 130 210 166 224L346 288C382 302 400 323 400 352C400 384 374 400 330 400H112" stroke="url(#infrared-beam)" stroke-width="48"/>
+    <path d="M400 112H182C138 112 112 132 112 166C112 194 130 210 166 224L346 288C382 302 400 323 400 352C400 384 374 400 330 400H112" stroke="#f1ffdf" stroke-width="5" opacity="0.76"/>
+  </g>
+  <circle cx="400" cy="112" r="11" fill="#f1ffdf"/>
+  <rect x="100" y="388" width="24" height="24" fill="#f1ffdf"/>
+</svg>

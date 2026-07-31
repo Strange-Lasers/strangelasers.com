@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#000000">
+    <meta
+      name="description"
+      content="Quarter-turn gimbal motion study for Strange Lasers"
+    >
+    <title>Strange Lasers | Quarter-turn gimbal</title>
+    <link rel="icon" href="mark.svg" type="image/svg+xml">
+    <script src="site-init.js"></script>
+    <link rel="stylesheet" href="palette.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="motion-comparison.css">
+    <link rel="stylesheet" href="gimbal.css">
+  </head>
+  <body class="gimbal-page">
+    <main
+      class="gimbal-stage"
+      data-motion-variant="gimbal"
+      aria-labelledby="gimbal-title"
+    >
+      <h1 id="gimbal-title" class="sr-only">
+        Strange Lasers quarter-turn gimbal
+      </h1>
+      <div class="sample-visual" aria-hidden="true"></div>
+      <div class="gimbal-controls" aria-label="Animation controls">
+        <label id="gimbal-speed-label" for="gimbal-speed-range">
+          Speed
+        </label>
+        <input
+          id="gimbal-speed-range"
+          data-speed-range
+          type="range"
+          min="0"
+          max="100"
+          step="0.1"
+          value="50"
+          data-rate-min="0.1"
+          data-rate-mid="0.5"
+          data-rate-max="2.5"
+        >
+        <span class="gimbal-speed-number">
+          <input
+            id="gimbal-speed-number"
+            data-speed-number
+            type="number"
+            min="0.1"
+            max="2.5"
+            step="0.01"
+            value="0.50"
+            aria-labelledby="gimbal-speed-label"
+          >
+          <span aria-hidden="true">x</span>
+        </span>
+        <div class="gimbal-transport" aria-label="Playback">
+          <button
+            type="button"
+            data-frame-back
+            aria-label="Step backward one frame"
+          >
+            Back
+          </button>
+          <button
+            type="button"
+            data-play-toggle
+            aria-label="Pause animation"
+          >
+            Pause
+          </button>
+          <button
+            type="button"
+            data-frame-forward
+            aria-label="Step forward one frame"
+          >
+            Forward
+          </button>
+        </div>
+        <div class="gimbal-frame-counter">
+          <label for="gimbal-frame-number">Frame</label>
+          <input
+            id="gimbal-frame-number"
+            data-frame-number
+            type="number"
+            min="1"
+            step="1"
+            value="1"
+          >
+          <span aria-hidden="true">
+            / <span data-frame-total></span>
+          </span>
+        </div>
+      </div>
+    </main>
+    <script src="logo-motion.js"></script>
+  </body>
+</html>

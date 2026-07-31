@@ -1,0 +1,181 @@
+.comparison-body {
+  min-height: 100%;
+}
+
+.comparison-page {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  padding: clamp(2.5rem, 6vw, 5.5rem) max(1.25rem, env(safe-area-inset-left));
+  background:
+    radial-gradient(circle at 50% 20%, rgb(16 35 57 / 88%) 0, transparent 34rem),
+    radial-gradient(circle at 20% 65%, rgb(17 191 233 / 7%) 0, transparent 30rem),
+    radial-gradient(circle at 80% 78%, rgb(89 85 223 / 9%) 0, transparent 32rem),
+    #050b14;
+}
+
+.comparison-page::before {
+  position: fixed;
+  z-index: -2;
+  inset: 0;
+  background-image:
+    linear-gradient(rgb(161 154 247 / 2.8%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(120 235 255 / 2.4%) 1px, transparent 1px);
+  background-size: 5rem 5rem;
+  content: "";
+  mask-image: radial-gradient(circle at center, black, transparent 80%);
+}
+
+.comparison-header,
+.motion-stack,
+.comparison-note {
+  width: min(100%, 52rem);
+  margin-inline: auto;
+}
+
+.comparison-header {
+  text-align: left;
+}
+
+.comparison-home {
+  color: #78ebff;
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.16em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.comparison-home:hover {
+  color: #fff;
+}
+
+.comparison-home:focus-visible {
+  outline: 2px solid #78ebff;
+  outline-offset: 5px;
+}
+
+.comparison-kicker {
+  margin: 2.2rem 0 0.55rem;
+  color: rgb(161 154 247 / 76%);
+  font-size: 0.78rem;
+  font-weight: 620;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.comparison-header h1 {
+  max-width: 12ch;
+  margin: 0;
+  color: #f3f7ff;
+  font-size: clamp(2.25rem, 7vw, 4.6rem);
+  letter-spacing: -0.045em;
+  line-height: 0.96;
+}
+
+.comparison-intro {
+  max-width: 46rem;
+  margin: 1.2rem 0 0;
+  color: rgb(243 247 255 / 62%);
+  font-size: clamp(0.98rem, 2vw, 1.12rem);
+  line-height: 1.6;
+}
+
+.motion-stack {
+  display: grid;
+  gap: 1rem;
+  margin-top: clamp(2.5rem, 7vw, 4.5rem);
+}
+
+.motion-sample {
+  display: grid;
+  min-height: 19rem;
+  grid-template-columns: minmax(14rem, 0.9fr) minmax(15rem, 1.1fr);
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid rgb(120 235 255 / 12%);
+  border-radius: 1.25rem;
+  background:
+    radial-gradient(circle at 25% 50%, rgb(17 191 233 / 8%), transparent 42%),
+    rgb(7 16 28 / 74%);
+  box-shadow:
+    0 1.5rem 4rem rgb(0 0 0 / 18%),
+    inset 0 0 3rem rgb(89 85 223 / 3%);
+}
+
+.sample-visual {
+  display: grid;
+  min-height: 19rem;
+  place-items: center;
+}
+
+.motion-sample .mark {
+  width: min(100%, 17rem);
+}
+
+.sample-copy {
+  padding: 2rem 2.25rem 2rem 1rem;
+}
+
+.sample-number {
+  margin: 0 0 0.55rem;
+  color: #39d4f1;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+}
+
+.sample-copy h2 {
+  margin: 0;
+  color: #f3f7ff;
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.sample-copy p:last-child {
+  margin: 0.85rem 0 0;
+  color: rgb(243 247 255 / 58%);
+  font-size: 0.94rem;
+  line-height: 1.55;
+}
+
+.comparison-note {
+  margin-top: 1.5rem;
+  color: rgb(243 247 255 / 42%);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.comparison-note code {
+  color: rgb(120 235 255 / 82%);
+  font: inherit;
+}
+
+@media (max-width: 42rem) {
+  .comparison-page {
+    padding-inline: 1rem;
+  }
+
+  .motion-sample {
+    min-height: 0;
+    grid-template-columns: 1fr;
+  }
+
+  .sample-visual {
+    min-height: 15rem;
+    padding-top: 1rem;
+  }
+
+  .motion-sample .mark {
+    width: min(67vw, 15rem);
+  }
+
+  .sample-copy {
+    padding: 0 1.5rem 1.7rem;
+    text-align: center;
+  }
+}

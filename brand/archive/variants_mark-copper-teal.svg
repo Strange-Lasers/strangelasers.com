@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="logo-title logo-desc">
+  <title id="logo-title">Strange Lasers mark, Copper and teal colorway</title>
+  <desc id="logo-desc">Two bright laser beams make impossible turns to form an S from a pair of L shapes</desc>
+  <defs>
+    <radialGradient id="background" cx="50%" cy="45%" r="72%">
+      <stop offset="0" stop-color="#14201a"/>
+      <stop offset="0.55" stop-color="#0b130f"/>
+      <stop offset="1" stop-color="#070b08"/>
+    </radialGradient>
+    <linearGradient id="infrared-beam" gradientUnits="userSpaceOnUse" x1="96" y1="120" x2="416" y2="234">
+      <stop offset="0" stop-color="#fff0d0"/>
+      <stop offset="0.1" stop-color="#efa56a"/>
+      <stop offset="1" stop-color="#c96f33"/>
+    </linearGradient>
+    <linearGradient id="gold-beam" gradientUnits="userSpaceOnUse" x1="416" y1="392" x2="96" y2="278">
+      <stop offset="0" stop-color="#e6fff8"/>
+      <stop offset="0.1" stop-color="#6de1c4"/>
+      <stop offset="1" stop-color="#1bae93"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="13"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" fill="url(#background)"/>
+  <g fill="none" stroke-linecap="square" stroke-linejoin="miter">
+    <path d="M96 120H302L416 234" stroke="#c96f33" stroke-width="82" opacity="0.18" filter="url(#glow)"/>
+    <path d="M416 392H210L96 278" stroke="#1bae93" stroke-width="82" opacity="0.18" filter="url(#glow)"/>
+    <path d="M96 120H302L416 234" stroke="#4b2d1c" stroke-width="58" transform="translate(10 11)"/>
+    <path d="M416 392H210L96 278" stroke="#12483e" stroke-width="58" transform="translate(10 11)"/>
+    <path d="M96 120H302L416 234" stroke="url(#infrared-beam)" stroke-width="50"/>
+    <path d="M416 392H210L96 278" stroke="url(#gold-beam)" stroke-width="50"/>
+    <path d="M96 120H302L416 234" stroke="#fff8e8" stroke-width="5" opacity="0.72"/>
+    <path d="M416 392H210L96 278" stroke="#fff8e8" stroke-width="5" opacity="0.72"/>
+  </g>
+  <circle cx="96" cy="120" r="11" fill="#fff8e8"/>
+  <circle cx="416" cy="392" r="11" fill="#fff8e8"/>
+</svg>
