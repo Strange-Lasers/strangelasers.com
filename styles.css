@@ -1,0 +1,313 @@
+:root {
+  --home-background: #000;
+  color-scheme: dark;
+  font-family:
+    Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+html {
+  background: var(--laser-background);
+}
+
+.home-root {
+  background: var(--home-background);
+}
+
+body {
+  margin: 0;
+  background: var(--laser-background);
+  color: #f3f7ff;
+}
+
+.projected-mark {
+  isolation: isolate;
+}
+
+.projected-beam--wide-glow,
+.projected-beam--tight-glow {
+  mix-blend-mode: screen;
+}
+
+.projected-weave .projected-beam--shell {
+  opacity: 1;
+}
+
+.projected-eye,
+.projected-eye-dot,
+.projected-endpoint {
+  pointer-events: none;
+}
+
+.home-body {
+  background: var(--home-background);
+  overflow: hidden;
+}
+
+.home-page {
+  --home-mark-size: min(98vmin, 72rem);
+  --home-signature-size: min(25.48vmin, 18.72rem);
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--home-background);
+}
+
+.home-page::before {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  background: radial-gradient(ellipse at 45% 45%, transparent 40%, rgb(0 0 0 / 64%) 100%);
+  content: "";
+  pointer-events: none;
+}
+
+.home-mark {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  width: var(--home-mark-size);
+  aspect-ratio: 1;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.home-mark .sample-visual,
+.home-motion-placeholder,
+.home-static-mark {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+}
+
+.home-mark .sample-visual {
+  opacity: 0;
+}
+
+.home-motion-placeholder,
+.home-static-mark {
+  object-fit: contain;
+}
+
+.home-motion-placeholder {
+  opacity: 1;
+}
+
+.home-static-mark {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.home-mark .projected-mark {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.home-mark.motion-rendered .sample-visual {
+  opacity: 1;
+}
+
+.home-mark.motion-rendered .home-motion-placeholder,
+.home-mark.motion-rendered .home-static-mark {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.home-mark.motion-rendered.static-fallback-active .sample-visual,
+.home-mark.motion-rendered.static-fallback-active .home-motion-placeholder {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.home-mark.motion-rendered.static-fallback-active .home-static-mark {
+  visibility: visible;
+  opacity: 1;
+}
+
+.home-signature {
+  --wordmark-reveal-delay: 1500ms;
+  --wordmark-reveal-duration: 1800ms;
+  --tagline-reveal-delay: 2700ms;
+  --tagline-reveal-duration: 1500ms;
+  --links-reveal-delay: 3850ms;
+  --links-reveal-duration: 1500ms;
+  position: absolute;
+  z-index: 4;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  width: var(--home-signature-size);
+  text-align: right;
+}
+
+.home-wordmark {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  animation: signature-reveal var(--wordmark-reveal-duration) ease-out var(--wordmark-reveal-delay) both;
+}
+
+.home-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: clamp(0.4rem, 0.8vmin, 0.65rem);
+  margin-top: clamp(0.5rem, 1vmin, 0.8rem);
+  padding-right: 0.2rem;
+}
+
+.tagline {
+  margin: 0;
+  animation: signature-reveal var(--tagline-reveal-duration) ease-out var(--tagline-reveal-delay) both;
+  color: rgb(243 247 255 / 62%);
+  font-size: clamp(0.58rem, 1.35vmin, 0.86rem);
+  font-weight: 540;
+  letter-spacing: 0.19em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.home-links {
+  display: flex;
+  justify-content: flex-end;
+  gap: clamp(0.3rem, 0.65vmin, 0.5rem);
+  animation: signature-reveal var(--links-reveal-duration) ease-out var(--links-reveal-delay) both;
+}
+
+.home-link {
+  display: inline-flex;
+  min-height: clamp(2.05rem, 4.2vmin, 2.45rem);
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.35rem, 0.7vmin, 0.5rem);
+  padding: clamp(0.5rem, 0.8vmin, 0.6rem) clamp(0.55rem, 0.85vmin, 0.75rem);
+  border: 1px solid rgb(120 235 255 / 32%);
+  border-radius: 999px;
+  background: rgb(5 11 20 / 68%);
+  color: rgb(243 247 255 / 78%);
+  font-size: clamp(0.58rem, 1.15vmin, 0.74rem);
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.home-link:hover {
+  border-color: rgb(120 235 255 / 70%);
+  background: rgb(10 22 36 / 82%);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.home-link:focus-visible {
+  outline: 2px solid var(--laser-cyan-highlight);
+  outline-offset: 5px;
+}
+
+.home-link-icon {
+  width: clamp(0.8rem, 1.6vmin, 1rem);
+  height: clamp(0.8rem, 1.6vmin, 1rem);
+  flex: none;
+  fill: currentcolor;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  margin: -1px;
+  clip: rect(0, 0, 0, 0);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+@keyframes signature-reveal {
+  from {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  to {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@media (max-width: 48rem) {
+  .home-page {
+    --home-mark-size: min(108vw, 68svh);
+    --home-signature-size: min(41.04vw, 25.84svh);
+  }
+
+  .home-link {
+    padding-inline: 0.85rem 0.75rem;
+  }
+}
+
+@media (max-width: 48rem) and (max-height: 44rem) and (orientation: portrait) {
+  .home-page {
+    --home-mark-size: min(88vw, 48svh);
+    --home-signature-size: min(33.44vw, 18.24svh);
+  }
+}
+
+@media (max-height: 42rem) and (min-width: 48.01rem) {
+  .home-page {
+    --home-mark-size: min(105vmin, 44rem);
+    --home-signature-size: min(27.3vmin, 11.44rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not(.force-animation) .home-motion-placeholder {
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  html:not(.force-animation) .home-static-mark {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  html:not(.force-animation) .home-wordmark,
+  html:not(.force-animation) .tagline,
+  html:not(.force-animation) .home-links {
+    animation: none;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  html:not(.force-animation) .home-link {
+    transition: none;
+  }
+}

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" class="mark projected-mark" viewBox="0 0 512 512">
+  <title>Strange Lasers gimbal opening from the logo</title>
+  <style>.projected-beam--wide-glow,.projected-beam--tight-glow{mix-blend-mode:screen}.projected-weave .projected-beam--shell{opacity:1}</style>
+  <defs>
+    <filter height="190%" id="projected-0-gimbal-tight-glow" width="190%" x="-45%" y="-45%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+    <filter height="220%" id="projected-0-gimbal-wide-glow" width="220%" x="-60%" y="-60%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+    <radialGradient cx="36%" cy="30%" id="projected-0-gimbal-lens" r="76%">
+      <stop offset="0%" stop-color="#13263d" stop-opacity="0.8"/>
+      <stop offset="62%" stop-color="#07111e" stop-opacity="0.87"/>
+      <stop offset="100%" stop-color="#02060c" stop-opacity="0.94"/>
+    </radialGradient>
+    <radialGradient id="projected-0-gimbal-occlusion-gradient">
+      <stop offset="0%" stop-color="#fff" stop-opacity="1"/>
+      <stop offset="68%" stop-color="#fff" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+    <mask height="512" id="projected-0-gimbal-occlusion-mask" maskUnits="userSpaceOnUse" width="512" x="0" y="0">
+      <circle cx="256" cy="256" fill="url(#projected-0-gimbal-occlusion-gradient)" r="72"/>
+    </mask>
+    <radialGradient id="projected-0-gimbal-cyan-endpoint-glow">
+      <stop offset="0%" stop-color="#11bfe9" stop-opacity="0.2"/>
+      <stop offset="55%" stop-color="#11bfe9" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#11bfe9" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="projected-0-gimbal-purple-endpoint-glow">
+      <stop offset="0%" stop-color="#5955df" stop-opacity="0.2"/>
+      <stop offset="55%" stop-color="#5955df" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#5955df" stop-opacity="0"/>
+    </radialGradient>
+    <path id="motion-path-1" d="M70 362L71.33 353.4L72.82 344.99L74.47 336.75L76.28 328.7L78.23 320.82L80.33 313.13L82.57 305.62L84.96 298.29L87.48 291.14L90.13 284.17L92.92 277.39L95.83 270.78L98.86 264.36L102.01 258.11L105.28 252.05L108.67 246.17L112.16 240.47L115.76 234.95L119.46 229.61L123.26 224.45L127.15 219.47L131.14 214.67L135.21 210.06L139.38 205.63L143.62 201.37L147.94 197.3L152.34 193.41L156.81 189.7L161.34 186.17L165.95 182.82L170.61 179.65L175.33 176.67L180.11 173.86L184.94 171.24L189.81 168.79L194.73 166.53L199.7 164.45L204.69 162.55L209.73 160.83L214.79 159.29L219.88 157.93L225 156.76L230.13 155.76L235.29 154.95L240.45 154.31L245.63 153.86L250.81 153.59L256 153.5L261.19 153.59L266.37 153.86L271.55 154.31L276.71 154.95L281.87 155.76L287 156.76L292.12 157.93L297.21 159.29L302.27 160.83L307.31 162.55L312.3 164.45L317.27 166.53L322.19 168.79L327.06 171.24L331.89 173.86L336.67 176.67L341.39 179.65L346.05 182.82L350.66 186.17L355.19 189.7L359.66 193.41L364.06 197.3L368.38 201.37L372.63 205.63L376.79 210.06L380.86 214.67L384.85 219.47L388.74 224.45L392.54 229.61L396.24 234.95L399.84 240.47L403.33 246.17L406.72 252.05L409.99 258.11L413.14 264.36L416.17 270.78L419.08 277.39L421.87 284.17L424.52 291.14L427.04 298.29L429.43 305.62L431.67 313.13L433.77 320.82L435.72 328.7L437.53 336.75L439.18 344.99L440.67 353.4L442 362"/>
+    <path id="motion-path-2" d="M64 142L65.94 150.78L68.01 159.38L70.21 167.79L72.53 176.02L74.98 184.06L77.54 191.92L80.22 199.6L83.01 207.08L85.92 214.39L88.93 221.51L92.05 228.44L95.27 235.19L98.58 241.75L102 248.13L105.51 254.32L109.11 260.33L112.8 266.16L116.58 271.8L120.43 277.25L124.37 282.52L128.39 287.61L132.48 292.51L136.64 297.22L140.88 301.75L145.17 306.1L149.54 310.26L153.96 314.23L158.44 318.02L162.98 321.63L167.56 325.05L172.2 328.28L176.89 331.33L181.62 334.2L186.39 336.88L191.2 339.38L196.05 341.69L200.93 343.81L205.84 345.76L210.77 347.51L215.74 349.08L220.72 350.47L225.72 351.67L230.75 352.69L235.78 353.52L240.82 354.17L245.88 354.63L250.94 354.91L256 355L261.06 354.91L266.12 354.63L271.18 354.17L276.22 353.52L281.25 352.69L286.28 351.67L291.28 350.47L296.26 349.08L301.23 347.51L306.16 345.76L311.07 343.81L315.95 341.69L320.8 339.38L325.61 336.88L330.38 334.2L335.11 331.33L339.8 328.28L344.44 325.05L349.02 321.63L353.56 318.02L358.04 314.23L362.46 310.26L366.83 306.1L371.13 301.75L375.36 297.22L379.52 292.51L383.61 287.61L387.63 282.52L391.57 277.25L395.42 271.8L399.2 266.16L402.89 260.33L406.49 254.32L410 248.13L413.42 241.75L416.73 235.19L419.95 228.44L423.07 221.51L426.08 214.39L428.99 207.08L431.78 199.6L434.46 191.92L437.02 184.06L439.47 176.02L441.79 167.79L443.99 159.38L446.06 150.78L448 142"/>
+    <path id="motion-path-3" d="M64 142L65.94 150.78L68.01 159.38L70.21 167.79L72.53 176.02L74.98 184.06L77.54 191.92L80.22 199.6L82.62 206.02M134.92 295.26L136.64 297.22L140.88 301.75L145.17 306.1L149.54 310.26L153.96 314.23L158.44 318.02L162.98 321.63L167.56 325.05L172.2 328.28L176.89 331.33L181.62 334.2L186.39 336.88L191.2 339.38L196.05 341.69L200.93 343.81L205.84 345.76L210.77 347.51L215.74 349.08L220.72 350.47L225.72 351.67L230.75 352.69L235.78 353.52L240.82 354.17L245.88 354.63L250.94 354.91L256 355L261.06 354.91L266.12 354.63L271.18 354.17L276.22 353.52L281.25 352.69L286.28 351.67L291.28 350.47L296.26 349.08L301.23 347.51L306.16 345.76L311.07 343.81L315.95 341.69L320.8 339.38L325.61 336.88L330.38 334.2L335.11 331.33L339.8 328.28L344.44 325.05L349.02 321.63L353.56 318.02L358.04 314.23L362.46 310.26L366.83 306.1L371.13 301.75L375.36 297.22L377.08 295.26M429.38 206.02L431.78 199.6L434.46 191.92L437.02 184.06L439.47 176.02L441.79 167.79L443.99 159.38L446.06 150.78L448 142"/>
+    <path id="motion-path-4" d="M81.92 204.15L83.01 207.08L85.92 214.39L88.93 221.51L92.05 228.44L95.27 235.19L98.58 241.75L102 248.13L105.51 254.32L109.11 260.33L112.8 266.16L116.58 271.8L120.43 277.25L124.37 282.52L128.39 287.61L132.48 292.51L136.24 296.76"/>
+    <path id="motion-path-5" d="M375.76 296.76L379.52 292.51L383.61 287.61L387.63 282.52L391.57 277.25L395.42 271.8L399.2 266.16L402.89 260.33L406.49 254.32L410 248.13L413.42 241.75L416.73 235.19L419.95 228.44L423.07 221.51L426.08 214.39L428.99 207.08L430.08 204.15"/>
+  </defs>
+  <g class="projected-depth projected-depth--base">
+    <g class="projected-beam-group projected-beam-group--cyan">
+      <use class="projected-beam projected-beam--wide-glow" fill="none" opacity="0.12" stroke="#11bfe9" stroke-linecap="butt" stroke-linejoin="round" stroke-width="88" filter="url(#projected-0-gimbal-wide-glow)" href="#motion-path-1"/>
+      <use class="projected-beam projected-beam--tight-glow" fill="none" opacity="0.22" stroke="#11bfe9" stroke-linecap="butt" stroke-linejoin="round" stroke-width="52" filter="url(#projected-0-gimbal-tight-glow)" href="#motion-path-1"/>
+      <use class="projected-beam projected-beam--shell" fill="none" opacity="0.96" stroke="#08798f" stroke-linecap="butt" stroke-linejoin="round" stroke-width="40" href="#motion-path-1"/>
+      <use class="projected-beam projected-beam--body" fill="none" opacity="1" stroke="#11bfe9" stroke-linecap="butt" stroke-linejoin="round" stroke-width="30" href="#motion-path-1"/>
+      <use class="projected-beam projected-beam--highlight" fill="none" opacity="0.9" stroke="#78ebff" stroke-linecap="butt" stroke-linejoin="round" stroke-width="14" href="#motion-path-1"/>
+      <use class="projected-beam projected-beam--core" fill="none" opacity="1" stroke="#f7fdff" stroke-linecap="butt" stroke-linejoin="round" stroke-width="3.5" href="#motion-path-1"/>
+      <g class="projected-endpoint" transform="translate(70 362) rotate(0) scale(1)">
+        <circle fill="url(#projected-0-gimbal-cyan-endpoint-glow)" r="20"/>
+        <rect fill="#08798f" height="26" rx="2.08" width="26" x="-13" y="-13"/>
+        <rect fill="#11bfe9" height="22" rx="1.76" width="22" x="-11" y="-11"/>
+        <rect fill="#f7fdff" height="18" rx="1.44" width="18" x="-9" y="-9"/>
+      </g>
+      <g class="projected-endpoint" transform="translate(442 362) rotate(0) scale(1)">
+        <circle fill="url(#projected-0-gimbal-cyan-endpoint-glow)" r="20"/>
+        <circle fill="#08798f" cx="0" cy="0" r="13"/>
+        <circle fill="#11bfe9" cx="0" cy="0" r="11"/>
+        <circle fill="#f7fdff" cx="0" cy="0" r="9"/>
+      </g>
+    </g>
+    <g class="projected-beam-group projected-beam-group--purple">
+      <use class="projected-beam projected-beam--wide-glow" fill="none" opacity="0.12" stroke="#5955df" stroke-linecap="butt" stroke-linejoin="round" stroke-width="88" filter="url(#projected-0-gimbal-wide-glow)" href="#motion-path-2"/>
+      <use class="projected-beam projected-beam--tight-glow" fill="none" opacity="0.22" stroke="#5955df" stroke-linecap="butt" stroke-linejoin="round" stroke-width="52" filter="url(#projected-0-gimbal-tight-glow)" href="#motion-path-2"/>
+      <use class="projected-beam projected-beam--shell" fill="none" opacity="0.96" stroke="#4039a2" stroke-linecap="butt" stroke-linejoin="round" stroke-width="40" href="#motion-path-3"/>
+      <use class="projected-beam projected-beam--body" fill="none" opacity="1" stroke="#5955df" stroke-linecap="butt" stroke-linejoin="round" stroke-width="30" href="#motion-path-3"/>
+      <use class="projected-beam projected-beam--highlight" fill="none" opacity="0.9" stroke="#a19af7" stroke-linecap="butt" stroke-linejoin="round" stroke-width="14" href="#motion-path-3"/>
+      <use class="projected-beam projected-beam--core" fill="none" opacity="1" stroke="#f7fdff" stroke-linecap="butt" stroke-linejoin="round" stroke-width="3.5" href="#motion-path-3"/>
+      <g class="projected-endpoint" transform="translate(64 142) rotate(0) scale(1)">
+        <circle fill="url(#projected-0-gimbal-purple-endpoint-glow)" r="20"/>
+        <circle fill="#4039a2" cx="0" cy="0" r="13"/>
+        <circle fill="#5955df" cx="0" cy="0" r="11"/>
+        <circle fill="#f7fdff" cx="0" cy="0" r="9"/>
+      </g>
+      <g class="projected-endpoint" transform="translate(448 142) rotate(0) scale(1)">
+        <circle fill="url(#projected-0-gimbal-purple-endpoint-glow)" r="20"/>
+        <rect fill="#4039a2" height="26" rx="2.08" width="26" x="-13" y="-13"/>
+        <rect fill="#5955df" height="22" rx="1.76" width="22" x="-11" y="-11"/>
+        <rect fill="#f7fdff" height="18" rx="1.44" width="18" x="-9" y="-9"/>
+      </g>
+    </g>
+  </g>
+  <g class="projected-weave-depth projected-weave-depth--base">
+    <g class="projected-weave projected-weave--base projected-weave--purple">
+      <use class="projected-beam projected-beam--shell" fill="none" opacity="0.96" stroke="#4039a2" stroke-linecap="butt" stroke-linejoin="round" stroke-width="40" href="#motion-path-4"/>
+      <use class="projected-beam projected-beam--body" fill="none" opacity="1" stroke="#5955df" stroke-linecap="butt" stroke-linejoin="round" stroke-width="30" href="#motion-path-4"/>
+      <use class="projected-beam projected-beam--highlight" fill="none" opacity="0.9" stroke="#a19af7" stroke-linecap="butt" stroke-linejoin="round" stroke-width="14" href="#motion-path-4"/>
+      <use class="projected-beam projected-beam--core" fill="none" opacity="1" stroke="#f7fdff" stroke-linecap="butt" stroke-linejoin="round" stroke-width="3.5" href="#motion-path-4"/>
+    </g>
+    <g class="projected-weave projected-weave--base projected-weave--purple">
+      <use class="projected-beam projected-beam--shell" fill="none" opacity="0.96" stroke="#4039a2" stroke-linecap="butt" stroke-linejoin="round" stroke-width="40" href="#motion-path-5"/>
+      <use class="projected-beam projected-beam--body" fill="none" opacity="1" stroke="#5955df" stroke-linecap="butt" stroke-linejoin="round" stroke-width="30" href="#motion-path-5"/>
+      <use class="projected-beam projected-beam--highlight" fill="none" opacity="0.9" stroke="#a19af7" stroke-linecap="butt" stroke-linejoin="round" stroke-width="14" href="#motion-path-5"/>
+      <use class="projected-beam projected-beam--core" fill="none" opacity="1" stroke="#f7fdff" stroke-linecap="butt" stroke-linejoin="round" stroke-width="3.5" href="#motion-path-5"/>
+    </g>
+  </g>
+  <g class="projected-eye">
+    <circle cx="256" cy="256" fill="none" filter="url(#projected-0-gimbal-wide-glow)" opacity="0.18" r="66" stroke="#5955df" stroke-width="14"/>
+    <circle cx="256" cy="256" fill="url(#projected-0-gimbal-lens)" r="47" stroke="#f7fdff" stroke-width="6"/>
+  </g>
+  <g class="projected-depth projected-depth--front" mask="url(#projected-0-gimbal-occlusion-mask)">
+    <g class="projected-beam-group projected-beam-group--cyan">
+      <use class="projected-beam projected-beam--wide-glow" fill="none" opacity="0.12" stroke="#11bfe9" stroke-linecap="butt" stroke-linejoin="round" stroke-width="88" filter="url(#projected-0-gimbal-wide-glow)" href="#motion-path-1"/>
+      <use class="projected-beam projected-beam--tight-glow" fill="none" opacity="0.22" stroke="#11bfe9" stroke-linecap="butt" stroke-linejoin="round" stroke-width="52" filter="url(#projected-0-gimbal-tight-glow)" href="#motion-path-1"/>
+      <use class="projected-beam projected-beam--shell" fill="none" opacity="0.96" stroke="#08798f" stroke-linecap="butt" stroke-linejoin="round" stroke-width="40" href="#motion-path-1"/>
+      <use class="projected-beam projected-beam--body" fill="none" opacity="1" stroke="#11bfe9" stroke-linecap="butt" stroke-linejoin="round" stroke-width="30" href="#motion-path-1"/>
+      <use class="projected-beam projected-beam--highlight" fill="none" opacity="0.9" stroke="#78ebff" stroke-linecap="butt" stroke-linejoin="round" stroke-width="14" href="#motion-path-1"/>
+      <use class="projected-beam projected-beam--core" fill="none" opacity="1" stroke="#f7fdff" stroke-linecap="butt" stroke-linejoin="round" stroke-width="3.5" href="#motion-path-1"/>
+      <g class="projected-endpoint" transform="translate(70 362) rotate(0) scale(1)">
+        <circle fill="url(#projected-0-gimbal-cyan-endpoint-glow)" r="20"/>
+        <rect fill="#08798f" height="26" rx="2.08" width="26" x="-13" y="-13"/>
+        <rect fill="#11bfe9" height="22" rx="1.76" width="22" x="-11" y="-11"/>
+        <rect fill="#f7fdff" height="18" rx="1.44" width="18" x="-9" y="-9"/>
+      </g>
+      <g class="projected-endpoint" transform="translate(442 362) rotate(0) scale(1)">
+        <circle fill="url(#projected-0-gimbal-cyan-endpoint-glow)" r="20"/>
+        <circle fill="#08798f" cx="0" cy="0" r="13"/>
+        <circle fill="#11bfe9" cx="0" cy="0" r="11"/>
+        <circle fill="#f7fdff" cx="0" cy="0" r="9"/>
+      </g>
+    </g>
+    <g class="projected-beam-group projected-beam-group--purple">
+      <use class="projected-beam projected-beam--wide-glow" fill="none" opacity="0.12" stroke="#5955df" stroke-linecap="butt" stroke-linejoin="round" stroke-width="88" filter="url(#projected-0-gimbal-wide-glow)" href="#motion-path-2"/>
+      <use class="projected-beam projected-beam--tight-glow" fill="none" opacity="0.22" stroke="#5955df" stroke-linecap="butt" stroke-linejoin="round" stroke-width="52" filter="url(#projected-0-gimbal-tight-glow)" href="#motion-path-2"/>
+      <use class="projected-beam projected-beam--shell" fill="none" opacity="0.96" stroke="#4039a2" stroke-linecap="butt" stroke-linejoin="round" stroke-width="40" href="#motion-path-3"/>
+      <use class="projected-beam projected-beam--body" fill="none" opacity="1" stroke="#5955df" stroke-linecap="butt" stroke-linejoin="round" stroke-width="30" href="#motion-path-3"/>
+      <use class="projected-beam projected-beam--highlight" fill="none" opacity="0.9" stroke="#a19af7" stroke-linecap="butt" stroke-linejoin="round" stroke-width="14" href="#motion-path-3"/>
+      <use class="projected-beam projected-beam--core" fill="none" opacity="1" stroke="#f7fdff" stroke-linecap="butt" stroke-linejoin="round" stroke-width="3.5" href="#motion-path-3"/>
+      <g class="projected-endpoint" transform="translate(64 142) rotate(0) scale(1)">
+        <circle fill="url(#projected-0-gimbal-purple-endpoint-glow)" r="20"/>
+        <circle fill="#4039a2" cx="0" cy="0" r="13"/>
+        <circle fill="#5955df" cx="0" cy="0" r="11"/>
+        <circle fill="#f7fdff" cx="0" cy="0" r="9"/>
+      </g>
+      <g class="projected-endpoint" transform="translate(448 142) rotate(0) scale(1)">
+        <circle fill="url(#projected-0-gimbal-purple-endpoint-glow)" r="20"/>
+        <rect fill="#4039a2" height="26" rx="2.08" width="26" x="-13" y="-13"/>
+        <rect fill="#5955df" height="22" rx="1.76" width="22" x="-11" y="-11"/>
+        <rect fill="#f7fdff" height="18" rx="1.44" width="18" x="-9" y="-9"/>
+      </g>
+    </g>
+  </g>
+  <g class="projected-weave-depth projected-weave-depth--front" mask="url(#projected-0-gimbal-occlusion-mask)">
+    <g class="projected-weave projected-weave--front projected-weave--purple">
+      <use class="projected-beam projected-beam--shell" fill="none" opacity="0.96" stroke="#4039a2" stroke-linecap="butt" stroke-linejoin="round" stroke-width="40" href="#motion-path-4"/>
+      <use class="projected-beam projected-beam--body" fill="none" opacity="1" stroke="#5955df" stroke-linecap="butt" stroke-linejoin="round" stroke-width="30" href="#motion-path-4"/>
+      <use class="projected-beam projected-beam--highlight" fill="none" opacity="0.9" stroke="#a19af7" stroke-linecap="butt" stroke-linejoin="round" stroke-width="14" href="#motion-path-4"/>
+      <use class="projected-beam projected-beam--core" fill="none" opacity="1" stroke="#f7fdff" stroke-linecap="butt" stroke-linejoin="round" stroke-width="3.5" href="#motion-path-4"/>
+    </g>
+    <g class="projected-weave projected-weave--front projected-weave--purple">
+      <use class="projected-beam projected-beam--shell" fill="none" opacity="0.96" stroke="#4039a2" stroke-linecap="butt" stroke-linejoin="round" stroke-width="40" href="#motion-path-5"/>
+      <use class="projected-beam projected-beam--body" fill="none" opacity="1" stroke="#5955df" stroke-linecap="butt" stroke-linejoin="round" stroke-width="30" href="#motion-path-5"/>
+      <use class="projected-beam projected-beam--highlight" fill="none" opacity="0.9" stroke="#a19af7" stroke-linecap="butt" stroke-linejoin="round" stroke-width="14" href="#motion-path-5"/>
+      <use class="projected-beam projected-beam--core" fill="none" opacity="1" stroke="#f7fdff" stroke-linecap="butt" stroke-linejoin="round" stroke-width="3.5" href="#motion-path-5"/>
+    </g>
+  </g>
+  <g class="projected-eye-dot">
+    <circle cx="256" cy="256" fill="#f7fdff" filter="url(#projected-0-gimbal-tight-glow)" opacity="0.14" r="19.799999999999997"/>
+    <circle cx="256" cy="256" fill="#f7fdff" r="12"/>
+  </g>
+</svg>
