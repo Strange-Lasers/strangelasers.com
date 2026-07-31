@@ -150,6 +150,8 @@ body {
   --tagline-reveal-duration: 1500ms;
   --links-reveal-delay: 3850ms;
   --links-reveal-duration: 1500ms;
+  --tagline-cycle-delay: 6500ms;
+  --tagline-cycle-duration: 8s;
   position: absolute;
   z-index: 4;
   right: max(1rem, env(safe-area-inset-right));
@@ -177,6 +179,7 @@ body {
 }
 
 .tagline {
+  display: grid;
   margin: 0;
   animation: signature-reveal var(--tagline-reveal-duration) ease-out var(--tagline-reveal-delay) both;
   color: rgb(243 247 255 / 62%);
@@ -186,6 +189,20 @@ body {
   line-height: 1.4;
   text-transform: uppercase;
   white-space: nowrap;
+}
+
+.tagline-text {
+  grid-area: 1 / 1;
+  justify-self: end;
+}
+
+.tagline-text--primary {
+  animation: tagline-primary-cycle var(--tagline-cycle-duration) ease-in-out var(--tagline-cycle-delay) infinite both;
+}
+
+.tagline-text--alternate {
+  opacity: 0;
+  animation: tagline-alternate-cycle var(--tagline-cycle-duration) ease-in-out var(--tagline-cycle-delay) infinite both;
 }
 
 .home-links {
@@ -263,6 +280,40 @@ body {
   }
 }
 
+@keyframes tagline-primary-cycle {
+  0%,
+  15% {
+    opacity: 1;
+  }
+
+  28%,
+  72% {
+    opacity: 0;
+  }
+
+  85%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes tagline-alternate-cycle {
+  0%,
+  22% {
+    opacity: 0;
+  }
+
+  35%,
+  65% {
+    opacity: 1;
+  }
+
+  78%,
+  100% {
+    opacity: 0;
+  }
+}
+
 @media (max-width: 48rem) {
   .home-page {
     --home-mark-size: min(108vw, 68svh);
@@ -309,5 +360,9 @@ body {
 
   html:not(.force-animation) .home-link {
     transition: none;
+  }
+
+  html:not(.force-animation) .tagline-text {
+    animation: none;
   }
 }
