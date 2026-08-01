@@ -18,6 +18,10 @@ const FRAME_TOTAL_SELECTOR = "[data-frame-total]";
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 const MASTER_DURATION_MS = 6000;
 const MOTION_INTRO_HOLD_DURATION_MS = 1000;
+const MOTION_INTRO_BLOOM_ATTACK_MS = 100;
+const MOTION_INTRO_BLOOM_RELEASE_MS = 240;
+const MOTION_INTRO_START_DELAY_MS =
+  MOTION_INTRO_HOLD_DURATION_MS + MOTION_INTRO_BLOOM_ATTACK_MS;
 const MOTION_INTRO_DURATION_MS = 1500;
 const DEFAULT_PLAYBACK_RATE = 0.5;
 const ANIMATION_FRAME_RATE = 60;
@@ -120,6 +124,11 @@ const BRAND_COLORS = Object.freeze({
 
 const BEAM_LAYERS = Object.freeze([
   Object.freeze({
+    bloom: Object.freeze({
+      name: "wide-glow",
+      opacity: 0.34,
+      width: 106,
+    }),
     className: "projected-beam projected-beam--wide-glow",
     color: "body",
     filter: "wide",
@@ -127,6 +136,11 @@ const BEAM_LAYERS = Object.freeze([
     width: 88,
   }),
   Object.freeze({
+    bloom: Object.freeze({
+      name: "tight-glow",
+      opacity: 0.48,
+      width: 66,
+    }),
     className: "projected-beam projected-beam--tight-glow",
     color: "body",
     filter: "tight",
@@ -146,12 +160,22 @@ const BEAM_LAYERS = Object.freeze([
     width: 30,
   }),
   Object.freeze({
+    bloom: Object.freeze({
+      name: "highlight",
+      opacity: 1,
+      width: 24,
+    }),
     className: "projected-beam projected-beam--highlight",
     color: "highlight",
     opacity: 0.9,
     width: 14,
   }),
   Object.freeze({
+    bloom: Object.freeze({
+      name: "core",
+      opacity: 1,
+      width: 9,
+    }),
     className: "projected-beam projected-beam--core",
     color: "core",
     opacity: 1,
@@ -208,6 +232,7 @@ let animationPhase = STATIC_PHASE;
 let animationPaused = false;
 let eyeTrackingCooldownId;
 let eyeTrackingFrameId;
+let motionIntroBloom = 0;
 let motionIntroProgress = 1;
 let motionIntroStartTimestamp;
 let frameNumberControl;
@@ -1630,7 +1655,37 @@ function moveEndpointToWeave(
   );
 }
 
-function updateMark(mark, phase, introProgress) {
+function updateIntroBloom(mark, bloom) {
+  if (mark.introBloom === bloom) {
+    return;
+  }
+
+  mark.introBloom = bloom;
+
+  for (const layer of BEAM_LAYERS) {
+    if (!layer.bloom) {
+      continue;
+    }
+
+    const opacity =
+      layer.opacity +
+      (layer.bloom.opacity - layer.opacity) * bloom;
+    const width =
+      layer.width +
+      (layer.bloom.width - layer.width) * bloom;
+    mark.svg.style.setProperty(
+      `--beam-${layer.bloom.name}-opacity`,
+      formatCoordinate(opacity),
+    );
+    mark.svg.style.setProperty(
+      `--beam-${layer.bloom.name}-width`,
+      `${formatCoordinate(width)}px`,
+    );
+  }
+}
+
+function updateMark(mark, phase, introProgress, introBloom) {
+  updateIntroBloom(mark, introBloom);
   const baseInnerAngle =
     phase * TAU * INNER_TURNS_PER_LOOP;
   const outerAngle =
@@ -1777,9 +1832,13 @@ function updateMark(mark, phase, introProgress) {
   }
 }
 
-function renderPhase(phase, introProgress = 1) {
+function renderPhase(
+  phase,
+  introProgress = 1,
+  introBloom = 0,
+) {
   for (const mark of renderedMarks) {
-    updateMark(mark, phase, introProgress);
+    updateMark(mark, phase, introProgress, introBloom);
   }
 
   syncFrameNumber(phase);
@@ -1815,13 +1874,17 @@ function animate(timestamp) {
     motionIntroStartTimestamp = timestamp;
   }
 
-  if (motionIntroHolding(timestamp)) {
+  if (motionIntroWaiting(timestamp)) {
     previousAnimationTimestamp = undefined;
   } else {
     advanceAnimation(timestamp);
   }
   updateMotionIntro(timestamp);
-  renderPhase(animationPhase, motionIntroProgress);
+  renderPhase(
+    animationPhase,
+    motionIntroProgress,
+    motionIntroBloom,
+  );
   animationFrameId = window.requestAnimationFrame(animate);
 }
 
@@ -1856,12 +1919,41 @@ function smootherStep(progress) {
   );
 }
 
-function motionIntroHolding(timestamp) {
+function motionIntroWaiting(timestamp) {
   return (
     motionIntroProgress < 1 &&
     motionIntroStartTimestamp !== undefined &&
     timestamp - motionIntroStartTimestamp <
-      MOTION_INTRO_HOLD_DURATION_MS
+      MOTION_INTRO_START_DELAY_MS
+  );
+}
+
+function introBloomForElapsed(elapsed) {
+  const bloomElapsed =
+    elapsed - MOTION_INTRO_HOLD_DURATION_MS;
+
+  if (bloomElapsed <= 0) {
+    return 0;
+  }
+
+  if (bloomElapsed < MOTION_INTRO_BLOOM_ATTACK_MS) {
+    return smootherStep(
+      bloomElapsed / MOTION_INTRO_BLOOM_ATTACK_MS,
+    );
+  }
+
+  const releaseElapsed =
+    bloomElapsed - MOTION_INTRO_BLOOM_ATTACK_MS;
+
+  if (releaseElapsed >= MOTION_INTRO_BLOOM_RELEASE_MS) {
+    return 0;
+  }
+
+  return (
+    1 -
+    smootherStep(
+      releaseElapsed / MOTION_INTRO_BLOOM_RELEASE_MS,
+    )
   );
 }
 
@@ -1873,10 +1965,10 @@ function updateMotionIntro(timestamp) {
     return;
   }
 
+  const introElapsed = timestamp - motionIntroStartTimestamp;
+  motionIntroBloom = introBloomForElapsed(introElapsed);
   const elapsed = Math.max(
-    timestamp -
-      motionIntroStartTimestamp -
-      MOTION_INTRO_HOLD_DURATION_MS,
+    introElapsed - MOTION_INTRO_START_DELAY_MS,
     0,
   );
   const progress = Math.min(
@@ -1886,6 +1978,7 @@ function updateMotionIntro(timestamp) {
   motionIntroProgress = smootherStep(progress);
 
   if (progress === 1) {
+    motionIntroBloom = 0;
     motionIntroStartTimestamp = undefined;
   }
 }
@@ -1996,8 +2089,13 @@ function updateMotion() {
     mark.sample.hasAttribute(STATIC_FALLBACK_ATTRIBUTE),
   );
   motionIntroProgress = hasStaticFallback ? 0 : 1;
+  motionIntroBloom = 0;
   motionIntroStartTimestamp = undefined;
-  renderPhase(animationPhase, motionIntroProgress);
+  renderPhase(
+    animationPhase,
+    motionIntroProgress,
+    motionIntroBloom,
+  );
 
   for (const mark of renderedMarks) {
     mark.sample.classList.add(MOTION_RENDERED_CLASS);

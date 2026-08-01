@@ -40,6 +40,26 @@ body {
   mix-blend-mode: screen;
 }
 
+.projected-beam--wide-glow {
+  opacity: var(--beam-wide-glow-opacity, 0.12);
+  stroke-width: var(--beam-wide-glow-width, 88px);
+}
+
+.projected-beam--tight-glow {
+  opacity: var(--beam-tight-glow-opacity, 0.22);
+  stroke-width: var(--beam-tight-glow-width, 52px);
+}
+
+.projected-beam--highlight {
+  opacity: var(--beam-highlight-opacity, 0.9);
+  stroke-width: var(--beam-highlight-width, 14px);
+}
+
+.projected-beam--core {
+  opacity: var(--beam-core-opacity, 1);
+  stroke-width: var(--beam-core-width, 3.5px);
+}
+
 .projected-weave .projected-beam--shell {
   opacity: 1;
 }
