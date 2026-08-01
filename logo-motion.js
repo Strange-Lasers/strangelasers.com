@@ -777,6 +777,16 @@ function trackEyes(pointerEvent) {
   startEyeTrackingTransition();
 }
 
+function trackTouchEyes(touchEvent) {
+  const touch = touchEvent.touches[0];
+
+  if (!touch) {
+    return;
+  }
+
+  trackEyes(touch);
+}
+
 function deactivateEyeTracking() {
   eyeTrackingCooldownId = undefined;
 
@@ -876,6 +886,16 @@ function setupEyeTracking() {
   window.addEventListener(
     "pointermove",
     trackEyes,
+    listenerOptions,
+  );
+  window.addEventListener(
+    "touchstart",
+    trackTouchEyes,
+    listenerOptions,
+  );
+  window.addEventListener(
+    "touchmove",
+    trackTouchEyes,
     listenerOptions,
   );
 }
