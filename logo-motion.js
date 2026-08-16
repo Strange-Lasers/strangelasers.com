@@ -5,11 +5,13 @@ const FORCE_ANIMATION_CLASS = "force-animation";
 const FEATURE_DISABLED_VALUE = "off";
 const EYE_COLOR_QUERY_PARAMETER = "eye-color";
 const EYE_COOLDOWN_QUERY_PARAMETER = "eye-cooldown";
+const FPS_QUERY_PARAMETER = "fps";
 const MOTION_SAMPLE_SELECTOR = "[data-motion-variant]";
 const VISUAL_SELECTOR = ".sample-visual";
 const MOTION_RENDERED_CLASS = "motion-rendered";
 const STATIC_FALLBACK_ATTRIBUTE = "data-static-fallback";
 const EYE_TRACKING_ACTIVE_CLASS = "eye-tracking-active";
+const FPS_COUNTER_CLASS = "fps-counter";
 const SPEED_RANGE_SELECTOR = "[data-speed-range]";
 const SPEED_NUMBER_SELECTOR = "[data-speed-number]";
 const FRAME_BACK_SELECTOR = "[data-frame-back]";
@@ -25,6 +27,7 @@ const MOTION_INTRO_BLOOM_RELEASE_MS = 240;
 const MOTION_INTRO_START_DELAY_MS =
   MOTION_INTRO_HOLD_DURATION_MS + MOTION_INTRO_BLOOM_ATTACK_MS;
 const MOTION_INTRO_DURATION_MS = 1500;
+const FPS_SAMPLE_DURATION_MS = 1000;
 const DEFAULT_PLAYBACK_RATE = 0.5;
 const ANIMATION_FRAME_RATE = 60;
 const ANIMATION_FRAME_DURATION_MS = 1000 / ANIMATION_FRAME_RATE;
@@ -83,6 +86,7 @@ const FEATURE_SWITCHES = Object.freeze({
   eyeCooldown:
     motionQuery.get(EYE_COOLDOWN_QUERY_PARAMETER) !==
     FEATURE_DISABLED_VALUE,
+  fps: motionQuery.has(FPS_QUERY_PARAMETER),
 });
 
 const FILTER_CONFIG = Object.freeze({
@@ -234,6 +238,9 @@ let animationPhase = STATIC_PHASE;
 let animationPaused = false;
 let eyeTrackingCooldownId;
 let eyeTrackingFrameId;
+let fpsCounter;
+let fpsFrameCount = 0;
+let fpsSampleStartTimestamp;
 let motionIntroBloom = 0;
 let motionIntroProgress = 1;
 let motionIntroStartTimestamp;
@@ -1969,6 +1976,42 @@ function renderPhase(
   syncFrameNumber(phase);
 }
 
+function updateFpsCounter(timestamp) {
+  if (!fpsCounter) {
+    return;
+  }
+
+  if (fpsSampleStartTimestamp === undefined) {
+    fpsSampleStartTimestamp = timestamp;
+    fpsFrameCount = 0;
+    return;
+  }
+
+  fpsFrameCount += 1;
+  const elapsed = timestamp - fpsSampleStartTimestamp;
+
+  if (elapsed < FPS_SAMPLE_DURATION_MS) {
+    return;
+  }
+
+  const framesPerSecond = Math.round(
+    (fpsFrameCount * 1000) / elapsed,
+  );
+  fpsCounter.textContent = `FPS: ${framesPerSecond}`;
+  fpsFrameCount = 0;
+  fpsSampleStartTimestamp = timestamp;
+}
+
+function resetFpsCounter(running) {
+  if (!fpsCounter) {
+    return;
+  }
+
+  fpsFrameCount = 0;
+  fpsSampleStartTimestamp = undefined;
+  fpsCounter.textContent = running ? "FPS: ..." : "FPS: idle";
+}
+
 function animationAllowed() {
   return (
     document.documentElement.classList.contains(
@@ -2010,6 +2053,7 @@ function animate(timestamp) {
     motionIntroProgress,
     motionIntroBloom,
   );
+  updateFpsCounter(timestamp);
   animationFrameId = window.requestAnimationFrame(animate);
 }
 
@@ -2133,6 +2177,7 @@ function pauseAnimation() {
   cancelScheduledAnimationFrame();
   animationPaused = true;
   previousAnimationTimestamp = undefined;
+  resetFpsCounter(false);
   renderPhase(animationPhase);
   syncPlayToggle();
 }
@@ -2149,6 +2194,7 @@ function playAnimation() {
     animationFrameId = window.requestAnimationFrame(animate);
   }
 
+  resetFpsCounter(animationFrameId !== undefined);
   syncPlayToggle();
 }
 
@@ -2210,6 +2256,7 @@ function updateMotion() {
   animationPhase = STATIC_PHASE;
   previousAnimationTimestamp = undefined;
   const motionAllowed = animationAllowed();
+  resetFpsCounter(!animationPaused && motionAllowed);
   const hasStaticFallback = renderedMarks.some((mark) =>
     mark.sample.hasAttribute(STATIC_FALLBACK_ATTRIBUTE),
   );
@@ -2441,6 +2488,18 @@ function setupFrameCounter() {
   syncFrameNumber();
 }
 
+function setupFpsCounter() {
+  if (!FEATURE_SWITCHES.fps) {
+    return;
+  }
+
+  fpsCounter = document.createElement("div");
+  fpsCounter.className = FPS_COUNTER_CLASS;
+  fpsCounter.setAttribute("aria-hidden", "true");
+  fpsCounter.textContent = "FPS: idle";
+  document.body.append(fpsCounter);
+}
+
 function renderMotionMarks() {
   for (const [index, sample] of [
     ...document.querySelectorAll(MOTION_SAMPLE_SELECTOR),
@@ -2455,5 +2514,6 @@ motionPreference.addEventListener("change", updateMotion);
 setupSpeedControls();
 setupTransportControls();
 setupFrameCounter();
+setupFpsCounter();
 renderMotionMarks();
 setupEyeTracking();

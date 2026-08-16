@@ -87,6 +87,28 @@ body {
   overflow: hidden;
 }
 
+.fps-counter {
+  position: fixed;
+  z-index: 5;
+  top: max(0.75rem, env(safe-area-inset-top));
+  left: max(0.75rem, env(safe-area-inset-left));
+  min-width: 7.5ch;
+  padding: 0.45rem 0.55rem;
+  contain: layout paint style;
+  border: 1px solid rgb(120 235 255 / 38%);
+  border-radius: 0.4rem;
+  background: rgb(5 11 20 / 92%);
+  color: var(--laser-cyan-highlight);
+  font-family: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
 .home-page {
   --home-mark-size: min(98vmin, 72rem);
   --home-signature-size: min(25.48vmin, 18.72rem);
