@@ -1,4 +1,6 @@
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
+const PATH_COORDINATE_CACHE = Symbol("path-coordinate-cache");
+const HIDDEN_DISPLAY_VALUE = "none";
 const FORCE_ANIMATION_CLASS = "force-animation";
 const FEATURE_DISABLED_VALUE = "off";
 const EYE_COLOR_QUERY_PARAMETER = "eye-color";
@@ -411,17 +413,39 @@ function createEndpointGlowGradient(
   definitions.append(gradient);
 }
 
-function createBeamPaths(
+function createPathGeometry(definitions, id) {
+  const path = createSvgElement("path", {
+    d: "",
+    id,
+  });
+  definitions.append(path);
+  return path;
+}
+
+function createBeamLayers(
   parent,
+  definitions,
+  prefix,
   beam,
   filterIds,
   layers = BEAM_LAYERS,
 ) {
-  return layers.map((layer) => {
+  const hasFilteredLayers = layers.some(
+    (layer) => layer.filter,
+  );
+  const fullPath = hasFilteredLayers
+    ? createPathGeometry(definitions, `${prefix}-full`)
+    : undefined;
+  const solidPath = createPathGeometry(
+    definitions,
+    `${prefix}-solid`,
+  );
+
+  for (const layer of layers) {
     const attributes = {
       class: layer.className,
-      d: "",
       fill: "none",
+      href: `#${layer.filter ? fullPath.id : solidPath.id}`,
       opacity: layer.opacity,
       stroke: beam[layer.color],
       "stroke-linecap": "butt",
@@ -433,10 +457,13 @@ function createBeamPaths(
       attributes.filter = `url(#${filterIds[layer.filter]})`;
     }
 
-    const path = createSvgElement("path", attributes);
-    parent.append(path);
-    return path;
-  });
+    parent.append(createSvgElement("use", attributes));
+  }
+
+  return {
+    fullPath,
+    solidPath,
+  };
 }
 
 function createCapShape(kind, radius, attributes) {
@@ -533,6 +560,8 @@ function createEyeDot(filterIds) {
 
 function createWeaveReference(
   beam,
+  definitions,
+  prefix,
   filterIds,
   endpointGlowId,
 ) {
@@ -544,14 +573,18 @@ function createWeaveReference(
     class: `projected-weave projected-weave--front projected-weave--${beam.id}`,
     display: "none",
   });
-  const basePaths = createBeamPaths(
+  const baseGeometry = createBeamLayers(
     baseGroup,
+    definitions,
+    `${prefix}-base`,
     beam,
     filterIds,
     SOLID_BEAM_LAYERS,
   );
-  const frontPaths = createBeamPaths(
+  const frontGeometry = createBeamLayers(
     frontGroup,
+    definitions,
+    `${prefix}-front`,
     beam,
     filterIds,
     SOLID_BEAM_LAYERS,
@@ -583,19 +616,19 @@ function createWeaveReference(
     startFrontEndpoint,
     endFrontEndpoint,
   ]) {
-    endpoint.setAttribute("display", "none");
+    endpoint.setAttribute("display", HIDDEN_DISPLAY_VALUE);
   }
 
   baseGroup.append(startBaseEndpoint, endBaseEndpoint);
   frontGroup.append(startFrontEndpoint, endFrontEndpoint);
 
   return {
+    baseGeometry,
     baseGroup,
-    basePaths,
     endBaseEndpoint,
     endFrontEndpoint,
+    frontGeometry,
     frontGroup,
-    frontPaths,
     startBaseEndpoint,
     startFrontEndpoint,
   };
@@ -649,13 +682,17 @@ function createProjectedMark(sample, index) {
       class: `projected-beam-group projected-beam-group--${beam.id}`,
     });
 
-    const basePaths = createBeamPaths(
+    const baseGeometry = createBeamLayers(
       baseBeam,
+      definitions,
+      `${prefix}-${beam.id}-base`,
       beam,
       filterIds,
     );
-    const frontPaths = createBeamPaths(
+    const frontGeometry = createBeamLayers(
       frontBeam,
+      definitions,
+      `${prefix}-${beam.id}-front`,
       beam,
       filterIds,
     );
@@ -691,11 +728,11 @@ function createProjectedMark(sample, index) {
     frontDepth.append(frontBeam);
 
     return {
-      basePaths,
+      baseGeometry,
       beam,
       endBaseEndpoint,
       endFrontEndpoint,
-      frontPaths,
+      frontGeometry,
       startBaseEndpoint,
       startFrontEndpoint,
     };
@@ -718,14 +755,17 @@ function createProjectedMark(sample, index) {
     baseWeaveDepth,
     beamReferences,
     currentEyeOffset: EYE_CENTER_OFFSET,
+    definitions,
     endpointGlowIds,
     eyeDot,
     filterIds,
     frontWeaveDepth,
+    prefix,
     sample,
     svg,
     targetEyeOffset: EYE_CENTER_OFFSET,
     variant,
+    weaveOrder: [],
     weaveReferences,
   };
 }
@@ -907,12 +947,12 @@ function weaveReferenceFor(mark, beamIndex, referenceIndex) {
     const beam = mark.beamReferences[beamIndex].beam;
     const reference = createWeaveReference(
       beam,
+      mark.definitions,
+      `${mark.prefix}-${beam.id}-weave-${references.length}`,
       mark.filterIds,
       mark.endpointGlowIds[beam.id],
     );
     references.push(reference);
-    mark.baseWeaveDepth.append(reference.baseGroup);
-    mark.frontWeaveDepth.append(reference.frontGroup);
   }
 
   return references[referenceIndex];
@@ -1576,37 +1616,64 @@ function formatCoordinate(value) {
   return Number(value.toFixed(PATH_PRECISION));
 }
 
-function pathDataFor(segments) {
-  return segments
-    .filter((segment) => segment.length > 1)
-    .map((segment) =>
-      segment
-        .map((point, index) => {
-          const command = index === 0 ? "M" : "L";
-          return `${command}${formatCoordinate(point.x)} ${formatCoordinate(point.y)}`;
-        })
-        .join(""),
-    )
-    .join("");
+function pathCoordinateFor(point) {
+  if (point[PATH_COORDINATE_CACHE] === undefined) {
+    point[PATH_COORDINATE_CACHE] =
+      `${formatCoordinate(point.x)} ${formatCoordinate(point.y)}`;
+  }
+
+  return point[PATH_COORDINATE_CACHE];
 }
 
-function updatePaths(paths, data) {
-  for (const path of paths) {
+function pathDataFor(segments) {
+  let data = "";
+
+  for (const segment of segments) {
+    if (segment.length <= 1) {
+      continue;
+    }
+
+    data += `M${pathCoordinateFor(segment[0])}`;
+
+    for (let index = 1; index < segment.length; index += 1) {
+      data += `L${pathCoordinateFor(segment[index])}`;
+    }
+  }
+
+  return data;
+}
+
+function updatePath(path, data) {
+  if (path) {
     path.setAttribute("d", data);
   }
 }
 
-function updateLayeredPaths(paths, fullData, solidData) {
-  paths.forEach((path, index) => {
-    path.setAttribute(
-      "d",
-      BEAM_LAYERS[index].filter ? fullData : solidData,
-    );
-  });
+function updatePaths(geometry, data) {
+  updatePath(geometry.solidPath, data);
+}
+
+function updateLayeredPaths(geometry, fullData, solidData) {
+  updatePath(geometry.fullPath, fullData);
+  updatePath(geometry.solidPath, solidData);
+}
+
+function showElement(element) {
+  if (element.hasAttribute("display")) {
+    element.removeAttribute("display");
+  }
+}
+
+function hideElement(element) {
+  if (
+    element.getAttribute("display") !== HIDDEN_DISPLAY_VALUE
+  ) {
+    element.setAttribute("display", HIDDEN_DISPLAY_VALUE);
+  }
 }
 
 function positionEndpoint(endpoint, point, outerAngle) {
-  endpoint.removeAttribute("display");
+  showElement(endpoint);
   endpoint.setAttribute(
     "transform",
     [
@@ -1619,21 +1686,20 @@ function positionEndpoint(endpoint, point, outerAngle) {
 
 function updateFrontEndpoint(endpoint, point, outerAngle) {
   if (!isFront(point)) {
-    endpoint.setAttribute("display", "none");
+    hideEndpoint(endpoint);
     return;
   }
 
-  endpoint.removeAttribute("display");
   positionEndpoint(endpoint, point, outerAngle);
 }
 
 function hideEndpoint(endpoint) {
-  endpoint.setAttribute("display", "none");
+  hideElement(endpoint);
 }
 
 function hideWeaveReference(reference) {
-  reference.baseGroup.setAttribute("display", "none");
-  reference.frontGroup.setAttribute("display", "none");
+  hideElement(reference.baseGroup);
+  hideElement(reference.frontGroup);
   hideEndpoint(reference.startBaseEndpoint);
   hideEndpoint(reference.startFrontEndpoint);
   hideEndpoint(reference.endBaseEndpoint);
@@ -1641,8 +1707,38 @@ function hideWeaveReference(reference) {
 }
 
 function showWeaveReference(reference) {
-  reference.baseGroup.removeAttribute("display");
-  reference.frontGroup.removeAttribute("display");
+  showElement(reference.baseGroup);
+  showElement(reference.frontGroup);
+}
+
+function hideInactiveWeaveEndpoints(reference, endpointIndex) {
+  if (endpointIndex !== 0) {
+    hideEndpoint(reference.startBaseEndpoint);
+    hideEndpoint(reference.startFrontEndpoint);
+  }
+
+  if (endpointIndex !== 1) {
+    hideEndpoint(reference.endBaseEndpoint);
+    hideEndpoint(reference.endFrontEndpoint);
+  }
+}
+
+function orderWeaveReferences(mark, references) {
+  if (
+    references.length === mark.weaveOrder.length &&
+    references.every(
+      (reference, index) => reference === mark.weaveOrder[index],
+    )
+  ) {
+    return;
+  }
+
+  for (const reference of references) {
+    mark.baseWeaveDepth.append(reference.baseGroup);
+    mark.frontWeaveDepth.append(reference.frontGroup);
+  }
+
+  mark.weaveOrder = references;
 }
 
 function moveEndpointToWeave(
@@ -1749,12 +1845,6 @@ function updateMark(mark, phase, introProgress, introBloom) {
     ),
   }));
 
-  for (const references of mark.weaveReferences) {
-    for (const reference of references) {
-      hideWeaveReference(reference);
-    }
-  }
-
   projections.forEach((projection, beamIndex) => {
     const {
       baseData,
@@ -1765,12 +1855,12 @@ function updateMark(mark, phase, introProgress, introBloom) {
     const beamWeaveData = weaveData[beamIndex];
 
     updateLayeredPaths(
-      reference.basePaths,
+      reference.baseGeometry,
       baseData,
       beamWeaveData.baseSolidData,
     );
     updateLayeredPaths(
-      reference.frontPaths,
+      reference.frontGeometry,
       frontData,
       beamWeaveData.frontSolidData,
     );
@@ -1798,6 +1888,7 @@ function updateMark(mark, phase, introProgress, introBloom) {
   });
 
   const overlayReferencesUsed = sampledBeams.map(() => 0);
+  const weaveOrder = [];
   const overlays = weavePlan.beams
     .flatMap((beamPlan, beamIndex) =>
       beamPlan.overlays.map((overlay) => ({
@@ -1822,16 +1913,19 @@ function updateMark(mark, phase, introProgress, introBloom) {
     );
     overlayReferencesUsed[overlay.beamIndex] += 1;
     showWeaveReference(weaveReference);
+    hideInactiveWeaveEndpoints(
+      weaveReference,
+      overlay.endpointIndex,
+    );
     updatePaths(
-      weaveReference.basePaths,
+      weaveReference.baseGeometry,
       pathDataFor(overlay.segments),
     );
     updatePaths(
-      weaveReference.frontPaths,
+      weaveReference.frontGeometry,
       pathDataFor(overlay.frontSegments),
     );
-    mark.baseWeaveDepth.append(weaveReference.baseGroup);
-    mark.frontWeaveDepth.append(weaveReference.frontGroup);
+    weaveOrder.push(weaveReference);
 
     if (overlay.endpointIndex === undefined) {
       continue;
@@ -1850,6 +1944,17 @@ function updateMark(mark, phase, introProgress, introBloom) {
       outerAngle,
     );
   }
+
+  mark.weaveReferences.forEach((references, beamIndex) => {
+    for (
+      let index = overlayReferencesUsed[beamIndex];
+      index < references.length;
+      index += 1
+    ) {
+      hideWeaveReference(references[index]);
+    }
+  });
+  orderWeaveReferences(mark, weaveOrder);
 }
 
 function renderPhase(
