@@ -6,9 +6,23 @@ const FEATURE_DISABLED_VALUE = "off";
 const EYE_COLOR_QUERY_PARAMETER = "eye-color";
 const EYE_COOLDOWN_QUERY_PARAMETER = "eye-cooldown";
 const FPS_QUERY_PARAMETER = "fps";
+const RENDERER_QUERY_PARAMETER = "renderer";
+const SVG_RENDERER_VALUE = "svg";
+const WEBGL_RENDERER_VALUE = "webgl";
+const WEBGL_API_NAME = "StrangeLasersWebGL";
+const WEBGL_STATUS = Object.freeze({
+  active: "active",
+  contextLost: "context-lost",
+  fallback: "fallback",
+  ready: "ready",
+  renderFailed: "render-failed",
+  unavailable: "unavailable",
+});
 const MOTION_SAMPLE_SELECTOR = "[data-motion-variant]";
 const VISUAL_SELECTOR = ".sample-visual";
 const MOTION_RENDERED_CLASS = "motion-rendered";
+const WEBGL_RENDERED_CLASS = "webgl-rendered";
+const WEBGL_CANVAS_CLASS = "projected-webgl";
 const STATIC_FALLBACK_ATTRIBUTE = "data-static-fallback";
 const EYE_TRACKING_ACTIVE_CLASS = "eye-tracking-active";
 const FPS_COUNTER_CLASS = "fps-counter";
@@ -63,6 +77,8 @@ const DEPTH_ORDER_EPSILON = 0.01;
 const INTERSECTION_EPSILON = 0.0001;
 const INTERSECTION_MERGE_DISTANCE = 1;
 const EYE_GLOW_RADIUS = 66;
+const EYE_GLOW_OPACITY = 0.18;
+const EYE_GLOW_STROKE_WIDTH = 14;
 const EYE_LENS_RADIUS = 47;
 const EYE_LENS_STROKE_WIDTH = 6;
 const EYE_DOT_RADIUS = 12;
@@ -77,6 +93,11 @@ const EYE_TRACKING_SETTLE_DISTANCE = 0.01;
 const EYE_TRACKING_COOLDOWN_MS = 1400;
 const EYE_CENTER_OFFSET = Object.freeze({ x: 0, y: 0 });
 const EYE_OCCLUSION_RADIUS = 72;
+const EYE_LENS_COLORS = Object.freeze([
+  "#13263d",
+  "#07111e",
+  "#02060c",
+]);
 
 const motionQuery = new URLSearchParams(window.location.search);
 const FEATURE_SWITCHES = Object.freeze({
@@ -88,6 +109,9 @@ const FEATURE_SWITCHES = Object.freeze({
     FEATURE_DISABLED_VALUE,
   fps: motionQuery.has(FPS_QUERY_PARAMETER),
 });
+const rendererPreference = motionQuery.get(
+  RENDERER_QUERY_PARAMETER,
+);
 
 const FILTER_CONFIG = Object.freeze({
   tight: Object.freeze({
@@ -192,6 +216,20 @@ const BEAM_LAYERS = Object.freeze([
 const SOLID_BEAM_LAYERS = Object.freeze(
   BEAM_LAYERS.filter((layer) => !layer.filter),
 );
+const ENDPOINT_LAYERS = Object.freeze([
+  Object.freeze({
+    color: "side",
+    radius: CAP_SHELL_RADIUS,
+  }),
+  Object.freeze({
+    color: "body",
+    radius: CAP_BODY_RADIUS,
+  }),
+  Object.freeze({
+    color: "core",
+    radius: CAP_FACE_RADIUS,
+  }),
+]);
 
 const BEAMS = Object.freeze([
   Object.freeze({
@@ -330,17 +368,17 @@ function createDefinitions(prefix) {
   lensGradient.append(
     createSvgElement("stop", {
       offset: "0%",
-      "stop-color": "#13263d",
+      "stop-color": EYE_LENS_COLORS[0],
       "stop-opacity": 0.8,
     }),
     createSvgElement("stop", {
       offset: "62%",
-      "stop-color": "#07111e",
+      "stop-color": EYE_LENS_COLORS[1],
       "stop-opacity": 0.87,
     }),
     createSvgElement("stop", {
       offset: "100%",
-      "stop-color": "#02060c",
+      "stop-color": EYE_LENS_COLORS[2],
       "stop-opacity": 0.94,
     }),
   );
@@ -525,10 +563,10 @@ function createEye(filterIds, lensGradientId) {
       cy: VIEWBOX_CENTER,
       fill: "none",
       filter: `url(#${filterIds.wide})`,
-      opacity: 0.18,
+      opacity: EYE_GLOW_OPACITY,
       r: EYE_GLOW_RADIUS,
       stroke: BRAND_COLORS.purple.body,
-      "stroke-width": 14,
+      "stroke-width": EYE_GLOW_STROKE_WIDTH,
     }),
     createSvgElement("circle", {
       cx: VIEWBOX_CENTER,
@@ -639,6 +677,69 @@ function createWeaveReference(
     startBaseEndpoint,
     startFrontEndpoint,
   };
+}
+
+function deactivateWebglSample(
+  sample,
+  status = WEBGL_STATUS.fallback,
+) {
+  sample.classList.remove(WEBGL_RENDERED_CLASS);
+  sample.dataset.motionRenderer = SVG_RENDERER_VALUE;
+  sample.dataset.webglStatus = status;
+}
+
+function webglRendererConfig(sample) {
+  return {
+    beams: BEAMS.map((beam) => ({
+      endCap: beam.endCap,
+      startCap: beam.startCap,
+    })),
+    colors: BRAND_COLORS,
+    endpoint: {
+      glowRadius: CAP_GLOW_RADIUS,
+      layers: ENDPOINT_LAYERS,
+    },
+    eye: {
+      glowBlur: FILTER_CONFIG.wide.blur,
+      glowOpacity: EYE_GLOW_OPACITY,
+      glowRadius: EYE_GLOW_RADIUS,
+      glowStrokeWidth: EYE_GLOW_STROKE_WIDTH,
+      lensColors: EYE_LENS_COLORS,
+      lensRadius: EYE_LENS_RADIUS,
+      lensStrokeWidth: EYE_LENS_STROKE_WIDTH,
+      occlusionRadius: EYE_OCCLUSION_RADIUS,
+    },
+    filters: FILTER_CONFIG,
+    layers: BEAM_LAYERS,
+    onContextLost: () => {
+      deactivateWebglSample(
+        sample,
+        WEBGL_STATUS.contextLost,
+      );
+    },
+    onRenderError: (error) => {
+      deactivateWebglSample(
+        sample,
+        WEBGL_STATUS.renderFailed,
+      );
+      console.warn("WebGL renderer failed", error);
+    },
+    viewboxSize: VIEWBOX_SIZE,
+  };
+}
+
+function createWebglRenderer(canvas, sample) {
+  if (rendererPreference === SVG_RENDERER_VALUE) {
+    return undefined;
+  }
+
+  const api = window[WEBGL_API_NAME];
+
+  if (!api) {
+    return undefined;
+  }
+
+  return api.create(canvas, webglRendererConfig(sample));
 }
 
 function createProjectedMark(sample, index) {
@@ -756,7 +857,20 @@ function createProjectedMark(sample, index) {
     frontWeaveDepth,
     eyeDot,
   );
-  sample.querySelector(VISUAL_SELECTOR).append(svg);
+  const canvas = document.createElement("canvas");
+  canvas.className = WEBGL_CANVAS_CLASS;
+  canvas.setAttribute("aria-hidden", "true");
+  const visual = sample.querySelector(VISUAL_SELECTOR);
+  visual.append(canvas, svg);
+  const webglRenderer = createWebglRenderer(canvas, sample);
+
+  if (webglRenderer) {
+    sample.dataset.motionRenderer = SVG_RENDERER_VALUE;
+    sample.dataset.webglStatus = WEBGL_STATUS.ready;
+  } else {
+    canvas.remove();
+    deactivateWebglSample(sample, WEBGL_STATUS.unavailable);
+  }
 
   return {
     baseWeaveDepth,
@@ -772,6 +886,8 @@ function createProjectedMark(sample, index) {
     svg,
     targetEyeOffset: EYE_CENTER_OFFSET,
     variant,
+    webglActive: false,
+    webglRenderer,
     weaveOrder: [],
     weaveReferences,
   };
@@ -1807,6 +1923,81 @@ function updateIntroBloom(mark, bloom) {
   }
 }
 
+function setWebglActive(mark, active) {
+  const previousStatus = mark.sample.dataset.webglStatus;
+
+  if (mark.webglActive === active) {
+    return;
+  }
+
+  mark.webglActive = active;
+  mark.sample.classList.toggle(WEBGL_RENDERED_CLASS, active);
+  mark.sample.dataset.motionRenderer = active
+    ? WEBGL_RENDERER_VALUE
+    : SVG_RENDERER_VALUE;
+
+  if (active) {
+    mark.sample.dataset.webglStatus = WEBGL_STATUS.active;
+  } else if (
+    mark.webglRenderer &&
+    previousStatus === WEBGL_STATUS.active
+  ) {
+    mark.sample.dataset.webglStatus = WEBGL_STATUS.ready;
+  }
+}
+
+function webglRequested(mark, introProgress) {
+  if (!mark.webglRenderer) {
+    return false;
+  }
+
+  return (
+    rendererPreference === WEBGL_RENDERER_VALUE ||
+    introProgress >= 1
+  );
+}
+
+function renderWebglMark(
+  mark,
+  projections,
+  weavePlan,
+  overlays,
+  outerAngle,
+  introBloom,
+) {
+  const rendered = mark.webglRenderer.render({
+    beams: projections.map((projection, beamIndex) => ({
+      baseSolidSegments:
+        weavePlan.beams[beamIndex].baseSegments,
+      frontGlowSegments: projection.frontSegments,
+      frontSolidSegments:
+        weavePlan.beams[beamIndex].frontBaseSegments,
+      projectedPoints: projection.projectedPoints,
+    })),
+    bloom: introBloom,
+    outerAngle,
+    overlays,
+  });
+
+  if (rendered) {
+    setWebglActive(mark, true);
+    return true;
+  }
+
+  const failureStatus = [
+    WEBGL_STATUS.contextLost,
+    WEBGL_STATUS.renderFailed,
+  ].includes(mark.sample.dataset.webglStatus)
+    ? mark.sample.dataset.webglStatus
+    : WEBGL_STATUS.fallback;
+  const renderer = mark.webglRenderer;
+  setWebglActive(mark, false);
+  mark.webglRenderer = undefined;
+  renderer.destroy();
+  deactivateWebglSample(mark.sample, failureStatus);
+  return false;
+}
+
 function updateMark(mark, phase, introProgress, introBloom) {
   updateIntroBloom(mark, introBloom);
   const baseInnerAngle =
@@ -1830,12 +2021,9 @@ function updateMark(mark, phase, introProgress, introBloom) {
           projectPoint(point, innerAngle, outerAngle),
       );
       const segments = splitByDepth(projectedPoints);
-      const baseData = pathDataFor([projectedPoints]);
-      const frontData = pathDataFor(segments.front);
 
       return {
-        baseData,
-        frontData,
+        frontSegments: segments.front,
         projectedPoints,
         reference,
       };
@@ -1845,31 +2033,53 @@ function updateMark(mark, phase, introProgress, introBloom) {
     projections[0].projectedPoints,
     projections[1].projectedPoints,
   );
-  const weaveData = weavePlan.beams.map((beamPlan) => ({
-    baseSolidData: pathDataFor(beamPlan.baseSegments),
-    frontSolidData: pathDataFor(
-      beamPlan.frontBaseSegments,
-    ),
-  }));
+  const overlays = weavePlan.beams
+    .flatMap((beamPlan, beamIndex) =>
+      beamPlan.overlays.map((overlay) => ({
+        ...overlay,
+        beamIndex,
+      })),
+    )
+    .sort(
+      (first, second) =>
+        first.foregroundDepth - second.foregroundDepth ||
+        first.beamIndex - second.beamIndex ||
+        first.order - second.order,
+    );
+
+  if (
+    webglRequested(mark, introProgress) &&
+    renderWebglMark(
+      mark,
+      projections,
+      weavePlan,
+      overlays,
+      outerAngle,
+      introBloom,
+    )
+  ) {
+    return;
+  }
+
+  setWebglActive(mark, false);
 
   projections.forEach((projection, beamIndex) => {
     const {
-      baseData,
-      frontData,
+      frontSegments,
       projectedPoints,
       reference,
     } = projection;
-    const beamWeaveData = weaveData[beamIndex];
+    const beamWeavePlan = weavePlan.beams[beamIndex];
 
     updateLayeredPaths(
       reference.baseGeometry,
-      baseData,
-      beamWeaveData.baseSolidData,
+      pathDataFor([projectedPoints]),
+      pathDataFor(beamWeavePlan.baseSegments),
     );
     updateLayeredPaths(
       reference.frontGeometry,
-      frontData,
-      beamWeaveData.frontSolidData,
+      pathDataFor(frontSegments),
+      pathDataFor(beamWeavePlan.frontBaseSegments),
     );
 
     positionEndpoint(
@@ -1896,19 +2106,6 @@ function updateMark(mark, phase, introProgress, introBloom) {
 
   const overlayReferencesUsed = sampledBeams.map(() => 0);
   const weaveOrder = [];
-  const overlays = weavePlan.beams
-    .flatMap((beamPlan, beamIndex) =>
-      beamPlan.overlays.map((overlay) => ({
-        ...overlay,
-        beamIndex,
-      })),
-    )
-    .sort(
-      (first, second) =>
-        first.foregroundDepth - second.foregroundDepth ||
-        first.beamIndex - second.beamIndex ||
-        first.order - second.order,
-    );
 
   for (const overlay of overlays) {
     const referenceIndex =

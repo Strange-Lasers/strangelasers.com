@@ -151,6 +151,19 @@ body {
   place-items: center;
 }
 
+.home-mark .projected-webgl,
+.home-mark .projected-mark {
+  grid-area: 1 / 1;
+}
+
+.home-mark .projected-webgl {
+  display: block;
+  visibility: hidden;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
 .home-mark .sample-visual {
   opacity: 0;
 }
@@ -174,6 +187,17 @@ body {
   width: 100%;
   height: 100%;
   overflow: visible;
+}
+
+.home-mark.webgl-rendered .projected-webgl {
+  visibility: visible;
+  opacity: 1;
+}
+
+.home-mark.webgl-rendered .projected-depth,
+.home-mark.webgl-rendered .projected-eye,
+.home-mark.webgl-rendered .projected-weave-depth {
+  display: none;
 }
 
 .home-mark.motion-rendered .sample-visual {
