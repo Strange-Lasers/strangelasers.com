@@ -517,8 +517,8 @@
     values.push(
       point.x,
       point.y,
-      normal.x * side,
-      normal.y * side,
+      normal.x * side * point.scale,
+      normal.y * side * point.scale,
     );
   }
 

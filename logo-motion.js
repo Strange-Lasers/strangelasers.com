@@ -1,5 +1,4 @@
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
-const PATH_COORDINATE_CACHE = Symbol("path-coordinate-cache");
 const HIDDEN_DISPLAY_VALUE = "none";
 const FORCE_ANIMATION_CLASS = "force-animation";
 const FEATURE_DISABLED_VALUE = "off";
@@ -73,6 +72,10 @@ const PURPLE_BEAM_INDEX = 1;
 const WEAVE_OVERLAY_RADIUS = BEAM_SHELL_WIDTH * 1.3;
 const WEAVE_ENDPOINT_OVERLAY_RADIUS = WEAVE_OVERLAY_RADIUS;
 const WEAVE_JOIN_OVERLAP = 2;
+const MAX_MITER_SCALE = 1.1;
+const MIN_MITER_DOT = 0.25;
+const ROUND_JOIN_DOT_THRESHOLD = 0.8;
+const ROUND_JOIN_SEGMENTS = 12;
 const DEPTH_ORDER_EPSILON = 0.01;
 const INTERSECTION_EPSILON = 0.0001;
 const INTERSECTION_MERGE_DISTANCE = 1;
@@ -458,57 +461,32 @@ function createEndpointGlowGradient(
   definitions.append(gradient);
 }
 
-function createPathGeometry(definitions, id) {
-  const path = createSvgElement("path", {
-    d: "",
-    id,
-  });
-  definitions.append(path);
-  return path;
-}
-
 function createBeamLayers(
   parent,
-  definitions,
-  prefix,
   beam,
   filterIds,
   layers = BEAM_LAYERS,
 ) {
-  const hasFilteredLayers = layers.some(
-    (layer) => layer.filter,
-  );
-  const fullPath = hasFilteredLayers
-    ? createPathGeometry(definitions, `${prefix}-full`)
-    : undefined;
-  const solidPath = createPathGeometry(
-    definitions,
-    `${prefix}-solid`,
-  );
+  const geometry = [];
 
   for (const layer of layers) {
     const attributes = {
       class: layer.className,
-      fill: "none",
-      href: `#${layer.filter ? fullPath.id : solidPath.id}`,
+      d: "",
+      fill: beam[layer.color],
       opacity: layer.opacity,
-      stroke: beam[layer.color],
-      "stroke-linecap": "butt",
-      "stroke-linejoin": "round",
-      "stroke-width": layer.width,
     };
 
     if (layer.filter) {
       attributes.filter = `url(#${filterIds[layer.filter]})`;
     }
 
-    parent.append(createSvgElement("use", attributes));
+    const path = createSvgElement("path", attributes);
+    parent.append(path);
+    geometry.push({ layer, path });
   }
 
-  return {
-    fullPath,
-    solidPath,
-  };
+  return geometry;
 }
 
 function createCapShape(kind, radius, attributes) {
@@ -605,8 +583,6 @@ function createEyeDot(filterIds) {
 
 function createWeaveReference(
   beam,
-  definitions,
-  prefix,
   filterIds,
   endpointGlowId,
 ) {
@@ -620,16 +596,12 @@ function createWeaveReference(
   });
   const baseGeometry = createBeamLayers(
     baseGroup,
-    definitions,
-    `${prefix}-base`,
     beam,
     filterIds,
     SOLID_BEAM_LAYERS,
   );
   const frontGeometry = createBeamLayers(
     frontGroup,
-    definitions,
-    `${prefix}-front`,
     beam,
     filterIds,
     SOLID_BEAM_LAYERS,
@@ -792,15 +764,11 @@ function createProjectedMark(sample, index) {
 
     const baseGeometry = createBeamLayers(
       baseBeam,
-      definitions,
-      `${prefix}-${beam.id}-base`,
       beam,
       filterIds,
     );
     const frontGeometry = createBeamLayers(
       frontBeam,
-      definitions,
-      `${prefix}-${beam.id}-front`,
       beam,
       filterIds,
     );
@@ -876,12 +844,10 @@ function createProjectedMark(sample, index) {
     baseWeaveDepth,
     beamReferences,
     currentEyeOffset: EYE_CENTER_OFFSET,
-    definitions,
     endpointGlowIds,
     eyeDot,
     filterIds,
     frontWeaveDepth,
-    prefix,
     sample,
     svg,
     targetEyeOffset: EYE_CENTER_OFFSET,
@@ -1070,8 +1036,6 @@ function weaveReferenceFor(mark, beamIndex, referenceIndex) {
     const beam = mark.beamReferences[beamIndex].beam;
     const reference = createWeaveReference(
       beam,
-      mark.definitions,
-      `${mark.prefix}-${beam.id}-weave-${references.length}`,
       mark.filterIds,
       mark.endpointGlowIds[beam.id],
     );
@@ -1650,7 +1614,8 @@ function createWeavePlan(firstPoints, secondPoints) {
           beamIndex,
           pathLengthsByBeam[beamIndex],
         ),
-        radius: WEAVE_OVERLAY_RADIUS,
+        radius:
+          WEAVE_OVERLAY_RADIUS * foregroundPoint.scale,
       });
     }
 
@@ -1675,7 +1640,7 @@ function createWeavePlan(firstPoints, secondPoints) {
         opposingPathLengths,
       );
       const overlapDistance =
-        BEAM_SHELL_WIDTH / 2 +
+        (BEAM_SHELL_WIDTH / 2) * nearest.point.scale +
         CAP_SHELL_RADIUS * endpoint.scale;
 
       if (nearest.distance > overlapDistance) {
@@ -1695,6 +1660,9 @@ function createWeavePlan(firstPoints, secondPoints) {
         endpointIndex === 0
           ? 0
           : totalLengths[beamIndex];
+      const overlayRadius =
+        WEAVE_ENDPOINT_OVERLAY_RADIUS *
+        Math.max(endpoint.scale, nearest.point.scale);
 
       contactsByBeam[beamIndex].push({
         endpointIndex: endpointIsInFront
@@ -1704,7 +1672,7 @@ function createWeavePlan(firstPoints, secondPoints) {
         frontBeamIndex,
         order: contactOrder,
         pathDistance: endpointPathDistance,
-        radius: WEAVE_ENDPOINT_OVERLAY_RADIUS,
+        radius: overlayRadius,
       });
       contactsByBeam[opposingBeamIndex].push({
         endpointIndex: endpointIsInFront
@@ -1714,7 +1682,7 @@ function createWeavePlan(firstPoints, secondPoints) {
         frontBeamIndex,
         order: contactOrder,
         pathDistance: nearest.pathDistance,
-        radius: WEAVE_ENDPOINT_OVERLAY_RADIUS,
+        radius: overlayRadius,
       });
 
       contactOrder += 1;
@@ -1739,27 +1707,195 @@ function formatCoordinate(value) {
   return Number(value.toFixed(PATH_PRECISION));
 }
 
-function pathCoordinateFor(point) {
-  if (point[PATH_COORDINATE_CACHE] === undefined) {
-    point[PATH_COORDINATE_CACHE] =
-      `${formatCoordinate(point.x)} ${formatCoordinate(point.y)}`;
+function normalizeVector(x, y) {
+  const length = Math.hypot(x, y);
+
+  if (length === 0) {
+    return { x: 0, y: 1 };
   }
 
-  return point[PATH_COORDINATE_CACHE];
+  return {
+    x: x / length,
+    y: y / length,
+  };
 }
 
-function pathDataFor(segments) {
+function segmentNormal(first, second) {
+  const direction = normalizeVector(
+    second.x - first.x,
+    second.y - first.y,
+  );
+  return {
+    x: -direction.y,
+    y: direction.x,
+  };
+}
+
+function pointNormals(points) {
+  const segmentNormals = [];
+
+  for (let index = 0; index < points.length - 1; index += 1) {
+    segmentNormals.push(
+      segmentNormal(points[index], points[index + 1]),
+    );
+  }
+
+  return points.map((point, index) => {
+    if (index === 0) {
+      return segmentNormals[0];
+    }
+
+    if (index === points.length - 1) {
+      return segmentNormals.at(-1);
+    }
+
+    const previous = segmentNormals[index - 1];
+    const next = segmentNormals[index];
+    const normalDot = previous.x * next.x + previous.y * next.y;
+
+    if (normalDot <= ROUND_JOIN_DOT_THRESHOLD) {
+      return next;
+    }
+
+    const miter = normalizeVector(
+      previous.x + next.x,
+      previous.y + next.y,
+    );
+    const dot = miter.x * next.x + miter.y * next.y;
+    const scale = Math.min(
+      MAX_MITER_SCALE,
+      1 / Math.max(dot, MIN_MITER_DOT),
+    );
+    return {
+      x: miter.x * scale,
+      y: miter.y * scale,
+    };
+  });
+}
+
+function splitAtSharpTurns(points) {
+  const segments = [];
+  const roundJoins = [];
+  let segment = [points[0]];
+
+  for (let index = 1; index < points.length - 1; index += 1) {
+    const point = points[index];
+    segment.push(point);
+    const previous = normalizeVector(
+      point.x - points[index - 1].x,
+      point.y - points[index - 1].y,
+    );
+    const next = normalizeVector(
+      points[index + 1].x - point.x,
+      points[index + 1].y - point.y,
+    );
+    const directionDot =
+      previous.x * next.x + previous.y * next.y;
+
+    if (directionDot <= ROUND_JOIN_DOT_THRESHOLD) {
+      segments.push(segment);
+      roundJoins.push(point);
+      segment = [point];
+    }
+  }
+
+  segment.push(points.at(-1));
+  segments.push(segment);
+  return { roundJoins, segments };
+}
+
+function offsetPathCoordinate(point, normal, distance) {
+  const scaledDistance = distance * point.scale;
+  return [
+    formatCoordinate(point.x + normal.x * scaledDistance),
+    formatCoordinate(point.y + normal.y * scaledDistance),
+  ].join(" ");
+}
+
+function strokeTriangleData(points, width) {
+  const normals = pointNormals(points);
+  const halfWidth = width * 0.5;
   let data = "";
 
-  for (const segment of segments) {
-    if (segment.length <= 1) {
+  for (let index = 0; index < points.length - 1; index += 1) {
+    const first = points[index];
+    const second = points[index + 1];
+    const firstNormal = normals[index];
+    const secondNormal = normals[index + 1];
+    const firstOuter = offsetPathCoordinate(
+      first,
+      firstNormal,
+      halfWidth,
+    );
+    const firstInner = offsetPathCoordinate(
+      first,
+      firstNormal,
+      -halfWidth,
+    );
+    const secondOuter = offsetPathCoordinate(
+      second,
+      secondNormal,
+      halfWidth,
+    );
+    const secondInner = offsetPathCoordinate(
+      second,
+      secondNormal,
+      -halfWidth,
+    );
+    data +=
+      `M${firstOuter}L${firstInner}L${secondOuter}Z` +
+      `M${firstInner}L${secondInner}L${secondOuter}Z`;
+  }
+
+  return data;
+}
+
+function roundJoinData(point, width) {
+  const radius = width * 0.5;
+  const center = [
+    formatCoordinate(point.x),
+    formatCoordinate(point.y),
+  ].join(" ");
+  let data = "";
+
+  for (let index = 0; index < ROUND_JOIN_SEGMENTS; index += 1) {
+    const firstAngle = TAU * index / ROUND_JOIN_SEGMENTS;
+    const secondAngle =
+      TAU * (index + 1) / ROUND_JOIN_SEGMENTS;
+    const firstCoordinate = offsetPathCoordinate(
+      point,
+      { x: Math.cos(firstAngle), y: Math.sin(firstAngle) },
+      radius,
+    );
+    const secondCoordinate = offsetPathCoordinate(
+      point,
+      { x: Math.cos(secondAngle), y: Math.sin(secondAngle) },
+      radius,
+    );
+    data +=
+      `M${center}L${firstCoordinate}` +
+      `L${secondCoordinate}Z`;
+  }
+
+  return data;
+}
+
+function strokeAreaDataFor(segments, width) {
+  let data = "";
+
+  for (const points of segments) {
+    if (points.length < 2) {
       continue;
     }
 
-    data += `M${pathCoordinateFor(segment[0])}`;
+    const split = splitAtSharpTurns(points);
 
-    for (let index = 1; index < segment.length; index += 1) {
-      data += `L${pathCoordinateFor(segment[index])}`;
+    for (const splitPoints of split.segments) {
+      data += strokeTriangleData(splitPoints, width);
+    }
+
+    for (const point of split.roundJoins) {
+      data += roundJoinData(point, width);
     }
   }
 
@@ -1772,13 +1908,47 @@ function updatePath(path, data) {
   }
 }
 
-function updatePaths(geometry, data) {
-  updatePath(geometry.solidPath, data);
+function layerWidthForBloom(layer, bloom) {
+  if (!layer.bloom) {
+    return layer.width;
+  }
+
+  return (
+    layer.width +
+    (layer.bloom.width - layer.width) * bloom
+  );
 }
 
-function updateLayeredPaths(geometry, fullData, solidData) {
-  updatePath(geometry.fullPath, fullData);
-  updatePath(geometry.solidPath, solidData);
+function updatePaths(geometry, segments, bloom) {
+  for (const { layer, path } of geometry) {
+    updatePath(
+      path,
+      strokeAreaDataFor(
+        segments,
+        layerWidthForBloom(layer, bloom),
+      ),
+    );
+  }
+}
+
+function updateLayeredPaths(
+  geometry,
+  fullSegments,
+  solidSegments,
+  bloom,
+) {
+  for (const { layer, path } of geometry) {
+    const segments = layer.filter
+      ? fullSegments
+      : solidSegments;
+    updatePath(
+      path,
+      strokeAreaDataFor(
+        segments,
+        layerWidthForBloom(layer, bloom),
+      ),
+    );
+  }
 }
 
 function showElement(element) {
@@ -1909,16 +2079,9 @@ function updateIntroBloom(mark, bloom) {
     const opacity =
       layer.opacity +
       (layer.bloom.opacity - layer.opacity) * bloom;
-    const width =
-      layer.width +
-      (layer.bloom.width - layer.width) * bloom;
     mark.svg.style.setProperty(
       `--beam-${layer.bloom.name}-opacity`,
       formatCoordinate(opacity),
-    );
-    mark.svg.style.setProperty(
-      `--beam-${layer.bloom.name}-width`,
-      `${formatCoordinate(width)}px`,
     );
   }
 }
@@ -2073,13 +2236,15 @@ function updateMark(mark, phase, introProgress, introBloom) {
 
     updateLayeredPaths(
       reference.baseGeometry,
-      pathDataFor([projectedPoints]),
-      pathDataFor(beamWeavePlan.baseSegments),
+      [projectedPoints],
+      beamWeavePlan.baseSegments,
+      introBloom,
     );
     updateLayeredPaths(
       reference.frontGeometry,
-      pathDataFor(frontSegments),
-      pathDataFor(beamWeavePlan.frontBaseSegments),
+      frontSegments,
+      beamWeavePlan.frontBaseSegments,
+      introBloom,
     );
 
     positionEndpoint(
@@ -2123,11 +2288,13 @@ function updateMark(mark, phase, introProgress, introBloom) {
     );
     updatePaths(
       weaveReference.baseGeometry,
-      pathDataFor(overlay.segments),
+      overlay.segments,
+      introBloom,
     );
     updatePaths(
       weaveReference.frontGeometry,
-      pathDataFor(overlay.frontSegments),
+      overlay.frontSegments,
+      introBloom,
     );
     weaveOrder.push(weaveReference);
 
