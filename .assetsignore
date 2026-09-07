@@ -1,0 +1,12 @@
+.git
+.github
+.gitignore
+.assetsignore
+.wrangler
+**/.DS_Store
+**/node_modules
+CNAME
+LICENSE
+README.md
+THIRD_PARTY_NOTICES.md
+wrangler.staging.jsonc
