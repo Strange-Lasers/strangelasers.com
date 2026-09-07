@@ -19,11 +19,78 @@
     <link data-site-manifest href="manifest.webmanifest">
     <script src="site-init.js"></script>
     <link rel="stylesheet" href="palette.css">
-    <link rel="stylesheet" href="styles.css?v=eye-depth">
+    <link rel="stylesheet" href="styles.css?v=immediate-draggable-smoke">
   </head>
   <body class="home-body">
     <main class="home-page">
       <h1 id="site-title" class="sr-only">Strange Lasers</h1>
+
+      <canvas
+        class="edge-smoke"
+        data-edge-smoke
+        aria-hidden="true"
+      ></canvas>
+
+      <aside
+        class="smoke-tuner"
+        data-smoke-tuner
+        aria-label="Smoke tuning"
+        hidden
+      >
+        <header
+          class="smoke-tuner__header"
+          data-smoke-tuner-drag-handle
+        >
+          <div class="smoke-tuner__title">
+            <h2>Smoke tuning</h2>
+            <button
+              class="smoke-tuner__info-button"
+              type="button"
+              aria-label="Smoke tuning instructions"
+              aria-describedby="smoke-tuner-tooltip"
+            >
+              i
+            </button>
+            <span
+              id="smoke-tuner-tooltip"
+              class="smoke-tuner__tooltip"
+              role="tooltip"
+            >Drag this panel by its header and resize it from the lower-right corner. Defaults sit at each slider's center. Multipliers span 0.01x to 100.00x. Far smoke increases coverage farther from the edge. Type exact values in the boxes.</span>
+          </div>
+          <button
+            class="smoke-tuner__quiet-button"
+            type="button"
+            data-smoke-tuner-collapse
+            aria-controls="smoke-tuner-body"
+            aria-expanded="true"
+          >
+            Hide
+          </button>
+        </header>
+        <div
+          id="smoke-tuner-body"
+          class="smoke-tuner__body"
+          data-smoke-tuner-body
+        >
+          <div
+            class="smoke-tuner__controls"
+            data-smoke-tuner-controls
+          ></div>
+          <div class="smoke-tuner__actions">
+            <button type="button" data-smoke-tuner-reset>
+              Reset
+            </button>
+            <button type="button" data-smoke-tuner-copy>
+              Copy tuning link
+            </button>
+          </div>
+          <output
+            class="smoke-tuner__status"
+            data-smoke-tuner-status
+            aria-live="polite"
+          ></output>
+        </div>
+      </aside>
 
       <div
         class="home-mark"
@@ -100,5 +167,6 @@
     </main>
     <script src="logo-webgl.js?v=eye-depth"></script>
     <script src="logo-motion.js?v=eye-depth"></script>
+    <script src="edge-smoke.js?v=immediate-draggable-smoke"></script>
   </body>
 </html>
