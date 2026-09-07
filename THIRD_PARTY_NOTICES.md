@@ -1,5 +1,15 @@
 # Third-party notices
 
+## Prototype portraits
+
+The about page uses locally stored portrait placeholders from [Pravatar](https://pravatar.cc/), which labels its avatar service CC0. The profiles are fictional; the images do not identify company members. Replace these placeholders before presenting the profiles as real people.
+
+| File | Source |
+| --- | --- |
+| `about/portraits/mara.jpg` | [Pravatar image 47](https://i.pravatar.cc/800?img=47) |
+| `about/portraits/eli.jpg` | [Pravatar image 12](https://i.pravatar.cc/800?img=12) |
+| `about/portraits/inez.jpg` | [Pravatar image 49](https://i.pravatar.cc/800?img=49) |
+
 ## Primer Octicons
 
 The GitHub mark embedded in `index.html` is derived from Primer Octicons.
