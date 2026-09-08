@@ -75,7 +75,7 @@
       defaultValue: 2.8,
       display: "multiplier",
       key: "farSmoke",
-      label: "Inner density",
+      label: "Drifted density",
       maximum: MAX_TUNING_MULTIPLIER,
       minimum: MIN_TUNING_MULTIPLIER,
       parameter: "smokeFar",
@@ -195,7 +195,6 @@
     uniform float u_speed;
     uniform float u_tint;
 
-    flat out float v_cloud_radius;
     flat out float v_seed;
     out float v_alpha;
     out float v_phase;
@@ -291,7 +290,6 @@
 
       gl_Position = vec4(clip_position, 0.0, 1.0);
       gl_PointSize = point_size;
-      v_cloud_radius = point_size * 0.5;
       v_seed = seed;
       v_phase = phase;
       v_alpha =
@@ -306,7 +304,6 @@
   const SMOKE_FRAGMENT_SHADER = `#version 300 es
     precision highp float;
 
-    flat in float v_cloud_radius;
     flat in float v_seed;
     in float v_alpha;
     in float v_phase;
@@ -320,10 +317,17 @@
     uniform float u_puff_scale;
     uniform vec2 u_resolution;
     uniform float u_softness;
+    uniform float u_time;
 
     out vec4 output_color;
 
     const float DEFAULT_PARTICLE_COUNT = ${DEFAULT_SMOKE_PARTICLE_COUNT}.0;
+    const float DRIFT_DENSITY_END = 0.62;
+    const float DRIFT_DENSITY_START = 0.08;
+    const float HIGH_CROWDING_DENSITY_MAXIMUM = 1.7;
+    const float HIGH_CROWDING_DENSITY_MINIMUM = 0.16;
+    const float MAX_CROWDING_RATIO = 16.0;
+    const float PARTICLE_NORMALIZATION_EXPONENT = 0.65;
 
     float random_value(vec2 position) {
       vec3 value = fract(vec3(position.xyx) * 0.1031);
@@ -397,37 +401,73 @@
         mix(0.58, 1.05, fine_noise),
         smoothstep(0.72, 1.0, breakup)
       );
-      float edge_distance = min(
-        min(gl_FragCoord.x, u_resolution.x - gl_FragCoord.x),
-        min(gl_FragCoord.y, u_resolution.y - gl_FragCoord.y)
+      float particle_normalization = pow(
+        min(
+          1.0,
+          DEFAULT_PARTICLE_COUNT / max(u_particle_count, 1.0)
+        ),
+        PARTICLE_NORMALIZATION_EXPONENT
       );
-      float interior_progress = smoothstep(
-        0.04,
-        0.9,
-        edge_distance / max(v_cloud_radius, 1.0)
-      );
-      float edge_particle_scale = min(
-        1.0,
-        DEFAULT_PARTICLE_COUNT / max(u_particle_count, 1.0)
-      );
-      float edge_size_scale = min(
+      float size_normalization = min(
         1.0,
         inversesqrt(max(u_puff_scale, 1.0))
       );
-      float overlap_scale = mix(
-        edge_particle_scale * edge_size_scale,
-        1.0,
-        interior_progress
+      float overlap_scale = particle_normalization * size_normalization;
+      float drift_progress = smoothstep(
+        DRIFT_DENSITY_START,
+        DRIFT_DENSITY_END,
+        v_phase
       );
-      float spatial_density = mix(
+      float density = mix(
         u_edge_density,
         u_far_smoke,
-        interior_progress
+        drift_progress
       );
-      float alpha =
-        v_alpha * envelope * body * overlap_scale * spatial_density;
+      float crowding = clamp(
+        log(
+          max(u_particle_count / DEFAULT_PARTICLE_COUNT, 1.0)
+        ) / log(MAX_CROWDING_RATIO),
+        0.0,
+        1.0
+      );
+      float coherent_density = 1.0;
 
-      if (alpha < 0.0008) {
+      if (crowding > 0.0) {
+        float short_side = min(u_resolution.x, u_resolution.y);
+        vec2 screen_position = gl_FragCoord.xy / short_side;
+        vec2 field_drift = vec2(u_time * 0.006, -u_time * 0.004);
+        float macro_field = value_noise(
+          screen_position * 4.2 + field_drift
+        );
+        float detail_field = value_noise(
+          screen_position * 11.7 -
+            field_drift * 1.7 +
+            vec2(7.3, 11.9)
+        );
+        float coherent_field = smoothstep(
+          0.22,
+          0.8,
+          macro_field * 0.66 + detail_field * 0.34
+        );
+        coherent_density = mix(
+          1.0,
+          mix(
+            HIGH_CROWDING_DENSITY_MINIMUM,
+            HIGH_CROWDING_DENSITY_MAXIMUM,
+            coherent_field
+          ),
+          crowding
+        );
+      }
+      float alpha =
+        v_alpha *
+        envelope *
+        body *
+        overlap_scale *
+        density *
+        coherent_density;
+
+      if (alpha < 0.0008 * overlap_scale) {
         discard;
       }
 

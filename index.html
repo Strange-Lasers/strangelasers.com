@@ -55,7 +55,7 @@
               id="smoke-tuner-tooltip"
               class="smoke-tuner__tooltip"
               role="tooltip"
-            >Drag this panel by its header and resize it from the lower-right corner. Collapse either section to save space. Defaults sit at each slider's center. Multipliers span 0.01x to 100.00x. Edge density controls smoke at the border, inner density controls its strength farther in, and inward reach controls how far clouds can extend. Type exact values in the boxes.</span>
+            >Drag this panel by its header and resize it from the lower-right corner. Collapse either section to save space. Defaults sit at each slider's center. Multipliers span 0.01x to 100.00x. Edge density controls smoke at its source, drifted density controls it after it expands inward, and inward reach controls how far it can extend. Type exact values in the boxes.</span>
           </div>
           <button
             class="smoke-tuner__quiet-button"
@@ -212,6 +212,6 @@
     </main>
     <script src="logo-webgl.js?v=eye-depth"></script>
     <script src="logo-motion.js?v=visual-tuning-panel"></script>
-    <script src="edge-smoke.js?v=visual-tuning-adaptive-smoke"></script>
+    <script src="edge-smoke.js?v=borderless-smoke-shading"></script>
   </body>
 </html>
