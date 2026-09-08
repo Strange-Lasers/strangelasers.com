@@ -98,6 +98,10 @@
     <circle cx="256" cy="256" fill="none" filter="url(#projected-0-gimbal-wide-glow)" opacity="0.18" r="66" stroke="#5955df" stroke-width="14"/>
     <circle cx="256" cy="256" fill="url(#projected-0-gimbal-lens)" r="47" stroke="#f7fdff" stroke-width="6"/>
   </g>
+  <g class="projected-eye-dot">
+    <circle cx="256" cy="256" fill="#f7fdff" filter="url(#projected-0-gimbal-tight-glow)" opacity="0.14" r="19.799999999999997"/>
+    <circle cx="256" cy="256" fill="#f7fdff" r="12"/>
+  </g>
   <g class="projected-depth projected-depth--front" mask="url(#projected-0-gimbal-occlusion-mask)">
     <g class="projected-beam-group projected-beam-group--cyan">
       <use class="projected-beam projected-beam--wide-glow" fill="none" opacity="0.12" stroke="#11bfe9" stroke-linecap="butt" stroke-linejoin="round" stroke-width="88" filter="url(#projected-0-gimbal-wide-glow)" href="#motion-path-1"/>
@@ -153,9 +157,5 @@
       <use class="projected-beam projected-beam--highlight" fill="none" opacity="0.9" stroke="#a19af7" stroke-linecap="butt" stroke-linejoin="round" stroke-width="14" href="#motion-path-5"/>
       <use class="projected-beam projected-beam--core" fill="none" opacity="1" stroke="#f7fdff" stroke-linecap="butt" stroke-linejoin="round" stroke-width="3.5" href="#motion-path-5"/>
     </g>
-  </g>
-  <g class="projected-eye-dot">
-    <circle cx="256" cy="256" fill="#f7fdff" filter="url(#projected-0-gimbal-tight-glow)" opacity="0.14" r="19.799999999999997"/>
-    <circle cx="256" cy="256" fill="#f7fdff" r="12"/>
   </g>
 </svg>

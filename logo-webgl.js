@@ -25,6 +25,7 @@
   const ROUND_JOIN_SEGMENTS = 12;
   const TAU = Math.PI * 2;
   const OCCLUSION_OPAQUE_RATIO = 0.68;
+  const EYE_TRACKING_COLOR_MIX = 0.5;
   const SHAPE_MODE = Object.freeze({
     circle: 0,
     endpointGlow: 2,
@@ -32,6 +33,7 @@
     lens: 4,
     ring: 5,
     roundedRectangle: 1,
+    circleGlow: 6,
   });
 
   const STROKE_VERTEX_SHADER = `#version 300 es
@@ -314,6 +316,19 @@
           ? mix(0.2, 0.1, progress / 0.55)
           : mix(0.1, 0.0, (progress - 0.55) / 0.45);
         alpha *= coverage(progress - 1.0) * mask;
+        output_color = premultiplied(u_color.rgb, alpha);
+        return;
+      }
+
+      if (u_mode == ${SHAPE_MODE.circleGlow}) {
+        float source_distance = max(
+          length(v_local_position) - u_radius,
+          0.0
+        );
+        float normalized_distance = source_distance / u_blur;
+        float alpha = u_color.a * exp(
+          -0.5 * normalized_distance * normalized_distance
+        );
         output_color = premultiplied(u_color.rgb, alpha);
         return;
       }
@@ -633,6 +648,13 @@
     return [color[0], color[1], color[2], opacity];
   }
 
+  function mixColors(first, second, progress) {
+    return first.map(
+      (value, index) =>
+        value + (second[index] - value) * progress,
+    );
+  }
+
   class LaserRenderer {
     constructor(canvas, config, gl) {
       this.canvas = canvas;
@@ -667,23 +689,31 @@
     }
 
     createColors(config) {
+      const cyan = {
+        body: parseHexColor(config.colors.cyan.body),
+        highlight: parseHexColor(
+          config.colors.cyan.highlight,
+        ),
+        side: parseHexColor(config.colors.cyan.side),
+      };
+      const purple = {
+        body: parseHexColor(config.colors.purple.body),
+        highlight: parseHexColor(
+          config.colors.purple.highlight,
+        ),
+        side: parseHexColor(config.colors.purple.side),
+      };
+
       return {
         core: parseHexColor(config.colors.core),
-        cyan: {
-          body: parseHexColor(config.colors.cyan.body),
-          highlight: parseHexColor(
-            config.colors.cyan.highlight,
-          ),
-          side: parseHexColor(config.colors.cyan.side),
-        },
+        cyan,
+        eyeTracking: mixColors(
+          cyan.body,
+          purple.body,
+          EYE_TRACKING_COLOR_MIX,
+        ),
         lens: config.eye.lensColors.map(parseHexColor),
-        purple: {
-          body: parseHexColor(config.colors.purple.body),
-          highlight: parseHexColor(
-            config.colors.purple.highlight,
-          ),
-          side: parseHexColor(config.colors.purple.side),
-        },
+        purple,
       };
     }
 
@@ -1391,7 +1421,7 @@
       }
     }
 
-    drawEye() {
+    drawEye(eyeDot) {
       const center = {
         x: this.config.viewboxSize * 0.5,
         y: this.config.viewboxSize * 0.5,
@@ -1433,6 +1463,39 @@
         mode: SHAPE_MODE.ring,
         radius: eye.lensRadius,
         strokeWidth: eye.lensStrokeWidth,
+      });
+      const dotCenter = {
+        x: center.x + eyeDot.offset.x,
+        y: center.y + eyeDot.offset.y,
+      };
+      const dotColor = mixColors(
+        this.colors.core,
+        this.colors.eyeTracking,
+        eyeDot.colorProgress,
+      );
+      const dotGlowExtent =
+        eye.dotGlowRadius +
+        eye.dotGlowBlur * GAUSSIAN_VISIBLE_EXTENT;
+      this.drawShape({
+        blur: eye.dotGlowBlur,
+        center: dotCenter,
+        color: [...dotColor, eye.dotGlowOpacity],
+        halfSize: {
+          x: dotGlowExtent,
+          y: dotGlowExtent,
+        },
+        mode: SHAPE_MODE.circleGlow,
+        radius: eye.dotGlowRadius,
+      });
+      this.drawShape({
+        center: dotCenter,
+        color: [...dotColor, 1],
+        halfSize: {
+          x: eye.dotRadius,
+          y: eye.dotRadius,
+        },
+        mode: SHAPE_MODE.circle,
+        radius: eye.dotRadius,
       });
     }
 
@@ -1625,7 +1688,7 @@
           );
           this.drawOverlayEndpoint(scene, overlay, false);
         });
-        this.drawEye();
+        this.drawEye(scene.eyeDot);
 
         for (let beamIndex = 0; beamIndex < 2; beamIndex += 1) {
           this.drawBeamGlows(

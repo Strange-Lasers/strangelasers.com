@@ -85,6 +85,8 @@ const EYE_GLOW_STROKE_WIDTH = 14;
 const EYE_LENS_RADIUS = 47;
 const EYE_LENS_STROKE_WIDTH = 6;
 const EYE_DOT_RADIUS = 12;
+const EYE_DOT_GLOW_RADIUS_RATIO = 1.65;
+const EYE_DOT_GLOW_OPACITY = 0.14;
 const EYE_DOT_MAX_TRAVEL_RADIUS =
   EYE_LENS_RADIUS - EYE_DOT_RADIUS - EYE_LENS_STROKE_WIDTH;
 const EYE_TRACKING_TRAVEL_RATIO = 0.4;
@@ -93,7 +95,10 @@ const EYE_DOT_TRAVEL_RADIUS =
 const EYE_TRACKING_RESPONSE_RADIUS = VIEWBOX_CENTER;
 const EYE_TRACKING_SMOOTHING_MS = 80;
 const EYE_TRACKING_SETTLE_DISTANCE = 0.01;
+const EYE_TRACKING_COLOR_SETTLE_DISTANCE = 0.001;
 const EYE_TRACKING_COOLDOWN_MS = 1400;
+const EYE_TRACKING_PROGRESS_PROPERTY =
+  "--eye-tracking-progress";
 const EYE_CENTER_OFFSET = Object.freeze({ x: 0, y: 0 });
 const EYE_OCCLUSION_RADIUS = 72;
 const EYE_LENS_COLORS = Object.freeze([
@@ -568,8 +573,8 @@ function createEyeDot(filterIds) {
       cy: VIEWBOX_CENTER,
       fill: BRAND_COLORS.core,
       filter: `url(#${filterIds.tight})`,
-      opacity: 0.14,
-      r: EYE_DOT_RADIUS * 1.65,
+      opacity: EYE_DOT_GLOW_OPACITY,
+      r: EYE_DOT_RADIUS * EYE_DOT_GLOW_RADIUS_RATIO,
     }),
     createSvgElement("circle", {
       cx: VIEWBOX_CENTER,
@@ -672,6 +677,11 @@ function webglRendererConfig(sample) {
       layers: ENDPOINT_LAYERS,
     },
     eye: {
+      dotGlowBlur: FILTER_CONFIG.tight.blur,
+      dotGlowOpacity: EYE_DOT_GLOW_OPACITY,
+      dotGlowRadius:
+        EYE_DOT_RADIUS * EYE_DOT_GLOW_RADIUS_RATIO,
+      dotRadius: EYE_DOT_RADIUS,
       glowBlur: FILTER_CONFIG.wide.blur,
       glowOpacity: EYE_GLOW_OPACITY,
       glowRadius: EYE_GLOW_RADIUS,
@@ -821,9 +831,9 @@ function createProjectedMark(sample, index) {
     baseDepth,
     baseWeaveDepth,
     createEye(filterIds, lensGradientId),
+    eyeDot,
     frontDepth,
     frontWeaveDepth,
-    eyeDot,
   );
   const canvas = document.createElement("canvas");
   canvas.className = WEBGL_CANVAS_CLASS;
@@ -843,6 +853,7 @@ function createProjectedMark(sample, index) {
   return {
     baseWeaveDepth,
     beamReferences,
+    currentEyeColorProgress: 0,
     currentEyeOffset: EYE_CENTER_OFFSET,
     endpointGlowIds,
     eyeDot,
@@ -947,6 +958,24 @@ function positionEyeDot(mark) {
   );
 }
 
+function computedEyeTrackingProgress(mark) {
+  const progress = Number.parseFloat(
+    window
+      .getComputedStyle(mark.eyeDot)
+      .getPropertyValue(EYE_TRACKING_PROGRESS_PROPERTY),
+  );
+
+  if (Number.isFinite(progress)) {
+    return progress;
+  }
+
+  return mark.eyeDot.classList.contains(
+    EYE_TRACKING_ACTIVE_CLASS,
+  )
+    ? 1
+    : 0;
+}
+
 function easeEyeTracking(timestamp) {
   const elapsed = Math.max(
     timestamp - previousEyeTrackingTimestamp,
@@ -979,7 +1008,30 @@ function easeEyeTracking(timestamp) {
       unsettled = true;
     }
 
+    const targetColorProgress = mark.eyeDot.classList.contains(
+      EYE_TRACKING_ACTIVE_CLASS,
+    )
+      ? 1
+      : 0;
+    const colorProgress = computedEyeTrackingProgress(mark);
+    mark.currentEyeColorProgress = colorProgress;
+
+    if (
+      Math.abs(
+        targetColorProgress - colorProgress,
+      ) > EYE_TRACKING_COLOR_SETTLE_DISTANCE
+    ) {
+      unsettled = true;
+    }
+
     positionEyeDot(mark);
+  }
+
+  if (
+    animationFrameId === undefined &&
+    renderedMarks.some((mark) => mark.webglActive)
+  ) {
+    renderPhase(animationPhase);
   }
 
   if (unsettled) {
@@ -2138,6 +2190,10 @@ function renderWebglMark(
       projectedPoints: projection.projectedPoints,
     })),
     bloom: introBloom,
+    eyeDot: {
+      colorProgress: mark.currentEyeColorProgress,
+      offset: mark.currentEyeOffset,
+    },
     outerAngle,
     overlays,
   });

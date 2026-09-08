@@ -8,6 +8,12 @@
   text-rendering: optimizeLegibility;
 }
 
+@property --eye-tracking-progress {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -68,6 +74,8 @@ body {
 
 .projected-eye-dot {
   --eye-tracking-color-transition-duration: 240ms;
+  --eye-tracking-progress: 0;
+  transition: --eye-tracking-progress var(--eye-tracking-color-transition-duration) ease-out;
 }
 
 .projected-eye-dot circle {
@@ -76,6 +84,10 @@ body {
 
 .projected-eye-dot.eye-tracking-active circle {
   fill: var(--laser-eye-tracking);
+}
+
+.projected-eye-dot.eye-tracking-active {
+  --eye-tracking-progress: 1;
 }
 
 .home-body {
@@ -194,6 +206,10 @@ body {
 .home-mark.webgl-rendered .projected-eye,
 .home-mark.webgl-rendered .projected-weave-depth {
   display: none;
+}
+
+.home-mark.webgl-rendered .projected-eye-dot {
+  visibility: hidden;
 }
 
 .home-mark.motion-rendered .sample-visual {
