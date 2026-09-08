@@ -4,14 +4,18 @@
   const API_NAME = "StrangeLasersSmoke";
   const CANVAS_SELECTOR = "[data-edge-smoke]";
   const TUNER_SELECTOR = "[data-smoke-tuner]";
+  const TUNER_RESET_SELECTOR = "[data-visual-tuner-reset]";
+  const ROTATION_SPEED_NUMBER_SELECTOR = "[data-speed-number]";
   const VISIBLE_CLASS = "edge-smoke--visible";
   const FORCE_ANIMATION_CLASS = "force-animation";
   const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
   const SMOKE_QUERY_PARAMETER = "smoke";
   const TUNING_QUERY_PARAMETER = "tune";
+  const ROTATION_SPEED_QUERY_PARAMETER = "rotationSpeed";
   const FEATURE_DISABLED_VALUE = "off";
   const FEATURE_FORCED_VALUE = "on";
-  const FEATURE_TUNING_VALUE = "tuning";
+  const QUERY_FORCED_REASON = "query-forced";
+  const TUNER_DRAG_THRESHOLD_PX = 4;
   const TUNER_VIEWPORT_MARGIN_PX = 12;
   const TARGET_SMOKE_FRAME_RATE = 30;
   const SMOKE_FRAME_DURATION_MS = 1000 / TARGET_SMOKE_FRAME_RATE;
@@ -71,7 +75,7 @@
       defaultValue: 2.8,
       display: "multiplier",
       key: "farSmoke",
-      label: "Far smoke",
+      label: "Inner density",
       maximum: MAX_TUNING_MULTIPLIER,
       minimum: MIN_TUNING_MULTIPLIER,
       parameter: "smokeFar",
@@ -675,7 +679,6 @@
 
   function updateTuningUrl(settings, includeDefaults, reviewReady) {
     const url = new URL(window.location.href);
-    url.searchParams.set(SMOKE_QUERY_PARAMETER, FEATURE_FORCED_VALUE);
     url.searchParams.set(TUNING_QUERY_PARAMETER, FEATURE_FORCED_VALUE);
 
     if (reviewReady) {
@@ -696,6 +699,21 @@
         url.searchParams.set(
           control.parameter,
           tuningValueForQuery(control, value),
+        );
+      }
+    }
+
+    if (includeDefaults) {
+      const rotationSpeed = Number.parseFloat(
+        document.querySelector(
+          ROTATION_SPEED_NUMBER_SELECTOR,
+        )?.value,
+      );
+
+      if (Number.isFinite(rotationSpeed)) {
+        url.searchParams.set(
+          ROTATION_SPEED_QUERY_PARAMETER,
+          rotationSpeed.toFixed(2),
         );
       }
     }
@@ -735,14 +753,16 @@
         "[data-smoke-tuner-copy]",
       );
       this.resetButton = this.root.querySelector(
-        "[data-smoke-tuner-reset]",
+        TUNER_RESET_SELECTOR,
       );
       this.inputs = new Map();
       this.dragState = undefined;
+      this.suppressHeaderClick = false;
       this.expandedHeight = undefined;
       this.onDragStart = this.startDragging.bind(this);
       this.onDrag = this.drag.bind(this);
       this.onDragEnd = this.stopDragging.bind(this);
+      this.onHeaderClick = this.handleHeaderClick.bind(this);
       this.onViewportResize = () => this.constrainPosition();
       this.buildControls();
       this.collapseButton.addEventListener(
@@ -760,17 +780,22 @@
         "pointerdown",
         this.onDragStart,
       );
-      this.dragHandle.addEventListener(
+      window.addEventListener(
         "pointermove",
         this.onDrag,
       );
-      this.dragHandle.addEventListener(
+      window.addEventListener(
         "pointerup",
         this.onDragEnd,
       );
-      this.dragHandle.addEventListener(
+      window.addEventListener(
         "pointercancel",
         this.onDragEnd,
+      );
+      this.dragHandle.addEventListener(
+        "click",
+        this.onHeaderClick,
+        true,
       );
       window.addEventListener("resize", this.onViewportResize);
       this.root.hidden = false;
@@ -960,22 +985,19 @@
     }
 
     startDragging(event) {
-      if (
-        event.button !== 0 ||
-        event.target.closest("button, input, a")
-      ) {
+      if (event.button !== 0) {
         return;
       }
 
       const bounds = this.root.getBoundingClientRect();
       this.dragState = {
+        active: false,
+        initialX: event.clientX,
+        initialY: event.clientY,
         offsetX: event.clientX - bounds.left,
         offsetY: event.clientY - bounds.top,
         pointerId: event.pointerId,
       };
-      this.root.classList.add("smoke-tuner--dragging");
-      this.dragHandle.setPointerCapture(event.pointerId);
-      event.preventDefault();
     }
 
     drag(event) {
@@ -986,10 +1008,29 @@
         return;
       }
 
+      if (!this.dragState.active) {
+        const horizontalDistance =
+          event.clientX - this.dragState.initialX;
+        const verticalDistance =
+          event.clientY - this.dragState.initialY;
+
+        if (
+          Math.hypot(horizontalDistance, verticalDistance) <
+          TUNER_DRAG_THRESHOLD_PX
+        ) {
+          return;
+        }
+
+        this.dragState.active = true;
+        this.root.classList.add("smoke-tuner--dragging");
+        this.dragHandle.setPointerCapture(event.pointerId);
+      }
+
       this.constrainPosition(
         event.clientX - this.dragState.offsetX,
         event.clientY - this.dragState.offsetY,
       );
+      event.preventDefault();
     }
 
     stopDragging(event) {
@@ -1000,12 +1041,31 @@
         return;
       }
 
+      const dragged = this.dragState.active;
+
       if (this.dragHandle.hasPointerCapture(event.pointerId)) {
         this.dragHandle.releasePointerCapture(event.pointerId);
       }
 
       this.dragState = undefined;
       this.root.classList.remove("smoke-tuner--dragging");
+
+      if (dragged) {
+        this.suppressHeaderClick = true;
+        window.setTimeout(() => {
+          this.suppressHeaderClick = false;
+        });
+      }
+    }
+
+    handleHeaderClick(event) {
+      if (!this.suppressHeaderClick) {
+        return;
+      }
+
+      this.suppressHeaderClick = false;
+      event.preventDefault();
+      event.stopImmediatePropagation();
     }
 
     toggleCollapsed() {
@@ -1458,11 +1518,8 @@
         TUNING_QUERY_PARAMETER,
       );
       this.tuning = tuningFromParameters(this.parameters);
-      this.forced =
-        this.tuningEnabled ||
-        this.queryValue === FEATURE_FORCED_VALUE;
+      this.forced = this.queryValue === FEATURE_FORCED_VALUE;
       this.queryDisabled =
-        !this.tuningEnabled &&
         this.queryValue === FEATURE_DISABLED_VALUE;
       this.tuningPanel = undefined;
       this.renderer = undefined;
@@ -1516,12 +1573,6 @@
           FORCE_ANIMATION_CLASS,
         ) || !this.motionPreference.matches
       );
-    }
-
-    forcedReason() {
-      return this.tuningEnabled
-        ? "tuning-enabled"
-        : "query-forced";
     }
 
     ensureRenderer() {
@@ -1587,7 +1638,7 @@
       this.resetMeasurements();
       this.activate(
         performance.now(),
-        this.forced ? this.forcedReason() : reason,
+        this.forced ? QUERY_FORCED_REASON : reason,
       );
       this.requestFrame();
     }
@@ -1775,7 +1826,7 @@
       this.setGpuData(this.gpuStats);
 
       if (this.forced) {
-        this.beginSample(timestamp, this.forcedReason());
+        this.beginSample(timestamp, QUERY_FORCED_REASON);
         return;
       }
 
@@ -1893,14 +1944,13 @@
         gpu: publicDurationStats(this.gpuStats),
         mode: this.queryDisabled
           ? FEATURE_DISABLED_VALUE
-          : this.tuningEnabled
-            ? FEATURE_TUNING_VALUE
-            : this.forced
+          : this.forced
             ? FEATURE_FORCED_VALUE
             : "adaptive",
         reason: this.reason,
         renderer: this.renderer?.stats(),
         status: this.state,
+        tunerVisible: this.tuningEnabled,
         tuning: publicTuning(this.tuning),
       };
     }

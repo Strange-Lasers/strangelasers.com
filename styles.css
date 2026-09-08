@@ -158,14 +158,15 @@ body {
   z-index: 6;
   top: max(0.75rem, env(safe-area-inset-top));
   right: max(0.75rem, env(safe-area-inset-right));
+  display: flex;
+  flex-direction: column;
   width: min(19rem, calc(100vw - 1.5rem));
   min-width: min(14rem, calc(100vw - 1.5rem));
   min-height: 3.5rem;
   max-width: calc(100vw - 1.5rem);
   max-height: calc(100svh - 1.5rem);
-  padding: 0.85rem;
-  overflow: auto;
-  overscroll-behavior: contain;
+  padding: 0;
+  overflow: hidden;
   resize: both;
   border: 1px solid rgb(120 235 255 / 30%);
   border-radius: 0.75rem;
@@ -192,6 +193,9 @@ body {
 
 .smoke-tuner__header {
   position: relative;
+  z-index: 3;
+  flex: 0 0 auto;
+  padding: 0.85rem;
   cursor: grab;
   touch-action: none;
   user-select: none;
@@ -227,6 +231,10 @@ body {
   font-weight: 650;
   cursor: pointer;
   touch-action: auto;
+}
+
+.smoke-tuner__header button {
+  touch-action: none;
 }
 
 .smoke-tuner button:hover {
@@ -285,7 +293,39 @@ body {
 }
 
 .smoke-tuner__body {
-  padding-top: 0.7rem;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 0 0.85rem 0.85rem;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.smoke-tuner__section {
+  border-top: 1px solid rgb(120 235 255 / 18%);
+}
+
+.smoke-tuner__section:first-child {
+  border-top: 0;
+}
+
+.smoke-tuner__section > summary {
+  padding: 0.45rem 0;
+  color: var(--laser-cyan-highlight);
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  touch-action: auto;
+  user-select: none;
+}
+
+.smoke-tuner__section > summary::marker {
+  color: rgb(120 235 255 / 65%);
+}
+
+.smoke-tuner__section-body {
+  padding: 0.2rem 0 0.7rem;
 }
 
 .smoke-tuner__controls {

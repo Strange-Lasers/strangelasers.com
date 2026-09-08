@@ -19,7 +19,7 @@
     <link data-site-manifest href="manifest.webmanifest">
     <script src="site-init.js"></script>
     <link rel="stylesheet" href="palette.css">
-    <link rel="stylesheet" href="styles.css?v=immediate-draggable-smoke">
+    <link rel="stylesheet" href="styles.css?v=visual-tuning-header">
   </head>
   <body class="home-body">
     <main class="home-page">
@@ -34,7 +34,7 @@
       <aside
         class="smoke-tuner"
         data-smoke-tuner
-        aria-label="Smoke tuning"
+        aria-label="Visual tuning"
         hidden
       >
         <header
@@ -42,11 +42,11 @@
           data-smoke-tuner-drag-handle
         >
           <div class="smoke-tuner__title">
-            <h2>Smoke tuning</h2>
+            <h2>Visual tuning</h2>
             <button
               class="smoke-tuner__info-button"
               type="button"
-              aria-label="Smoke tuning instructions"
+              aria-label="Visual tuning instructions"
               aria-describedby="smoke-tuner-tooltip"
             >
               i
@@ -55,30 +55,75 @@
               id="smoke-tuner-tooltip"
               class="smoke-tuner__tooltip"
               role="tooltip"
-            >Drag this panel by its header and resize it from the lower-right corner. Defaults sit at each slider's center. Multipliers span 0.01x to 100.00x. Far smoke increases coverage farther from the edge. Type exact values in the boxes.</span>
+            >Drag this panel by its header and resize it from the lower-right corner. Collapse either section to save space. Defaults sit at each slider's center. Multipliers span 0.01x to 100.00x. Edge density controls smoke at the border, inner density controls its strength farther in, and inward reach controls how far clouds can extend. Type exact values in the boxes.</span>
           </div>
           <button
             class="smoke-tuner__quiet-button"
             type="button"
             data-smoke-tuner-collapse
-            aria-controls="smoke-tuner-body"
+            aria-controls="visual-tuner-body"
             aria-expanded="true"
           >
             Hide
           </button>
         </header>
         <div
-          id="smoke-tuner-body"
+          id="visual-tuner-body"
           class="smoke-tuner__body"
           data-smoke-tuner-body
         >
-          <div
-            class="smoke-tuner__controls"
-            data-smoke-tuner-controls
-          ></div>
+          <details class="smoke-tuner__section" open>
+            <summary>Center animation</summary>
+            <div class="smoke-tuner__section-body">
+              <div class="smoke-tuner__control">
+                <span class="smoke-tuner__control-heading">
+                  <label for="rotation-speed-range">
+                    Rotation speed
+                  </label>
+                  <span class="smoke-tuner__value-editor">
+                    <input
+                      id="rotation-speed-number"
+                      class="smoke-tuner__value-input"
+                      data-speed-number
+                      type="number"
+                      min="0.01"
+                      max="100"
+                      step="0.01"
+                      value="1.00"
+                      inputmode="decimal"
+                      aria-label="Rotation speed exact value"
+                    >
+                    <span class="smoke-tuner__value-unit">x</span>
+                  </span>
+                </span>
+                <input
+                  id="rotation-speed-range"
+                  data-speed-range
+                  type="range"
+                  min="0"
+                  max="1000"
+                  step="1"
+                  value="500"
+                  data-rate-min="0.01"
+                  data-rate-mid="1"
+                  data-rate-max="100"
+                  aria-valuetext="1.00x"
+                >
+              </div>
+            </div>
+          </details>
+          <details class="smoke-tuner__section" open>
+            <summary>Smoke</summary>
+            <div class="smoke-tuner__section-body">
+              <div
+                class="smoke-tuner__controls"
+                data-smoke-tuner-controls
+              ></div>
+            </div>
+          </details>
           <div class="smoke-tuner__actions">
-            <button type="button" data-smoke-tuner-reset>
-              Reset
+            <button type="button" data-visual-tuner-reset>
+              Reset all
             </button>
             <button type="button" data-smoke-tuner-copy>
               Copy tuning link
@@ -166,7 +211,7 @@
       </section>
     </main>
     <script src="logo-webgl.js?v=eye-depth"></script>
-    <script src="logo-motion.js?v=eye-depth"></script>
-    <script src="edge-smoke.js?v=immediate-draggable-smoke"></script>
+    <script src="logo-motion.js?v=visual-tuning-panel"></script>
+    <script src="edge-smoke.js?v=visual-tuning-adaptive-smoke"></script>
   </body>
 </html>

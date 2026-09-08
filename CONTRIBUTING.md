@@ -19,15 +19,16 @@ The following query parameters can be combined:
 - `?animate` bypasses reduced-motion behavior for visual review
 - `?fps` displays the animation frame-rate counter
 - `?renderer=svg` or `?renderer=webgl` forces a logo renderer
+- `?rotationSpeed=<multiplier>` sets the center animation speed from `0.01x` to `100.00x`
 - `?smoke=off` disables smoke
 - `?smoke=on` forces smoke on and bypasses its frame-rate safeguard
-- `?tune` forces smoke on and opens its live controls
+- `?tune` opens the live visual controls without changing smoke behavior
 
-Use `?animate&fps&renderer=webgl&smoke=on&tune` for the full review view. Current smoke cadence and renderer measurements are available from `StrangeLasersSmoke.stats()` in DevTools.
+Use `?animate&fps&tune` for the full review view. Add `smoke=on` only when the smoke must remain visible regardless of measured frame rate. Current motion state is available from `StrangeLasersMotion.stats()` in DevTools, while smoke cadence and renderer measurements are available from `StrangeLasersSmoke.stats()`.
 
 The smoke is visible immediately and continuously samples page cadence. If the frame rate collapses critically, it disables only the smoke so the logo animation keeps priority. Reduced motion keeps the smoke off unless `?animate` is present.
 
-The tuning panel controls cloud count, edge density, puff opacity, far-smoke strength, brightness, size, inward reach, drift speed, breakup, softness, and laser tint. Drag it by its header or resize it from its lower-right corner to uncover an edge. `Edge density` controls boundary coverage and `Far smoke` increases coverage farther from the edge. Every default sits at the midpoint of its control. Multiplier controls use a logarithmic 0.01x to 100.00x range, and each slider has a synchronized numeric input. The panel updates the query string as values change and can copy a URL containing the complete settings.
+The tuning panel has collapsible sections for center animation rotation speed and smoke. Smoke controls cover cloud count, edge density, puff opacity, inner density, brightness, size, inward reach, drift speed, breakup, softness, and laser tint. Drag the panel by any part of its header or resize it from its lower-right corner to uncover an edge. `Edge density` controls boundary coverage, `Inner density` controls smoke strength farther from the edge, and `Inward reach` controls how far the clouds can extend. Every default sits at the midpoint of its control. Multiplier controls use a logarithmic 0.01x to 100.00x range, and each slider has a synchronized numeric input. The panel updates the query string as values change, resets all visual controls together, and can copy a URL containing the complete settings.
 
 ## Staging deployment
 

@@ -6,8 +6,10 @@ const EYE_COLOR_QUERY_PARAMETER = "eye-color";
 const EYE_COOLDOWN_QUERY_PARAMETER = "eye-cooldown";
 const FPS_QUERY_PARAMETER = "fps";
 const RENDERER_QUERY_PARAMETER = "renderer";
+const ROTATION_SPEED_QUERY_PARAMETER = "rotationSpeed";
 const SVG_RENDERER_VALUE = "svg";
 const WEBGL_RENDERER_VALUE = "webgl";
+const MOTION_API_NAME = "StrangeLasersMotion";
 const WEBGL_API_NAME = "StrangeLasersWebGL";
 const WEBGL_STATUS = Object.freeze({
   active: "active",
@@ -25,8 +27,9 @@ const WEBGL_CANVAS_CLASS = "projected-webgl";
 const STATIC_FALLBACK_ATTRIBUTE = "data-static-fallback";
 const EYE_TRACKING_ACTIVE_CLASS = "eye-tracking-active";
 const FPS_COUNTER_CLASS = "fps-counter";
-const SPEED_RANGE_SELECTOR = "[data-speed-range]";
-const SPEED_NUMBER_SELECTOR = "[data-speed-number]";
+const ROTATION_SPEED_RANGE_SELECTOR = "[data-speed-range]";
+const ROTATION_SPEED_NUMBER_SELECTOR = "[data-speed-number]";
+const TUNER_RESET_SELECTOR = "[data-visual-tuner-reset]";
 const FRAME_BACK_SELECTOR = "[data-frame-back]";
 const PLAY_TOGGLE_SELECTOR = "[data-play-toggle]";
 const FRAME_FORWARD_SELECTOR = "[data-frame-forward]";
@@ -42,6 +45,7 @@ const MOTION_INTRO_START_DELAY_MS =
 const MOTION_INTRO_DURATION_MS = 1500;
 const FPS_SAMPLE_DURATION_MS = 1000;
 const DEFAULT_PLAYBACK_RATE = 0.5;
+const DEFAULT_ROTATION_SPEED = 1;
 const ANIMATION_FRAME_RATE = 60;
 const ANIMATION_FRAME_DURATION_MS = 1000 / ANIMATION_FRAME_RATE;
 const ANIMATION_FRAME_COUNT = Math.round(
@@ -291,7 +295,8 @@ let motionIntroBloom = 0;
 let motionIntroProgress = 1;
 let motionIntroStartTimestamp;
 let frameNumberControl;
-let playbackRate = DEFAULT_PLAYBACK_RATE;
+let playbackRate =
+  DEFAULT_PLAYBACK_RATE * DEFAULT_ROTATION_SPEED;
 let previousEyeTrackingTimestamp;
 let previousAnimationTimestamp;
 
@@ -2708,7 +2713,7 @@ function controlDataNumber(control, property) {
   return Number.parseFloat(control.dataset[property]);
 }
 
-function normalizePlaybackRate(value, control) {
+function normalizeRotationSpeed(value, control) {
   const minimum = controlNumber(control, "min");
   const maximum = controlNumber(control, "max");
   const step = controlNumber(control, "step");
@@ -2726,7 +2731,7 @@ function exponentialProgress(start, end, value) {
   return Math.log(value / start) / Math.log(end / start);
 }
 
-function playbackRateForSlider(control) {
+function rotationSpeedForSlider(control) {
   const minimumPosition = controlNumber(control, "min");
   const maximumPosition = controlNumber(control, "max");
   const middlePosition =
@@ -2757,7 +2762,7 @@ function playbackRateForSlider(control) {
   );
 }
 
-function sliderPositionForPlaybackRate(value, control) {
+function sliderPositionForRotationSpeed(value, control) {
   const minimumPosition = controlNumber(control, "min");
   const maximumPosition = controlNumber(control, "max");
   const middlePosition =
@@ -2789,49 +2794,89 @@ function sliderPositionForPlaybackRate(value, control) {
   );
 }
 
-function setupSpeedControls() {
-  const range = document.querySelector(SPEED_RANGE_SELECTOR);
-  const number = document.querySelector(SPEED_NUMBER_SELECTOR);
+function updateRotationSpeedUrl(rotationSpeed) {
+  const url = new URL(window.location.href);
+
+  if (rotationSpeed === DEFAULT_ROTATION_SPEED) {
+    url.searchParams.delete(ROTATION_SPEED_QUERY_PARAMETER);
+  } else {
+    url.searchParams.set(
+      ROTATION_SPEED_QUERY_PARAMETER,
+      rotationSpeed.toFixed(2),
+    );
+  }
+
+  window.history.replaceState(
+    window.history.state,
+    "",
+    url,
+  );
+}
+
+function setupRotationSpeedControls() {
+  const range = document.querySelector(
+    ROTATION_SPEED_RANGE_SELECTOR,
+  );
+  const number = document.querySelector(
+    ROTATION_SPEED_NUMBER_SELECTOR,
+  );
+  const reset = document.querySelector(TUNER_RESET_SELECTOR);
 
   if (!range || !number) {
     return;
   }
 
-  const setPlaybackRate = (value) => {
-    const normalized = normalizePlaybackRate(value, number);
+  const setRotationSpeed = (value, updateUrl) => {
+    const normalized = normalizeRotationSpeed(value, number);
 
     if (animationFrameId !== undefined) {
       advanceAnimation(performance.now());
     }
 
-    playbackRate = normalized;
+    playbackRate = DEFAULT_PLAYBACK_RATE * normalized;
     range.value = String(
-      sliderPositionForPlaybackRate(normalized, range),
+      sliderPositionForRotationSpeed(normalized, range),
     );
     range.setAttribute(
       "aria-valuetext",
       `${normalized.toFixed(2)}x`,
     );
     number.value = normalized.toFixed(2);
+
+    if (updateUrl) {
+      updateRotationSpeedUrl(normalized);
+    }
   };
 
   range.addEventListener("input", () => {
-    setPlaybackRate(playbackRateForSlider(range));
+    setRotationSpeed(rotationSpeedForSlider(range), true);
   });
   number.addEventListener("input", () => {
     const value = controlNumber(number, "value");
 
     if (number.validity.valid && Number.isFinite(value)) {
-      setPlaybackRate(value);
+      setRotationSpeed(value, true);
     }
   });
   number.addEventListener("change", () => {
     const value = controlNumber(number, "value");
-    setPlaybackRate(
-      Number.isFinite(value) ? value : DEFAULT_PLAYBACK_RATE,
+    setRotationSpeed(
+      Number.isFinite(value) ? value : DEFAULT_ROTATION_SPEED,
+      true,
     );
   });
-  setPlaybackRate(controlNumber(number, "value"));
+  reset?.addEventListener("click", () => {
+    setRotationSpeed(DEFAULT_ROTATION_SPEED, true);
+  });
+  const queryValue = Number.parseFloat(
+    motionQuery.get(ROTATION_SPEED_QUERY_PARAMETER),
+  );
+  setRotationSpeed(
+    Number.isFinite(queryValue)
+      ? queryValue
+      : DEFAULT_ROTATION_SPEED,
+    false,
+  );
 }
 
 function setupTransportControls() {
@@ -2931,7 +2976,16 @@ function renderMotionMarks() {
 }
 
 motionPreference.addEventListener("change", updateMotion);
-setupSpeedControls();
+window[MOTION_API_NAME] = Object.freeze({
+  stats: () => ({
+    phase: animationPhase,
+    playbackRate,
+    rotationSpeed:
+      playbackRate / DEFAULT_PLAYBACK_RATE,
+    running: animationFrameId !== undefined,
+  }),
+});
+setupRotationSpeedControls();
 setupTransportControls();
 setupFrameCounter();
 setupFpsCounter();
