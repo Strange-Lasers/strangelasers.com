@@ -19,7 +19,7 @@
     <link data-site-manifest href="manifest.webmanifest">
     <script src="site-init.js"></script>
     <link rel="stylesheet" href="palette.css">
-    <link rel="stylesheet" href="styles.css?v=visual-tuning-header">
+    <link rel="stylesheet" href="styles.css?v=visual-preset-grid">
   </head>
   <body class="home-body">
     <main class="home-page">
@@ -75,6 +75,17 @@
           <details class="smoke-tuner__section" open>
             <summary>Center animation</summary>
             <div class="smoke-tuner__section-body">
+              <div class="smoke-tuner__presets">
+                <span class="smoke-tuner__presets-heading">
+                  Presets
+                </span>
+                <div
+                  class="smoke-tuner__preset-list"
+                  data-speed-presets
+                  role="group"
+                  aria-label="Rotation speed presets"
+                ></div>
+              </div>
               <div class="smoke-tuner__control">
                 <span class="smoke-tuner__control-heading">
                   <label for="rotation-speed-range">
@@ -115,6 +126,17 @@
           <details class="smoke-tuner__section" open>
             <summary>Smoke</summary>
             <div class="smoke-tuner__section-body">
+              <div class="smoke-tuner__presets">
+                <span class="smoke-tuner__presets-heading">
+                  Presets
+                </span>
+                <div
+                  class="smoke-tuner__preset-list"
+                  data-smoke-tuner-presets
+                  role="group"
+                  aria-label="Smoke presets"
+                ></div>
+              </div>
               <div
                 class="smoke-tuner__controls"
                 data-smoke-tuner-controls
@@ -211,7 +233,7 @@
       </section>
     </main>
     <script src="logo-webgl.js?v=eye-depth"></script>
-    <script src="logo-motion.js?v=visual-tuning-panel"></script>
-    <script src="edge-smoke.js?v=tapered-smoke-wisps"></script>
+    <script src="logo-motion.js?v=expanded-speed-presets"></script>
+    <script src="edge-smoke.js?v=visible-offscreen-smoke"></script>
   </body>
 </html>

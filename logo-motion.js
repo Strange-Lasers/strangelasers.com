@@ -29,6 +29,7 @@ const EYE_TRACKING_ACTIVE_CLASS = "eye-tracking-active";
 const FPS_COUNTER_CLASS = "fps-counter";
 const ROTATION_SPEED_RANGE_SELECTOR = "[data-speed-range]";
 const ROTATION_SPEED_NUMBER_SELECTOR = "[data-speed-number]";
+const ROTATION_SPEED_PRESETS_SELECTOR = "[data-speed-presets]";
 const TUNER_RESET_SELECTOR = "[data-visual-tuner-reset]";
 const FRAME_BACK_SELECTOR = "[data-frame-back]";
 const PLAY_TOGGLE_SELECTOR = "[data-play-toggle]";
@@ -46,6 +47,18 @@ const MOTION_INTRO_DURATION_MS = 1500;
 const FPS_SAMPLE_DURATION_MS = 1000;
 const DEFAULT_PLAYBACK_RATE = 0.5;
 const DEFAULT_ROTATION_SPEED = 1;
+const ROTATION_SPEED_PRESETS = Object.freeze([
+  0.55,
+  0.6,
+  0.65,
+  0.7,
+  0.75,
+  0.8,
+  0.85,
+  0.9,
+  0.95,
+  1,
+]);
 const ANIMATION_FRAME_RATE = 60;
 const ANIMATION_FRAME_DURATION_MS = 1000 / ANIMATION_FRAME_RATE;
 const ANIMATION_FRAME_COUNT = Math.round(
@@ -2820,7 +2833,11 @@ function setupRotationSpeedControls() {
   const number = document.querySelector(
     ROTATION_SPEED_NUMBER_SELECTOR,
   );
+  const presets = document.querySelector(
+    ROTATION_SPEED_PRESETS_SELECTOR,
+  );
   const reset = document.querySelector(TUNER_RESET_SELECTOR);
+  const presetButtons = [];
 
   if (!range || !number) {
     return;
@@ -2843,10 +2860,36 @@ function setupRotationSpeedControls() {
     );
     number.value = normalized.toFixed(2);
 
+    for (const button of presetButtons) {
+      button.setAttribute(
+        "aria-pressed",
+        String(
+          Number.parseFloat(button.dataset.rotationSpeed) ===
+            normalized,
+        ),
+      );
+    }
+
     if (updateUrl) {
       updateRotationSpeedUrl(normalized);
     }
   };
+
+  if (presets) {
+    for (const rotationSpeed of ROTATION_SPEED_PRESETS) {
+      const button = document.createElement("button");
+      button.className = "smoke-tuner__preset-button";
+      button.type = "button";
+      button.textContent = `${rotationSpeed.toFixed(2)}x`;
+      button.dataset.rotationSpeed = String(rotationSpeed);
+      button.setAttribute("aria-pressed", "false");
+      button.addEventListener("click", () => {
+        setRotationSpeed(rotationSpeed, true);
+      });
+      presets.append(button);
+      presetButtons.push(button);
+    }
+  }
 
   range.addEventListener("input", () => {
     setRotationSpeed(rotationSpeedForSlider(range), true);

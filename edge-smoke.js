@@ -4,6 +4,7 @@
   const API_NAME = "StrangeLasersSmoke";
   const CANVAS_SELECTOR = "[data-edge-smoke]";
   const TUNER_SELECTOR = "[data-smoke-tuner]";
+  const TUNER_PRESETS_SELECTOR = "[data-smoke-tuner-presets]";
   const TUNER_RESET_SELECTOR = "[data-visual-tuner-reset]";
   const ROTATION_SPEED_NUMBER_SELECTOR = "[data-speed-number]";
   const VISIBLE_CLASS = "edge-smoke--visible";
@@ -39,6 +40,9 @@
   const MAX_PENDING_GPU_QUERIES = 4;
   const DEFAULT_SMOKE_PARTICLE_COUNT = 256;
   const DEFAULT_SMOKE_REACH = 5;
+  const SMOKE_ENVELOPE_START_MAXIMUM = 0.42;
+  const SMOKE_ENVELOPE_START_MINIMUM = 0.12;
+  const SMOKE_IRREGULAR_RADIUS = 0.86;
   const MIN_DRIFTED_DENSITY = 0.001;
   const MAX_INWARD_REACH = 1000;
   const MIN_TUNING_MULTIPLIER = 0.01;
@@ -165,6 +169,76 @@
       step: 0.01,
     }),
   ]);
+  const SMOKE_PRESETS = Object.freeze([
+    Object.freeze({
+      description: "Tasteful default smoke with balanced coverage and drift",
+      label: "Balanced",
+      values: Object.freeze({
+        brightness: 1.1,
+        breakup: 1.4,
+        edgeDensity: 2,
+        farSmoke: 2.8,
+        opacity: 1.35,
+        particles: 256,
+        puffScale: 1.4,
+        reach: DEFAULT_SMOKE_REACH,
+        softness: 1.3,
+        speed: 0.7,
+        tint: 0.12,
+      }),
+    }),
+    Object.freeze({
+      description: "Thin, continuous mist around the frame",
+      label: "Fine rim",
+      values: Object.freeze({
+        brightness: 0.82,
+        breakup: 1.2,
+        edgeDensity: 32,
+        farSmoke: 0.002,
+        opacity: 1.4,
+        particles: 4096,
+        puffScale: 0.5,
+        reach: 1000,
+        softness: 10,
+        speed: 0.28,
+        tint: 0.01,
+      }),
+    }),
+    Object.freeze({
+      description: "Broad, calm mist with a gentle inward fade",
+      label: "Soft veil",
+      values: Object.freeze({
+        brightness: 0.88,
+        breakup: 1.8,
+        edgeDensity: 2.8,
+        farSmoke: 1.2,
+        opacity: 1.1,
+        particles: 768,
+        puffScale: 1.8,
+        reach: 12,
+        softness: 5,
+        speed: 0.45,
+        tint: 0.05,
+      }),
+    }),
+    Object.freeze({
+      description: "Sparse broken tendrils extending from a defined edge",
+      label: "Long wisps",
+      values: Object.freeze({
+        brightness: 2,
+        breakup: 3,
+        edgeDensity: 4,
+        farSmoke: 0.02,
+        opacity: 1,
+        particles: 1536,
+        puffScale: 0.7,
+        reach: 350,
+        softness: 4,
+        speed: 0.36,
+        tint: 0.02,
+      }),
+    }),
+  ]);
   const CONTEXT_OPTIONS = Object.freeze({
     alpha: true,
     antialias: false,
@@ -196,10 +270,12 @@
     uniform float u_particle_count;
     uniform float u_puff_scale;
     uniform float u_reach;
+    uniform float u_softness;
     uniform float u_speed;
     uniform float u_tint;
 
     flat out float v_density;
+    flat out float v_edge_coordinate;
     flat out float v_reach_effect;
     flat out float v_seed;
     flat out float v_sparse_wisp;
@@ -209,8 +285,15 @@
     out float v_phase;
     out vec3 v_color;
 
+    const float CLOUD_CORE_CONTOUR = 0.28;
+    const float CLOUD_CORE_MARGIN_MAXIMUM = 0.14;
+    const float CLOUD_CORE_MARGIN_MINIMUM = 0.04;
+    const float CLOUD_IRREGULAR_RADIUS = ${SMOKE_IRREGULAR_RADIUS.toFixed(2)};
+    const float CLOUD_MINIMUM_CORE_MARGIN = 0.03;
+    const float EDGE_CLOUD_TANGENT_SCALE = 1.8;
     const float SPARSE_WISP_DENSITY_END = 0.5;
     const float SPARSE_WISP_DENSITY_START = 0.1;
+    const float SPARSE_WISP_TANGENT_SCALE = 0.45;
     const float DRIFT_DENSITY_END = 0.22;
     const float DRIFT_DENSITY_START = 0.03;
 
@@ -285,25 +368,23 @@
         phase
       );
       float drift_density = u_far_smoke < 1.0
-        ? drift_survival *
-          min(
-            1.0 /
-              max(
-                drift_retention,
-                ${MIN_DRIFTED_DENSITY.toFixed(3)}
-              ),
-            100.0
-          )
+        ? drift_survival
         : u_far_smoke;
+      float sparse_wisp =
+        drift_survival *
+        (
+          1.0 -
+          smoothstep(
+            SPARSE_WISP_DENSITY_START,
+            SPARSE_WISP_DENSITY_END,
+            drift_retention
+          )
+        );
       float reach_scale = pow(
         max(u_reach / ${DEFAULT_SMOKE_REACH.toFixed(1)}, 0.0001),
         0.32
       );
-      float effective_reach_scale = mix(
-        1.0,
-        reach_scale,
-        drift_survival
-      );
+      float effective_reach_scale = reach_scale;
       float reach_extension = clamp(
         log(
           max(u_reach / ${DEFAULT_SMOKE_REACH.toFixed(1)}, 1.0)
@@ -315,9 +396,7 @@
         0.0,
         1.0
       );
-      float reach_effect =
-        reach_extension *
-        drift_survival;
+      float reach_effect = reach_extension;
       float coverage_diameter = cell * 2.5;
       float maximum_diameter = short_side * 3.0;
       float initial_diameter = min(
@@ -357,21 +436,46 @@
         base_final_diameter,
         expansion
       );
-      float outside_distance =
-        initial_diameter * mix(0.24, 0.34, third_seed);
-      float inward_travel = min(
-        cloud_diameter *
-          0.22 *
-          min(1.0, 0.625 * effective_reach_scale) *
-          phase,
-        outside_distance * 0.9
+      float softness_progress = clamp(
+        (
+          log(max(u_softness, ${MIN_TUNING_MULTIPLIER.toFixed(1)})) /
+            log(${MAX_TUNING_MULTIPLIER.toFixed(1)}) +
+          1.0
+        ) * 0.5,
+        0.0,
+        1.0
       );
-      float inward_distance =
-        -outside_distance + inward_travel;
+      float envelope_start = mix(
+        ${SMOKE_ENVELOPE_START_MAXIMUM.toFixed(2)},
+        ${SMOKE_ENVELOPE_START_MINIMUM.toFixed(2)},
+        softness_progress
+      );
+      float dense_core_radius = mix(
+        envelope_start,
+        CLOUD_IRREGULAR_RADIUS,
+        CLOUD_CORE_CONTOUR
+      );
+      float core_margin = max(
+        mix(
+          CLOUD_CORE_MARGIN_MINIMUM,
+          CLOUD_CORE_MARGIN_MAXIMUM,
+          third_seed
+        ),
+        CLOUD_MINIMUM_CORE_MARGIN
+      );
+      float outside_distance =
+        cloud_diameter * 0.5 * dense_core_radius +
+        initial_diameter * core_margin;
+      float inward_distance = -outside_distance;
       float tangent_diameter = mix(
-        cloud_diameter,
+        cloud_diameter * EDGE_CLOUD_TANGENT_SCALE,
         base_cloud_diameter,
         reach_effect
+      );
+      tangent_diameter = mix(
+        tangent_diameter,
+        base_cloud_diameter * SPARSE_WISP_TANGENT_SCALE,
+        sparse_wisp
       );
       float lateral_distance = tangent_diameter * (
         (third_seed - 0.5) * 0.12 * phase +
@@ -396,24 +500,20 @@
         drift_density,
         drift_progress
       );
+      v_edge_coordinate = clamp(
+        -inward_distance * 2.0 / max(cloud_diameter, 1.0),
+        0.0,
+        1.0
+      );
       v_reach_effect = reach_effect;
       v_seed = seed;
-      v_sparse_wisp =
-        drift_survival *
-        (
-          1.0 -
-          smoothstep(
-            SPARSE_WISP_DENSITY_START,
-            SPARSE_WISP_DENSITY_END,
-            drift_retention
-          )
-        );
+      v_sparse_wisp = sparse_wisp;
       v_local_position = corner;
       v_phase = phase;
       v_wisp_stretch = cloud_diameter /
         max(tangent_diameter, 1.0);
       v_alpha =
-        mix(0.034, 0.068, second_seed) *
+        mix(0.12, 0.24, second_seed) *
         fade_in *
         fade_out *
         u_opacity;
@@ -425,6 +525,7 @@
     precision highp float;
 
     flat in float v_density;
+    flat in float v_edge_coordinate;
     flat in float v_reach_effect;
     flat in float v_seed;
     flat in float v_sparse_wisp;
@@ -449,8 +550,14 @@
     const float HIGH_CROWDING_DENSITY_MINIMUM = 0.16;
     const float MAX_CROWDING_RATIO = 16.0;
     const float PARTICLE_NORMALIZATION_EXPONENT = 0.65;
-    const float SPARSE_WISP_ALPHA_MAXIMUM = 0.04;
-    const float WISP_TAIL_DECAY = 3.6;
+    const float INWARD_VISIBILITY_MAXIMUM = 5.0;
+    const float INWARD_VISIBILITY_RAMP_END = 0.55;
+    const float SPARSE_WISP_ALPHA_MAXIMUM = 0.10;
+    const float SPARSE_WISP_BODY_MINIMUM = 0.02;
+    const float WISP_BODY_MINIMUM = 0.32;
+    const float WISP_SHAPING_END = 0.30;
+    const float WISP_SHAPING_START = 0.08;
+    const float WISP_TAIL_DECAY = 1.8;
     const float WISP_TAPER_END = 0.06;
     const float WISP_TAPER_START = 0.62;
 
@@ -501,7 +608,8 @@
       ) * 0.18 * breakup;
       float radius = length(position + distortion);
       float irregular_radius =
-        0.86 + (broad_noise - 0.5) * 0.2 * breakup;
+        ${SMOKE_IRREGULAR_RADIUS.toFixed(2)} +
+        (broad_noise - 0.5) * 0.2 * breakup;
       float softness_progress = clamp(
         (
           log(max(u_softness, ${MIN_TUNING_MULTIPLIER.toFixed(1)})) /
@@ -511,7 +619,11 @@
         0.0,
         1.0
       );
-      float envelope_start = mix(0.42, 0.12, softness_progress);
+      float envelope_start = mix(
+        ${SMOKE_ENVELOPE_START_MAXIMUM.toFixed(2)},
+        ${SMOKE_ENVELOPE_START_MINIMUM.toFixed(2)},
+        softness_progress
+      );
       float envelope =
         1.0 - smoothstep(envelope_start, irregular_radius, radius);
       float sprite_envelope =
@@ -583,7 +695,13 @@
         1.0,
         v_sparse_wisp
       );
-      float inward_progress = max(position.y, 0.0);
+      float effective_density = v_density * coherent_density;
+      float inward_progress = clamp(
+        (position.y - v_edge_coordinate) /
+          max(1.0 - v_edge_coordinate, 0.001),
+        0.0,
+        1.0
+      );
       float tapered_width = mix(
         WISP_TAPER_START,
         WISP_TAPER_END,
@@ -603,14 +721,49 @@
         0.78,
         broad_noise * 0.52 + fine_noise * 0.48
       );
+      float wisp_body_minimum = mix(
+        WISP_BODY_MINIMUM,
+        SPARSE_WISP_BODY_MINIMUM,
+        v_sparse_wisp
+      );
+      float wisp_shape = mix(
+        wisp_body_minimum,
+        1.0,
+        cross_envelope * wisp_texture
+      );
+      float boundary_preservation = smoothstep(
+        WISP_SHAPING_START,
+        WISP_SHAPING_END,
+        inward_progress
+      );
+      float wisp_shaping =
+        v_reach_effect *
+        mix(
+          boundary_preservation,
+          1.0,
+          v_sparse_wisp
+        );
       float extended_shape = mix(
         1.0,
-        cross_envelope * wisp_texture,
-        v_reach_effect
+        wisp_shape,
+        wisp_shaping
       );
       float tail_fade = mix(
         1.0,
         exp(-inward_progress * WISP_TAIL_DECAY),
+        v_reach_effect
+      );
+      float inward_visibility = mix(
+        1.0,
+        mix(
+          1.0,
+          INWARD_VISIBILITY_MAXIMUM,
+          smoothstep(
+            0.0,
+            INWARD_VISIBILITY_RAMP_END,
+            inward_progress
+          )
+        ),
         v_reach_effect
       );
       float alpha =
@@ -618,10 +771,10 @@
         envelope *
         body *
         overlap_scale *
-        v_density *
-        coherent_density *
+        effective_density *
         extended_shape *
-        tail_fade;
+        tail_fade *
+        inward_visibility;
       alpha = min(
         alpha,
         mix(1.0, SPARSE_WISP_ALPHA_MAXIMUM, v_sparse_wisp)
@@ -879,7 +1032,7 @@
 
   function updateTuningUrl(settings, includeDefaults, reviewReady) {
     const url = new URL(window.location.href);
-    url.searchParams.set(TUNING_QUERY_PARAMETER, FEATURE_FORCED_VALUE);
+    url.searchParams.set(TUNING_QUERY_PARAMETER, "");
 
     if (reviewReady) {
       url.searchParams.set("animate", "");
@@ -940,6 +1093,9 @@
       this.controls = this.root.querySelector(
         "[data-smoke-tuner-controls]",
       );
+      this.presets = this.root.querySelector(
+        TUNER_PRESETS_SELECTOR,
+      );
       this.status = this.root.querySelector(
         "[data-smoke-tuner-status]",
       );
@@ -956,6 +1112,7 @@
         TUNER_RESET_SELECTOR,
       );
       this.inputs = new Map();
+      this.presetButtons = [];
       this.dragState = undefined;
       this.suppressHeaderClick = false;
       this.expandedHeight = undefined;
@@ -965,6 +1122,7 @@
       this.onHeaderClick = this.handleHeaderClick.bind(this);
       this.onViewportResize = () => this.constrainPosition();
       this.buildControls();
+      this.buildPresets();
       this.collapseButton.addEventListener(
         "click",
         () => this.toggleCollapsed(),
@@ -1093,6 +1251,7 @@
           );
           this.status.textContent = "";
           updateTuningUrl(this.settings, false, false);
+          this.updatePresetSelection();
         };
 
         rangeInput.addEventListener("input", () => {
@@ -1142,6 +1301,71 @@
         valueInput.addEventListener("change", () => {
           applyEditorValue(true);
         });
+      }
+    }
+
+    buildPresets() {
+      if (!this.presets) {
+        return;
+      }
+
+      for (const preset of SMOKE_PRESETS) {
+        const button = document.createElement("button");
+        button.className = "smoke-tuner__preset-button";
+        button.type = "button";
+        button.textContent = preset.label;
+        button.title = preset.description;
+        button.setAttribute("aria-pressed", "false");
+        button.addEventListener("click", () => {
+          this.applyPreset(preset);
+        });
+        this.presets.append(button);
+        this.presetButtons.push({ button, preset });
+      }
+
+      this.updatePresetSelection();
+    }
+
+    syncControl(control, value) {
+      const elements = this.inputs.get(control.key);
+      this.settings[control.key] = value;
+      elements.rangeInput.value = String(
+        tuningInputValue(control, value),
+      );
+      elements.valueInput.value = tuningValueForEditor(
+        control,
+        value,
+      );
+      elements.rangeInput.setAttribute(
+        "aria-valuetext",
+        tuningValueForDisplay(control, value),
+      );
+    }
+
+    applyPreset(preset) {
+      for (const control of TUNING_CONTROLS) {
+        this.syncControl(
+          control,
+          normalizedTuningValue(
+            control,
+            preset.values[control.key],
+          ),
+        );
+      }
+
+      updateTuningUrl(this.settings, false, false);
+      this.updatePresetSelection();
+      this.status.textContent = `${preset.label} preset applied`;
+    }
+
+    updatePresetSelection() {
+      for (const { button, preset } of this.presetButtons) {
+        const selected = TUNING_CONTROLS.every(
+          (control) =>
+            this.settings[control.key] ===
+            preset.values[control.key],
+        );
+        button.setAttribute("aria-pressed", String(selected));
       }
     }
 
@@ -1293,22 +1517,11 @@
     reset() {
       for (const control of TUNING_CONTROLS) {
         const value = control.defaultValue;
-        const elements = this.inputs.get(control.key);
-        this.settings[control.key] = value;
-        elements.rangeInput.value = String(
-          tuningInputValue(control, value),
-        );
-        elements.valueInput.value = tuningValueForEditor(
-          control,
-          value,
-        );
-        elements.rangeInput.setAttribute(
-          "aria-valuetext",
-          tuningValueForDisplay(control, value),
-        );
+        this.syncControl(control, value);
       }
 
       updateTuningUrl(this.settings, false, false);
+      this.updatePresetSelection();
       this.status.textContent = "Defaults restored";
     }
 
