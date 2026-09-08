@@ -38,6 +38,9 @@
   const MAX_RENDER_PIXEL_COUNT = 460000;
   const MAX_PENDING_GPU_QUERIES = 4;
   const DEFAULT_SMOKE_PARTICLE_COUNT = 256;
+  const DEFAULT_SMOKE_REACH = 5;
+  const MIN_DRIFTED_DENSITY = 0.001;
+  const MAX_INWARD_REACH = 1000;
   const MIN_TUNING_MULTIPLIER = 0.01;
   const MAX_TUNING_MULTIPLIER = 100;
   const TUNING_MULTIPLIER_STEP = 0.01;
@@ -77,9 +80,9 @@
       key: "farSmoke",
       label: "Drifted density",
       maximum: MAX_TUNING_MULTIPLIER,
-      minimum: MIN_TUNING_MULTIPLIER,
+      minimum: MIN_DRIFTED_DENSITY,
       parameter: "smokeFar",
-      step: TUNING_MULTIPLIER_STEP,
+      step: 0.001,
     }),
     Object.freeze({
       defaultValue: 1.35,
@@ -112,11 +115,11 @@
       step: TUNING_MULTIPLIER_STEP,
     }),
     Object.freeze({
-      defaultValue: 5,
+      defaultValue: DEFAULT_SMOKE_REACH,
       display: "multiplier",
       key: "reach",
       label: "Inward reach",
-      maximum: MAX_TUNING_MULTIPLIER,
+      maximum: MAX_INWARD_REACH,
       minimum: MIN_TUNING_MULTIPLIER,
       parameter: "smokeReach",
       step: TUNING_MULTIPLIER_STEP,
@@ -187,7 +190,8 @@
     uniform vec3 u_purple;
     uniform vec2 u_resolution;
     uniform float u_time;
-    uniform float u_max_point_size;
+    uniform float u_edge_density;
+    uniform float u_far_smoke;
     uniform float u_opacity;
     uniform float u_particle_count;
     uniform float u_puff_scale;
@@ -195,20 +199,46 @@
     uniform float u_speed;
     uniform float u_tint;
 
+    flat out float v_density;
+    flat out float v_reach_effect;
     flat out float v_seed;
+    flat out float v_sparse_wisp;
+    flat out float v_wisp_stretch;
     out float v_alpha;
+    out vec2 v_local_position;
     out float v_phase;
     out vec3 v_color;
+
+    const float SPARSE_WISP_DENSITY_END = 0.5;
+    const float SPARSE_WISP_DENSITY_START = 0.1;
+    const float DRIFT_DENSITY_END = 0.22;
+    const float DRIFT_DENSITY_START = 0.03;
 
     float random_value(float value) {
       return fract(sin(value * 91.3458 + 13.427) * 47453.5453);
     }
 
     void main() {
-      float particle = float(gl_VertexID);
+      float particle = float(gl_InstanceID);
+      int corner_index = gl_VertexID;
+      vec2 corner;
+
+      if (corner_index == 0) {
+        corner = vec2(-1.0, -1.0);
+      } else if (corner_index == 1) {
+        corner = vec2(1.0, -1.0);
+      } else if (corner_index == 2) {
+        corner = vec2(-1.0, 1.0);
+      } else {
+        corner = vec2(1.0, 1.0);
+      }
+
       float seed = random_value(particle + 0.37);
       float second_seed = random_value(particle + 17.91);
       float third_seed = random_value(particle + 47.23);
+      float fourth_seed = fract(
+        (particle + 0.5) * 0.61803398875
+      );
       float lifetime = mix(9.0, 15.0, second_seed);
       float smoke_time = u_time * u_speed;
       float phase = fract(smoke_time / lifetime + seed);
@@ -244,54 +274,144 @@
         tangent = vec2(0.0, -1.0);
       }
 
-      float reach_value = max(u_reach, 0.0);
-      float reach_response = reach_value / (reach_value + 3.0);
-      float reach_expansion = mix(0.8, 1.6, reach_response);
-      float coverage_size = cell * 2.5;
-      float initial_size = min(
+      float drift_retention = clamp(u_far_smoke, 0.0, 1.0);
+      float drift_survival = step(
+        1.0 - drift_retention,
+        fourth_seed
+      );
+      float drift_progress = smoothstep(
+        DRIFT_DENSITY_START,
+        DRIFT_DENSITY_END,
+        phase
+      );
+      float drift_density = u_far_smoke < 1.0
+        ? drift_survival *
+          min(
+            1.0 /
+              max(
+                drift_retention,
+                ${MIN_DRIFTED_DENSITY.toFixed(3)}
+              ),
+            100.0
+          )
+        : u_far_smoke;
+      float reach_scale = pow(
+        max(u_reach / ${DEFAULT_SMOKE_REACH.toFixed(1)}, 0.0001),
+        0.32
+      );
+      float effective_reach_scale = mix(
+        1.0,
+        reach_scale,
+        drift_survival
+      );
+      float reach_extension = clamp(
+        log(
+          max(u_reach / ${DEFAULT_SMOKE_REACH.toFixed(1)}, 1.0)
+        ) /
+          log(
+            ${MAX_INWARD_REACH.toFixed(1)} /
+              ${DEFAULT_SMOKE_REACH.toFixed(1)}
+          ),
+        0.0,
+        1.0
+      );
+      float reach_effect =
+        reach_extension *
+        drift_survival;
+      float coverage_diameter = cell * 2.5;
+      float maximum_diameter = short_side * 3.0;
+      float initial_diameter = min(
         max(
-          coverage_size,
+          coverage_diameter,
           short_side * mix(0.055, 0.085, second_seed) * u_puff_scale
         ),
-        u_max_point_size
+        maximum_diameter
       );
-      float final_size = min(
+      float base_final_diameter = min(
         max(
-          coverage_size,
+          coverage_diameter,
           short_side *
             mix(0.17, 0.27, third_seed) *
             u_puff_scale *
-            reach_expansion
+            1.3
         ),
-        u_max_point_size
+        maximum_diameter
       );
-      final_size = max(initial_size, final_size);
+      float final_diameter = min(
+        base_final_diameter * effective_reach_scale,
+        maximum_diameter
+      );
+      final_diameter = max(initial_diameter, final_diameter);
+      base_final_diameter = max(
+        initial_diameter,
+        base_final_diameter
+      );
       float expansion = sqrt(phase);
-      float point_size = mix(initial_size, final_size, expansion);
+      float cloud_diameter = mix(
+        initial_diameter,
+        final_diameter,
+        expansion
+      );
+      float base_cloud_diameter = mix(
+        initial_diameter,
+        base_final_diameter,
+        expansion
+      );
       float outside_distance =
-        initial_size * mix(0.24, 0.34, third_seed);
+        initial_diameter * mix(0.24, 0.34, third_seed);
       float inward_travel = min(
-        point_size * 0.22 * reach_response * phase,
+        cloud_diameter *
+          0.22 *
+          min(1.0, 0.625 * effective_reach_scale) *
+          phase,
         outside_distance * 0.9
       );
       float inward_distance =
         -outside_distance + inward_travel;
-      float lateral_distance = point_size * (
+      float tangent_diameter = mix(
+        cloud_diameter,
+        base_cloud_diameter,
+        reach_effect
+      );
+      float lateral_distance = tangent_diameter * (
         (third_seed - 0.5) * 0.12 * phase +
         sin(smoke_time * mix(0.11, 0.19, seed) + seed * 19.0) * 0.025
       );
-      vec2 position =
+      vec2 cloud_position =
         source + inward * inward_distance + tangent * lateral_distance;
-      vec2 clip_position = position / u_resolution * 2.0 - 1.0;
+      vec2 vertex_position =
+        cloud_position +
+        inward * corner.y * cloud_diameter * 0.5 +
+        tangent * corner.x * tangent_diameter * 0.5;
+      vec2 clip_position =
+        vertex_position / u_resolution * 2.0 - 1.0;
       float fade_in = smoothstep(0.0, 0.07, phase);
       float fade_out = 1.0 - smoothstep(0.58, 1.0, phase);
       float color_progress = fract(seed * 1.73 + third_seed * 0.41);
       vec3 tint = mix(u_purple, u_cyan, color_progress);
 
       gl_Position = vec4(clip_position, 0.0, 1.0);
-      gl_PointSize = point_size;
+      v_density = mix(
+        u_edge_density,
+        drift_density,
+        drift_progress
+      );
+      v_reach_effect = reach_effect;
       v_seed = seed;
+      v_sparse_wisp =
+        drift_survival *
+        (
+          1.0 -
+          smoothstep(
+            SPARSE_WISP_DENSITY_START,
+            SPARSE_WISP_DENSITY_END,
+            drift_retention
+          )
+        );
+      v_local_position = corner;
       v_phase = phase;
+      v_wisp_stretch = cloud_diameter /
+        max(tangent_diameter, 1.0);
       v_alpha =
         mix(0.034, 0.068, second_seed) *
         fade_in *
@@ -304,15 +424,18 @@
   const SMOKE_FRAGMENT_SHADER = `#version 300 es
     precision highp float;
 
+    flat in float v_density;
+    flat in float v_reach_effect;
     flat in float v_seed;
+    flat in float v_sparse_wisp;
+    flat in float v_wisp_stretch;
     in float v_alpha;
+    in vec2 v_local_position;
     in float v_phase;
     in vec3 v_color;
 
     uniform float u_breakup;
     uniform float u_brightness;
-    uniform float u_edge_density;
-    uniform float u_far_smoke;
     uniform float u_particle_count;
     uniform float u_puff_scale;
     uniform vec2 u_resolution;
@@ -322,12 +445,14 @@
     out vec4 output_color;
 
     const float DEFAULT_PARTICLE_COUNT = ${DEFAULT_SMOKE_PARTICLE_COUNT}.0;
-    const float DRIFT_DENSITY_END = 0.62;
-    const float DRIFT_DENSITY_START = 0.08;
     const float HIGH_CROWDING_DENSITY_MAXIMUM = 1.7;
     const float HIGH_CROWDING_DENSITY_MINIMUM = 0.16;
     const float MAX_CROWDING_RATIO = 16.0;
     const float PARTICLE_NORMALIZATION_EXPONENT = 0.65;
+    const float SPARSE_WISP_ALPHA_MAXIMUM = 0.04;
+    const float WISP_TAIL_DECAY = 3.6;
+    const float WISP_TAPER_END = 0.06;
+    const float WISP_TAPER_START = 0.62;
 
     float random_value(vec2 position) {
       vec3 value = fract(vec3(position.xyx) * 0.1031);
@@ -353,15 +478,19 @@
     }
 
     void main() {
-      vec2 position = gl_PointCoord * 2.0 - 1.0;
+      vec2 position = v_local_position;
+      vec2 noise_position = vec2(
+        position.x,
+        position.y * mix(1.0, v_wisp_stretch, v_reach_effect)
+      );
       vec2 seed_offset = vec2(v_seed * 37.1, v_seed * 19.7);
       float broad_noise = value_noise(
-        position * 2.15 +
+        noise_position * 2.15 +
           seed_offset +
           vec2(v_phase * 0.31, -v_phase * 0.19)
       );
       float fine_noise = value_noise(
-        position * 4.7 -
+        noise_position * 4.7 -
           seed_offset.yx +
           vec2(-v_phase * 0.23, v_phase * 0.27)
       );
@@ -413,16 +542,6 @@
         inversesqrt(max(u_puff_scale, 1.0))
       );
       float overlap_scale = particle_normalization * size_normalization;
-      float drift_progress = smoothstep(
-        DRIFT_DENSITY_START,
-        DRIFT_DENSITY_END,
-        v_phase
-      );
-      float density = mix(
-        u_edge_density,
-        u_far_smoke,
-        drift_progress
-      );
       float crowding = clamp(
         log(
           max(u_particle_count / DEFAULT_PARTICLE_COUNT, 1.0)
@@ -459,13 +578,54 @@
           crowding
         );
       }
+      coherent_density = mix(
+        coherent_density,
+        1.0,
+        v_sparse_wisp
+      );
+      float inward_progress = max(position.y, 0.0);
+      float tapered_width = mix(
+        WISP_TAPER_START,
+        WISP_TAPER_END,
+        smoothstep(0.0, 1.0, inward_progress)
+      );
+      float center_offset =
+        (broad_noise - 0.5) * 0.58 * inward_progress;
+      float cross_envelope =
+        1.0 -
+        smoothstep(
+          tapered_width * 0.52,
+          tapered_width,
+          abs(position.x + center_offset)
+        );
+      float wisp_texture = smoothstep(
+        0.5,
+        0.78,
+        broad_noise * 0.52 + fine_noise * 0.48
+      );
+      float extended_shape = mix(
+        1.0,
+        cross_envelope * wisp_texture,
+        v_reach_effect
+      );
+      float tail_fade = mix(
+        1.0,
+        exp(-inward_progress * WISP_TAIL_DECAY),
+        v_reach_effect
+      );
       float alpha =
         v_alpha *
         envelope *
         body *
         overlap_scale *
-        density *
-        coherent_density;
+        v_density *
+        coherent_density *
+        extended_shape *
+        tail_fade;
+      alpha = min(
+        alpha,
+        mix(1.0, SPARSE_WISP_ALPHA_MAXIMUM, v_sparse_wisp)
+      );
 
       if (alpha < 0.0008 * overlap_scale) {
         discard;
@@ -1274,9 +1434,6 @@
       this.pendingGpuQueries = [];
       this.program = createProgram(gl);
       this.vertexArray = gl.createVertexArray();
-      this.maxPointSize = gl.getParameter(
-        gl.ALIASED_POINT_SIZE_RANGE,
-      )[1];
       this.uniforms = {
         breakup: gl.getUniformLocation(this.program, "u_breakup"),
         brightness: gl.getUniformLocation(
@@ -1291,10 +1448,6 @@
         farSmoke: gl.getUniformLocation(
           this.program,
           "u_far_smoke",
-        ),
-        maxPointSize: gl.getUniformLocation(
-          this.program,
-          "u_max_point_size",
         ),
         opacity: gl.getUniformLocation(this.program, "u_opacity"),
         particleCount: gl.getUniformLocation(
@@ -1485,10 +1638,6 @@
         this.tuning.farSmoke,
       );
       gl.uniform1f(
-        this.uniforms.maxPointSize,
-        this.maxPointSize,
-      );
-      gl.uniform1f(
         this.uniforms.opacity,
         this.tuning.opacity,
       );
@@ -1514,9 +1663,10 @@
       gl.uniform1f(this.uniforms.speed, this.tuning.speed);
       gl.uniform1f(this.uniforms.time, timeSeconds);
       gl.uniform1f(this.uniforms.tint, this.tuning.tint);
-      gl.drawArrays(
-        gl.POINTS,
+      gl.drawArraysInstanced(
+        gl.TRIANGLE_STRIP,
         0,
+        4,
         this.tuning.particles,
       );
       gl.bindVertexArray(null);
@@ -1534,7 +1684,6 @@
         available: this.available,
         drawCount: this.tuning.particles,
         gpuTimerSupported: Boolean(this.gpuTimer),
-        maxPointSize: this.maxPointSize,
         particleCount: this.tuning.particles,
         renderHeight: this.renderHeight,
         renderWidth: this.renderWidth,
