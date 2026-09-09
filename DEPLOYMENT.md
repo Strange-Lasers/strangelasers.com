@@ -9,6 +9,8 @@ The site uses Cloudflare Workers Static Assets for its production and shareable 
 
 `www2.strangelasers.com` remains attached to the preview Worker as a compatibility alias for previously shared links. The existing Worker name is retained so its deployment history and rollback versions remain available.
 
+Worker ingress is account-level configuration: `preview.strangelasers.com` and `www2.strangelasers.com` are Custom Domains for the preview Worker, while `strangelasers.com/*` is a route to the production Worker. The Wrangler files intentionally omit `routes`, which keeps routine deployment tokens scoped to Worker code and prevents every asset deployment from reconciling otherwise unchanged zone routing. Cloudflare documents that omitting both route keys leaves dashboard-managed routing unchanged in its [Wrangler configuration guidance](https://developers.cloudflare.com/workers/wrangler/configuration/#source-of-truth).
+
 ## GitHub environments
 
 The repository has `production` and `preview` GitHub environments. Each environment provides a secret named `CLOUDFLARE_API_TOKEN` and a variable named `CLOUDFLARE_ACCOUNT_ID`. Restrict the production environment to `main` and the preview environment to `preview`.
@@ -34,6 +36,6 @@ npx --yes wrangler@4.129.1 deploy --config wrangler.preview.jsonc
 npx --yes wrangler@4.129.1 deploy --config wrangler.production.jsonc
 ```
 
-They use the standard `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` environment variables. Never place token values in the repository or command history.
+They use the standard `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` environment variables. These commands update Worker assets without altering ingress. Never place token values in the repository or command history.
 
 The site is an assets-only Worker with no server-side handler or bindings. Static asset requests do not consume the Workers request quota. The repository is far below the [Workers Free static-asset limits](https://developers.cloudflare.com/workers/platform/limits/#static-assets), verified 2026-09-09.

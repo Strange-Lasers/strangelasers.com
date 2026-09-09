@@ -5,15 +5,5 @@
   "preview_urls": false,
   "assets": {
     "directory": "."
-  },
-  "routes": [
-    {
-      "pattern": "preview.strangelasers.com",
-      "custom_domain": true
-    },
-    {
-      "pattern": "www2.strangelasers.com",
-      "custom_domain": true
-    }
-  ]
+  }
 }
