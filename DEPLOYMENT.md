@@ -9,7 +9,7 @@ The site uses Cloudflare Workers Static Assets for its production and shareable 
 
 `www2.strangelasers.com` remains attached to the preview Worker as a compatibility alias for previously shared links. The existing Worker name is retained so its deployment history and rollback versions remain available.
 
-Worker ingress is account-level configuration: `preview.strangelasers.com` and `www2.strangelasers.com` are Custom Domains for the preview Worker, while `strangelasers.com/*` is a route to the production Worker. The Wrangler files intentionally omit `routes`, which keeps routine deployment tokens scoped to Worker code and prevents every asset deployment from reconciling otherwise unchanged zone routing. Cloudflare documents that omitting both route keys leaves dashboard-managed routing unchanged in its [Wrangler configuration guidance](https://developers.cloudflare.com/workers/wrangler/configuration/#source-of-truth).
+Worker ingress is account-level configuration: `preview.strangelasers.com` and `www2.strangelasers.com` are Custom Domains for the preview Worker, while `strangelasers.com/*` is a route to the production Worker. A zone-level redirect returns HTTP 308 from `www.strangelasers.com` to the matching apex path and preserves the query string. The Wrangler files intentionally omit `routes`, which keeps routine deployment tokens scoped to Worker code and prevents every asset deployment from reconciling otherwise unchanged zone routing. Cloudflare documents that omitting both route keys leaves dashboard-managed routing unchanged in its [Wrangler configuration guidance](https://developers.cloudflare.com/workers/wrangler/configuration/#source-of-truth).
 
 ## GitHub environments
 
