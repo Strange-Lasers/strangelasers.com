@@ -1,0 +1,39 @@
+name: Deploy Cloudflare environment
+
+on:
+  push:
+    branches:
+      - main
+      - preview
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: github.ref_name == 'main' || github.ref_name == 'preview'
+    name: Deploy ${{ github.ref_name == 'main' && 'production' || 'preview' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: ${{ github.ref_name == 'main' && 'production' || 'preview' }}
+      url: ${{ github.ref_name == 'main' && 'https://strangelasers.com/' || 'https://preview.strangelasers.com/' }}
+    env:
+      WRANGLER_CONFIG: ${{ github.ref_name == 'main' && 'wrangler.production.jsonc' || 'wrangler.preview.jsonc' }}
+    steps:
+      - name: Check out site
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Validate deployment
+        run: npx --yes wrangler@4.129.1 deploy --dry-run --config "$WRANGLER_CONFIG"
+
+      - name: Deploy static assets
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npx --yes wrangler@4.129.1 deploy --config "$WRANGLER_CONFIG"

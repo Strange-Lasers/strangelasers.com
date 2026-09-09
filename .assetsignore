@@ -7,7 +7,9 @@
 **/node_modules
 CNAME
 CONTRIBUTING.md
+DEPLOYMENT.md
 LICENSE
 README.md
 THIRD_PARTY_NOTICES.md
-wrangler.staging.jsonc
+wrangler.preview.jsonc
+wrangler.production.jsonc

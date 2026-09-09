@@ -30,12 +30,14 @@ The smoke is visible immediately and continuously samples page cadence. If the f
 
 The tuning panel has collapsible sections for center animation rotation speed and smoke. Preset buttons provide common rotation speeds and starting points for distinct smoke looks; every slider remains editable after applying one. Smoke controls cover cloud count, edge density, puff opacity, drifted density, brightness, size, inward reach, drift speed, breakup, softness, and laser tint. Drag the panel by any part of its header or resize it from its lower-right corner to uncover an edge. `Edge density` controls coverage at the frame. Below `1x`, `Drifted density` controls how many clouds remain visible as they move inward, so very low values allow occasional wisps instead of a continuous veil. Above `1x`, it scales their density. `Inward reach` independently controls how far every plume can develop while its source and dense core remain outside the frame. Every default sits at the midpoint of its control. Most multiplier controls use a logarithmic `0.01x` to `100.00x` range; drifted density extends down to `0.001x`, and inward reach extends up to `1000.00x`. Each slider has a synchronized numeric input. The panel updates the query string as values change, resets all visual controls together, and can copy a URL containing the complete settings.
 
-## Staging deployment
+## Preview deployment
 
-Deploy review checkpoints to [www2.strangelasers.com](https://www2.strangelasers.com/):
+The `preview` branch deploys automatically to [preview.strangelasers.com](https://preview.strangelasers.com/). Advance it to the revision that should be shared and push the branch. Existing [www2.strangelasers.com](https://www2.strangelasers.com/) links remain available through the same Worker.
+
+For manual recovery, use:
 
 ```sh
-npx --yes wrangler@4.129.1 deploy --config wrangler.staging.jsonc
+npx --yes wrangler@4.129.1 deploy --config wrangler.preview.jsonc
 ```
 
-This updates the assets-only staging Worker and its custom domain without changing the GitHub Pages production site. The asset ignore file keeps repository and deployment metadata out of the public bundle.
+See [DEPLOYMENT.md](DEPLOYMENT.md) for environment ownership, production promotion, and rollback details.
