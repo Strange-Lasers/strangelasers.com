@@ -1,0 +1,231 @@
+<!doctype html>
+<html class="home-root" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex">
+    <base href="../">
+    <style>
+      .eye-about-concept {
+        position: absolute;
+        z-index: 4;
+        top: 50%;
+        left: 50%;
+        width: max(44px, calc(var(--home-mark-size) * 0.2));
+        aspect-ratio: 1;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        color: #c7d1d4;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .eye-about-concept:focus-visible {
+        outline: 1px solid #78ebff;
+        outline-offset: 8px;
+      }
+      .home-meta .home-links { width: max-content; align-items: center; }
+      .home-about-concept {
+        display: inline-flex;
+        min-height: 44px;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        padding: 0 0.6rem;
+        margin-right: 0.2rem;
+        color: rgb(243 247 255 / 62%);
+        font-size: clamp(0.58rem, 1.15vmin, 0.74rem);
+        font-weight: 540;
+        letter-spacing: 0.08em;
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: color 180ms ease;
+      }
+      .home-about-concept:hover { color: #78ebff; }
+      .home-about-concept:focus-visible { outline: 2px solid #78ebff; outline-offset: 3px; }
+      .eye-about-label {
+        position: absolute;
+        top: 50%;
+        left: 100%;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 1rem 1rem 1.25rem;
+        transform: translate(-5px, -50%);
+        opacity: 0;
+        pointer-events: none;
+        white-space: nowrap;
+        font: 11px ui-monospace, "SFMono-Regular", Consolas, monospace;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        text-shadow: 0 1px 10px #000, 0 0 5px #000;
+        transition: opacity 180ms ease, transform 180ms ease;
+      }
+      .eye-about-label::before {
+        width: 1.4rem;
+        height: 1px;
+        background: #78898e;
+        content: "";
+      }
+      .eye-about-label span { color: #78ebff; font-size: 15px; }
+      .eye-about-concept:hover .eye-about-label,
+      .eye-about-concept:focus-visible .eye-about-label,
+      .show-eye-label .eye-about-label {
+        opacity: 1;
+        transform: translate(0, -50%);
+        pointer-events: auto;
+      }
+      .concept-controls {
+        position: fixed;
+        z-index: 8;
+        top: 1.5rem;
+        left: 1.5rem;
+        display: grid;
+        gap: 0.65rem;
+        color: #7f8a8f;
+        font: 11px/1.5 ui-monospace, "SFMono-Regular", Consolas, monospace;
+      }
+      .concept-controls p { margin: 0; }
+      .concept-controls button {
+        width: fit-content;
+        padding: 0.35rem 0;
+        border: 0;
+        border-bottom: 1px solid #38454a;
+        background: none;
+        color: #c7d1d4;
+        font: inherit;
+        cursor: pointer;
+      }
+      .concept-controls button:focus-visible { outline: 1px solid #78ebff; outline-offset: 4px; }
+      @media (prefers-reduced-motion: reduce) {
+        .eye-about-label { transition: none; }
+      }
+      @media (max-width: 500px) {
+        .eye-about-label { padding-left: 0.6rem; gap: 0.4rem; font-size: 10px; }
+        .eye-about-label::before { width: 0.8rem; }
+      }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#000000">
+    <meta
+      name="description"
+      content="Open-source software, made with care."
+    >
+    <meta property="og:title" content="Strange Lasers">
+    <meta property="og:description" content="We write software">
+    <meta property="og:image" content="https://strangelasers.com/icon-512.png">
+    <meta property="og:type" content="website">
+    <title>About navigation preview | Strange Lasers</title>
+    <link rel="icon" href="mark.svg" type="image/svg+xml">
+    <link data-site-manifest href="manifest.webmanifest">
+    <script src="site-init.js"></script>
+    <link rel="stylesheet" href="palette.css">
+    <link rel="stylesheet" href="styles.css?v=eye-depth">
+  </head>
+  <body class="home-body">
+    <main class="home-page">
+      <h1 id="site-title" class="sr-only">Strange Lasers</h1>
+
+      <div
+        class="home-mark"
+        data-motion-variant="gimbal"
+        data-static-fallback
+        aria-hidden="true"
+      >
+        <img
+          class="home-motion-placeholder"
+          src="mark-motion-initial.svg?v=eye-depth"
+          alt=""
+          width="512"
+          height="512"
+        >
+        <img
+          class="home-static-mark"
+          src="mark-transparent.svg"
+          alt=""
+          width="512"
+          height="512"
+        >
+        <div class="sample-visual"></div>
+      </div>
+
+      <a class="eye-about-concept" href="about/?animate" aria-label="About Strange Lasers">
+        <span class="eye-about-label" aria-hidden="true">About <span>&#8594;</span></span>
+      </a>
+
+      <section class="home-signature" aria-labelledby="site-title">
+        <img
+          class="home-wordmark"
+          src="wordmark.svg"
+          alt=""
+          width="605"
+          height="230"
+        >
+
+        <div class="home-meta">
+          <p class="tagline">
+            <span class="tagline-text tagline-text--primary">We write software</span>
+            <span class="tagline-text tagline-text--alternate" aria-hidden="true">Open-source the world</span>
+          </p>
+          <nav class="home-links" aria-label="Strange Lasers links">
+            <a class="home-about-concept" href="about/?animate">About</a>
+            <a
+              class="home-link"
+              href="https://github.com/Strange-Lasers"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <svg
+                class="home-link-icon"
+                viewBox="0 0 16 16"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path d="M6.766 11.328c-2.063-.25-3.516-1.734-3.516-3.656 0-.781.281-1.625.75-2.188-.203-.515-.172-1.609.063-2.062.625-.078 1.468.25 1.968.703.594-.187 1.219-.281 1.985-.281.765 0 1.39.094 1.953.265.484-.437 1.344-.765 1.969-.687.218.422.25 1.515.046 2.047.5.593.766 1.39.766 2.203 0 1.922-1.453 3.375-3.547 3.64.531.344.89 1.094.89 1.954v1.625c0 .468.391.734.86.547C13.781 14.359 16 11.53 16 8.03 16 3.61 12.406 0 7.984 0 3.563 0 0 3.61 0 8.031a7.88 7.88 0 0 0 5.172 7.422c.422.156.828-.125.828-.547v-1.25c-.219.094-.5.156-.75.156-1.031 0-1.64-.562-2.078-1.609-.172-.422-.36-.672-.719-.719-.187-.015-.25-.093-.25-.187 0-.188.313-.328.625-.328.453 0 .844.281 1.25.86.313.452.64.655 1.031.655s.641-.14 1-.5c.266-.265.47-.5.657-.656"/>
+              </svg>
+              GitHub
+            </a>
+            <a
+              class="home-link"
+              href="https://stowplan.jklein.dev"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                class="home-link-icon"
+                src="stowplan-icon.svg"
+                alt=""
+                width="64"
+                height="64"
+              >
+              Stowplan
+            </a>
+          </nav>
+        </div>
+      </section>
+    </main>
+    <script src="logo-webgl.js?v=eye-depth"></script>
+    <script src="logo-motion.js?v=eye-depth"></script>
+
+    <aside class="concept-controls" aria-label="Mockup controls">
+      <p>About navigation / unpublished draft</p>
+      <p>About fades in with the bottom-right links</p>
+      <p>Hover the eye to reveal the link</p>
+      <button type="button" id="label-toggle" aria-pressed="false">Hold label open</button>
+    </aside>
+    <script>
+      (() => {
+        const SHOW_LABEL_CLASS = "show-eye-label";
+        const query = new URLSearchParams(window.location.search);
+        const toggle = document.querySelector("#label-toggle");
+        function setLabelVisibility(visible) {
+          document.documentElement.classList.toggle(SHOW_LABEL_CLASS, visible);
+          toggle.setAttribute("aria-pressed", String(visible));
+          toggle.textContent = visible ? "Return to hover behavior" : "Hold label open";
+        }
+        toggle.addEventListener("click", () => {
+          setLabelVisibility(!document.documentElement.classList.contains(SHOW_LABEL_CLASS));
+        });
+        setLabelVisibility(query.has("show-label"));
+      })();
+    </script>
+  </body>
+</html>
