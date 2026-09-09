@@ -5,11 +5,5 @@
   "preview_urls": false,
   "assets": {
     "directory": "."
-  },
-  "routes": [
-    {
-      "pattern": "strangelasers.com/*",
-      "zone_name": "strangelasers.com"
-    }
-  ]
+  }
 }
