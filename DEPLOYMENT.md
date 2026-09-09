@@ -9,7 +9,7 @@ The site uses Cloudflare Workers Static Assets for its production and shareable 
 
 `www2.strangelasers.com` remains attached to the preview Worker as a compatibility alias for previously shared links. The existing Worker name is retained so its deployment history and rollback versions remain available.
 
-Worker ingress is account-level configuration: `preview.strangelasers.com` and `www2.strangelasers.com` are Custom Domains for the preview Worker, while `strangelasers.com/*` is a route to the production Worker. A zone-level redirect returns HTTP 308 from `www.strangelasers.com` to the matching apex path and preserves the query string. The Wrangler files intentionally omit `routes`, which keeps routine deployment tokens scoped to Worker code and prevents every asset deployment from reconciling otherwise unchanged zone routing. Cloudflare documents that omitting both route keys leaves dashboard-managed routing unchanged in its [Wrangler configuration guidance](https://developers.cloudflare.com/workers/wrangler/configuration/#source-of-truth).
+Worker ingress is account-level configuration: `strangelasers.com` is a Custom Domain for the production Worker, while `preview.strangelasers.com` and `www2.strangelasers.com` are Custom Domains for the preview Worker. A zone-level redirect returns HTTP 308 from `www.strangelasers.com` to the matching apex path and preserves the query string. The Wrangler files intentionally omit `routes`, which keeps routine deployment tokens scoped to Worker code and prevents every asset deployment from reconciling otherwise unchanged hostname routing. Cloudflare documents that omitting both route keys leaves dashboard-managed routing unchanged in its [Wrangler configuration guidance](https://developers.cloudflare.com/workers/wrangler/configuration/#source-of-truth).
 
 ## GitHub environments
 
@@ -25,7 +25,7 @@ Advance `preview` to the revision that should be shared, then push the branch. D
 
 Fast-forward `main` to an accepted revision and push it. GitHub records the deployment against the production environment and Wrangler updates the production Worker.
 
-The production Worker initially uses a route over the existing proxied apex record. GitHub Pages remains configured as the dormant origin during the migration checkpoint, so removing the exact Worker route restores the previous request path. Retire GitHub Pages and remove `CNAME` only after the Worker deployment has been observed and accepted.
+`strangelasers.com` is served directly by the production Worker Custom Domain. GitHub Pages is disabled, and the repository does not carry a Pages `CNAME`. Use Cloudflare's Worker deployment history to roll back production assets.
 
 ## Manual recovery
 

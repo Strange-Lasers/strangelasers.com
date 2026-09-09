@@ -5,7 +5,6 @@
 .wrangler
 **/.DS_Store
 **/node_modules
-CNAME
 CONTRIBUTING.md
 DEPLOYMENT.md
 LICENSE
