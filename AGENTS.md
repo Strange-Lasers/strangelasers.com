@@ -4,6 +4,8 @@
 
 Read [README.md](README.md) for the site overview and [brand/README.md](brand/README.md) before changing brand assets. Read [DEPLOYMENT.md](DEPLOYMENT.md) before publishing. The site is a static Cloudflare Workers Assets project with SVG and WebGL renderers, not a framework application.
 
+Eleventy builds Nunjucks templates from `src/` into the generated `dist/` directory. Keep shared copy in `src/_data/site.json`, people in `src/_data/people.json`, and reusable markup in `src/_includes/`. Edit the source templates and data instead of generated HTML. Run `npm ci` for a fresh checkout, `npm run dev` for local preview, and `npm run check` before committing site changes. The explicit passthrough list in `eleventy.config.mjs` owns which static assets reach the deployment bundle.
+
 Use `palette.css` for shared brand colors and treatment tokens, and `brand/*.svg.template` for production static geometry. Regenerate derived assets with `scripts/build-brand.mjs`; do not hand-edit generated root SVGs. Preserve the existing letter outlines and the A-leg depth relationships unless a requested design change explicitly changes them.
 
 ## Design studies

@@ -1,0 +1,72 @@
+{% extends "document.njk" %}
+{% block htmlAttributes %} class="home-root"{% endblock %}
+{% block bodyAttributes %} class="home-body"{% endblock %}
+{% block pageTitle %}{{ site.name }} | {{ site.tagline }}{% endblock %}
+{% block head %}
+<meta property="og:title" content="{{ site.name }}">
+<meta property="og:description" content="{{ site.tagline }}">
+<meta property="og:image" content="{{ site.url }}icon-512.png?v=brand-spectrum">
+<meta property="og:type" content="website">
+{% if not noindex %}
+<meta property="og:url" content="{{ site.url }}">
+<link rel="canonical" href="{{ site.url }}">
+{% endif %}
+{% endblock %}
+{% block manifest %}<link data-site-manifest href="manifest.webmanifest">{% endblock %}
+{% block styles %}<link rel="stylesheet" href="styles.css?v=about-navigation">{% endblock %}
+{% block content %}
+    <main class="home-page">
+      <h1 id="site-title" class="sr-only">{{ site.name }}</h1>
+
+      <div
+        class="home-mark"
+        data-motion-variant="gimbal"
+        data-static-fallback
+        aria-hidden="true"
+      >
+        <img
+          class="home-motion-placeholder"
+          src="mark-motion-initial.svg?v=brand-spectrum"
+          alt=""
+          width="512"
+          height="512"
+        >
+        <img
+          class="home-static-mark"
+          src="mark-transparent.svg?v=brand-spectrum"
+          alt=""
+          width="512"
+          height="512"
+        >
+        <div class="sample-visual"></div>
+      </div>
+
+      <a class="eye-about-link" href="{{ site.links.about.url }}" aria-label="{{ site.links.about.label }} {{ site.name }}">
+        <span class="eye-about-label" aria-hidden="true">{{ site.links.about.label }} <span>&#8594;</span></span>
+      </a>
+
+      <section class="home-signature" aria-labelledby="site-title">
+        <img
+          class="home-wordmark"
+          src="wordmark.svg?v=balanced-flare"
+          alt=""
+          width="680"
+          height="250"
+        >
+
+        <div class="home-meta">
+          <p class="tagline">
+            <span class="tagline-text tagline-text--primary">{{ site.tagline }}</span>
+            <span class="tagline-text tagline-text--alternate" aria-hidden="true">{{ site.alternateTagline }}</span>
+          </p>
+          <nav class="home-links" aria-label="{{ site.name }} links">
+            {% include "home-links.njk" %}
+          </nav>
+        </div>
+      </section>
+    </main>
+{% endblock %}
+{% block scripts %}
+<script src="logo-webgl.js?v=brand-spectrum"></script>
+<script src="logo-motion.js?v=brand-spectrum"></script>
+{% endblock %}

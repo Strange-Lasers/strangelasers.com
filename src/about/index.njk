@@ -1,0 +1,82 @@
+---
+permalink: /about/index.html
+title: About us
+themeColor: "#050607"
+assetPrefix: "../"
+noindex: true
+showPortraitCaptions: false
+---
+{% extends "document.njk" %}
+{% block description %}Meet the people behind {{ site.name }}, an independent open-source software {{ site.organizationType }}.{% endblock %}
+{% block styles %}<link rel="stylesheet" href="about.css">{% endblock %}
+{% block head %}<script src="about.js" defer></script>{% endblock %}
+{% block content %}
+    <a class="skip-link" href="#people">Skip to the people</a>
+
+    <div class="optical-field" aria-hidden="true">
+      <svg class="field-drawing" viewBox="0 0 1000 1000" fill="none">
+        <defs>
+          <linearGradient id="field-spectrum" x1="180" y1="140" x2="780" y2="860" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#78ebff"/>
+            <stop offset=".46" stop-color="#648b98"/>
+            <stop offset="1" stop-color="#a19af7"/>
+          </linearGradient>
+        </defs>
+        <g stroke="url(#field-spectrum)" stroke-width=".8" transform="rotate(-28 500 500)">
+          {% for radius in range(112, 369, 16) %}
+            <ellipse cx="500" cy="500" rx="372" ry="{{ radius }}"/>
+          {% endfor %}
+        </g>
+        <circle cx="500" cy="500" r="4" fill="#d9f9ff"/>
+        <path d="M488 500h-18m42 0h18M500 488v-18m0 42v18" stroke="#78ebff" stroke-width=".6"/>
+      </svg>
+    </div>
+
+    <header class="site-header">
+      <a class="brand" href="../" aria-label="{{ site.name }} home">
+        <img src="../wordmark.svg" alt="" width="605" height="230">
+      </a>
+      <span class="header-caption">Independent minds. Open source.</span>
+      <a class="home-link" href="../"><span aria-hidden="true">&#8598;</span> Back to the surface</a>
+    </header>
+
+    <main id="top">
+      <section class="intro page-width" aria-labelledby="intro-title">
+        <div class="intro-heading">
+          <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> The people behind {{ site.name }}</p>
+          <h1 id="intro-title">A few people.<br><span>A shared frequency.</span></h1>
+        </div>
+        <div class="intro-bottom">
+          <a class="text-link meet-link" href="#people">Meet the people <span class="scroll-arrow" aria-hidden="true">&#8595;</span></a>
+          <p class="intro-copy">We're an independent software {{ site.organizationType }} making tools you can use, inspect, and change.</p>
+        </div>
+      </section>
+
+      <section id="people" class="people" aria-label="The people" tabindex="-1">
+        {% for person in people %}
+          {% include "person.njk" %}
+        {% endfor %}
+      </section>
+
+      <section class="outro page-width" aria-labelledby="outro-title">
+        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> What brings us together</p>
+        <h2 id="outro-title">Good things<br>are better <em>open.</em></h2>
+        <div class="outro-bottom">
+          <p>We like tools you can understand, change, and make your own. So that's what we make.</p>
+          <a class="text-link source-link" href="{{ site.links.github.url }}">See what we're making <span aria-hidden="true">&#8599;</span></a>
+        </div>
+      </section>
+    </main>
+
+    <nav class="people-nav" aria-label="Jump to a person">
+      {% for person in people %}
+        <a href="#{{ person.id }}" aria-label="{{ person.name }}"><span class="nav-name" aria-hidden="true">{{ person.name }}</span><span>{{ loop.index | personNumber }}</span></a>
+      {% endfor %}
+    </nav>
+
+    <footer class="site-footer page-width">
+      <a href="../">{{ site.name }}</a>
+      <span>{{ site.footer }}</span>
+      <a href="#top">Back to the top <span aria-hidden="true">&#8593;</span></a>
+    </footer>
+{% endblock %}

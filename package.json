@@ -1,0 +1,20 @@
+{
+  "name": "strangelasers.com",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0-only",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "build": "npm run clean && eleventy",
+    "dev": "npm run clean && eleventy --serve --port=4175",
+    "test": "npm run build && node --test",
+    "check": "node scripts/build-brand.mjs --check && npm test"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "3.1.6",
+    "parse5": "8.0.1"
+  }
+}

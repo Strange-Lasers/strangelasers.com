@@ -191,6 +191,7 @@ function captureOpening() {
 }
 
 function buildOpening() {
+  run("npm", ["run", "build"], { cwd: ROOT });
   const session = "brand-export-" + process.pid;
   const browser = (args, options) => {
     const response = JSON.parse(run("agent-browser", ["--session", session, "--json", ...args], options));
@@ -198,7 +199,7 @@ function buildOpening() {
     return response.data;
   };
   try {
-    const url = pathToFileURL(resolve(ROOT, "index.html"));
+    const url = pathToFileURL(resolve(ROOT, "dist/index.html"));
     url.search = "?renderer=svg";
     browser(["open", url.href]);
     const { result } = browser(["eval", "--stdin"], {
@@ -209,6 +210,7 @@ function buildOpening() {
       throw new Error("Opening export is not a self-contained SVG");
     }
     writeFileSync(resolve(ROOT, "mark-motion-initial.svg"), result);
+    run("npm", ["run", "build"], { cwd: ROOT });
     console.log("mark-motion-initial.svg");
   } finally {
     browser(["close"]);

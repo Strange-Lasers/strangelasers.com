@@ -2,7 +2,7 @@
 
 ## Primer Octicons
 
-The GitHub mark embedded in `index.html` is derived from Primer Octicons.
+The GitHub mark in `src/_includes/icons/github.svg`, embedded by the homepage link template, is derived from Primer Octicons.
 
 MIT License
 
