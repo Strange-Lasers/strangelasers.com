@@ -38,7 +38,7 @@ test("mark uses fine white cores and the shared purple-to-cyan eye edge", () => 
   assert.match(assets.get("mark.svg"), /<rect width="512" height="512" fill="url\(#background\)"/);
 });
 
-test("wordmark preserves letter colors, A masks, and opaque fine-outline flares", () => {
+test("wordmark preserves letter colors, A masks, and opaque balanced flares", () => {
   const wordmark = assets.get("wordmark.svg");
   assert.match(wordmark, /viewBox="40 15 680 250"/);
   assert.match(wordmark, /translate\(95 130\)[^>]+fill="#7857ff"/);
@@ -48,13 +48,53 @@ test("wordmark preserves letter colors, A masks, and opaque fine-outline flares"
   const flareStart = wordmark.indexOf('transform="rotate(');
   assert.ok(flareStart > 0);
   const flares = wordmark.slice(flareStart);
-  assert.match(flares, /stroke-width="1"/);
-  assert.match(flares, /stroke-width="2.15"/);
-  assert.match(flares, /stroke-width="1.9"/);
+  const paths = [...flares.matchAll(/<path\b[^>]*>/g)].map(([element]) =>
+    Object.fromEntries([...element.matchAll(/([\w-]+)="([^"]*)"/g)].map(([, key, value]) => [key, value])));
+  const shapes = new Set(paths.map((path) => path.d));
+  assert.equal(paths.length, 6);
+  assert.equal(shapes.size, 1, "Outlines, bodies, and centers share the same shape");
+  assert.match(paths[0].d, /^M0 -26C/);
+  assert.doesNotMatch(flares, /<line\b/, "Flares have no separate spine or diagonal rays");
+  for (const [position, color] of [["378 84", "laser-cyan-body"], ["230 194", "laser-purple-body"]]) {
+    const transform = "translate(" + position + ")";
+    const [outline, body, center] = paths.filter((path) => path.transform.startsWith(transform));
+    assert.equal(outline.fill, "none");
+    assert.equal(outline.stroke, palette.get("laser-background"));
+    assert.equal(outline["stroke-width"], "1");
+    assert.equal(body.fill, palette.get(color));
+    assert.equal(body.opacity, "1");
+    assert.equal(center.fill, palette.get("laser-core"));
+    assert.equal(center.opacity, "1");
+    assert.equal(center.transform, transform + " scale(.65)");
+  }
   for (const element of flares.match(/<(?:g|path|line|circle)\b[^>]*>/g)) {
+    if (element.startsWith("<circle")) assert.ok(element.includes("filter="), "Only glow uses circles");
     if (!element.includes("filter=")) {
       assert.doesNotMatch(element, /(?:fill-|stroke-)?opacity="0\./, element);
     }
+  }
+});
+
+test("wordmark keeps the selected beam and flare glow", () => {
+  const wordmark = assets.get("wordmark.svg");
+  const glowLines = wordmark.match(/<line\b[^>]*filter="[^>]+>/g);
+  assert.equal(glowLines.length, 4);
+  for (const line of glowLines) {
+    if (line.includes("#wide-glow")) {
+      assert.match(line, /opacity="0.2"/);
+      assert.match(line, /stroke-width="42"/);
+    } else {
+      assert.match(line, /filter="url\(#tight-glow\)"/);
+      assert.match(line, /opacity="0.44"/);
+      assert.match(line, /stroke-width="18"/);
+    }
+  }
+  const flares = wordmark.slice(wordmark.indexOf('transform="rotate('));
+  const halos = flares.match(/<circle\b[^>]*>/g);
+  assert.equal(halos.length, 4);
+  for (const halo of halos) {
+    if (halo.includes("#wide-glow")) assert.match(halo, /r="27" opacity="0.4"/);
+    else assert.match(halo, /r="11" opacity="0.78" filter="url\(#tight-glow\)"/);
   }
 });
 

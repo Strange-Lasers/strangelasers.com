@@ -17,7 +17,9 @@ The motion renderer retains darker side-face colors for depth shading. The anima
 
 The mark uses a 3-unit white highlight at 0.88 opacity over a fully opaque 1-unit white core. The eye has a 10-unit colored stroke under its 6-unit white rim, exposing a 2-unit outer edge. Its vertical gradient holds purple through 25% and reaches cyan at 75%. These measurements use the mark's 512-unit viewBox.
 
-The wordmark places the lasers behind the letters except where they cross one leg of each A. Its letters use a 1.7-unit near-black stroke before their 1.55 scale transform. Each perpendicular flare has an opaque colored body and white center. The visible near-black flare edges are 0.5 units around the star, 0.4 units on the main ray, and 0.35 units on the diagonal rays. Only the surrounding glow is translucent; the white beam highlight retains its separate 0.88 opacity.
+The wordmark places the lasers behind the letters except where they cross one leg of each A. Its letters use a 1.7-unit near-black stroke before their 1.55 scale transform. Each perpendicular balanced four-point flare has long sharp tips and gently curved tapers, an opaque colored body, and an opaque white center scaled to 65% of the same shape. A 1-unit near-black stroke beneath the colored body leaves a 0.5-unit visible edge. The flare has no separate diagonal rays, spine, or center dot. Only the surrounding glow is translucent; the white beam highlight retains its separate 0.88 opacity.
+
+The beam glow combines a 42-unit wide stroke at 0.2 opacity with an 18-unit tight stroke at 0.44 opacity. Each flare adds colored glow circles with radii of 27 and 11 units at 0.4 and 0.78 opacity. Wide and tight glow use Gaussian blur deviations of 15 and 5 respectively, all in wordmark viewBox units.
 
 The transparent mark, wordmark, and combined logo are shared between light and dark backgrounds. `mark.svg` and the PNG icons deliberately include a dark background tile for favicon and app-icon use. The standalone wordmark uses a tighter `40 15 680 250` viewBox for small placements; the combined logo preserves the wider layout.
 

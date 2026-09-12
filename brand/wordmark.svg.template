@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="680" height="250" viewBox="40 15 680 250" role="img" aria-labelledby="wordmark-title wordmark-desc" version="1.1">
   <title id="wordmark-title">Strange Lasers</title>
-  <desc id="wordmark-desc">Vivid purple STRANGE above cyan LASERS with a fine near-black outline. The cyan upper beam and purple lower beam pass behind the letters except through one leg of each A, with fine white cores and perpendicular cyan and purple flares. The solid flares have opaque near-black outlines and white centers, surrounded by a soft glow. Transparent background.</desc>
+  <desc id="wordmark-desc">Vivid purple STRANGE above cyan LASERS with a fine near-black outline. The cyan upper beam and purple lower beam pass behind the letters except through one leg of each A, with fine white cores and perpendicular cyan and purple flares. Each balanced four-point flare has long sharp tips and gently curved tapers, with an opaque white center of the same shape, colored edges, a fine near-black outline, and a soft glow. Transparent background.</desc>
   <defs>
     <filter id="wide-glow" filterUnits="userSpaceOnUse" x="-100" y="-100" width="960" height="530">
       <feGaussianBlur stdDeviation="15"/>
@@ -31,10 +31,10 @@
     <g>
       <g>
         <g>
-          <line x1="75" y1="96" x2="685" y2="72" filter="url(#wide-glow)" fill="none" opacity="0.15" stroke-linecap="round" stroke-width="38" stroke="{{laser-cyan-body}}"/>
-          <line x1="75" y1="96" x2="685" y2="72" filter="url(#tight-glow)" fill="none" opacity="0.34" stroke-linecap="round" stroke-width="16" stroke="{{laser-cyan-body}}"/>
-          <line x1="685" y1="212" x2="75" y2="188" filter="url(#wide-glow)" fill="none" opacity="0.15" stroke-linecap="round" stroke-width="38" stroke="{{laser-purple-body}}"/>
-          <line x1="685" y1="212" x2="75" y2="188" filter="url(#tight-glow)" fill="none" opacity="0.34" stroke-linecap="round" stroke-width="16" stroke="{{laser-purple-body}}"/>
+          <line x1="75" y1="96" x2="685" y2="72" filter="url(#wide-glow)" fill="none" opacity="0.2" stroke-linecap="round" stroke-width="42" stroke="{{laser-cyan-body}}"/>
+          <line x1="75" y1="96" x2="685" y2="72" filter="url(#tight-glow)" fill="none" opacity="0.44" stroke-linecap="round" stroke-width="18" stroke="{{laser-cyan-body}}"/>
+          <line x1="685" y1="212" x2="75" y2="188" filter="url(#wide-glow)" fill="none" opacity="0.2" stroke-linecap="round" stroke-width="42" stroke="{{laser-purple-body}}"/>
+          <line x1="685" y1="212" x2="75" y2="188" filter="url(#tight-glow)" fill="none" opacity="0.44" stroke-linecap="round" stroke-width="18" stroke="{{laser-purple-body}}"/>
           <circle cx="75" cy="96" r="8" opacity="0.22" filter="url(#tight-glow)" fill="{{laser-cyan-body}}"/>
           <rect x="677" y="204" width="16" height="16" rx="3" opacity="0.22" filter="url(#tight-glow)" fill="{{laser-purple-body}}"/>
         </g>
@@ -124,34 +124,20 @@
     <g>
       <g transform="rotate(-2.2530980802667666 378 84)">
         <g>
-          <circle cx="378" cy="84" r="24" opacity="0.3" filter="url(#wide-glow)" fill="{{laser-cyan-body}}"/>
-          <circle cx="378" cy="84" r="10" opacity="0.66" filter="url(#tight-glow)" fill="{{laser-cyan-body}}"/>
-          <circle cx="378" cy="84" r="6.5" opacity="1" fill="{{laser-cyan-body}}"/>
-          <path d="M378 58 380.5 81.5 398 84 380.5 86.5 378 110 375.5 86.5 358 84 375.5 81.5Z" fill="none" stroke="{{laser-background}}" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
-          <line x1="378" y1="58" x2="378" y2="110" fill="none" stroke="{{laser-background}}" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"/>
-          <line x1="368" y1="74" x2="388" y2="94" fill="none" stroke="{{laser-background}}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
-          <line x1="368" y1="94" x2="388" y2="74" fill="none" stroke="{{laser-background}}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M378 58 380.5 81.5 398 84 380.5 86.5 378 110 375.5 86.5 358 84 375.5 81.5Z" fill="{{laser-cyan-body}}" opacity="1"/>
-          <line x1="378" y1="58" x2="378" y2="110" fill="none" opacity="1" stroke="{{laser-cyan-body}}" stroke-linecap="round" stroke-width="1.35"/>
-          <line x1="368" y1="74" x2="388" y2="94" fill="none" opacity="1" stroke="{{laser-cyan-body}}" stroke-linecap="round" stroke-width="1.2"/>
-          <line x1="368" y1="94" x2="388" y2="74" fill="none" opacity="1" stroke="{{laser-cyan-body}}" stroke-linecap="round" stroke-width="1.2"/>
-          <circle cx="378" cy="84" r="2.7" fill="{{laser-core}}" opacity="1"/>
+          <circle cx="378" cy="84" r="27" opacity="0.4" filter="url(#wide-glow)" fill="{{laser-cyan-body}}"/>
+          <circle cx="378" cy="84" r="11" opacity="0.78" filter="url(#tight-glow)" fill="{{laser-cyan-body}}"/>
+          <path d="M0 -26C0.6292 -16.8333 1.2708 -9.7729 3.1219 -3.9719C7.4729 -1.6708 13.0333 -0.6292 21 0C13.0333 0.6292 7.4729 1.6708 3.1219 3.9719C1.2708 9.7729 0.6292 16.8333 0 26C-0.6292 16.8333 -1.2708 9.7729 -3.1219 3.9719C-7.4729 1.6708 -13.0333 0.6292 -21 0C-13.0333 -0.6292 -7.4729 -1.6708 -3.1219 -3.9719C-1.2708 -9.7729 -0.6292 -16.8333 0 -26Z" transform="translate(378 84)" fill="none" stroke="{{laser-background}}" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M0 -26C0.6292 -16.8333 1.2708 -9.7729 3.1219 -3.9719C7.4729 -1.6708 13.0333 -0.6292 21 0C13.0333 0.6292 7.4729 1.6708 3.1219 3.9719C1.2708 9.7729 0.6292 16.8333 0 26C-0.6292 16.8333 -1.2708 9.7729 -3.1219 3.9719C-7.4729 1.6708 -13.0333 0.6292 -21 0C-13.0333 -0.6292 -7.4729 -1.6708 -3.1219 -3.9719C-1.2708 -9.7729 -0.6292 -16.8333 0 -26Z" transform="translate(378 84)" fill="{{laser-cyan-body}}" opacity="1"/>
+          <path d="M0 -26C0.6292 -16.8333 1.2708 -9.7729 3.1219 -3.9719C7.4729 -1.6708 13.0333 -0.6292 21 0C13.0333 0.6292 7.4729 1.6708 3.1219 3.9719C1.2708 9.7729 0.6292 16.8333 0 26C-0.6292 16.8333 -1.2708 9.7729 -3.1219 3.9719C-7.4729 1.6708 -13.0333 0.6292 -21 0C-13.0333 -0.6292 -7.4729 -1.6708 -3.1219 -3.9719C-1.2708 -9.7729 -0.6292 -16.8333 0 -26Z" transform="translate(378 84) scale(.65)" fill="{{laser-core}}" opacity="1"/>
         </g>
       </g>
       <g transform="rotate(2.2530980802667666 230 194)">
         <g>
-          <circle cx="230" cy="194" r="24" opacity="0.3" filter="url(#wide-glow)" fill="{{laser-purple-body}}"/>
-          <circle cx="230" cy="194" r="10" opacity="0.66" filter="url(#tight-glow)" fill="{{laser-purple-body}}"/>
-          <circle cx="230" cy="194" r="6.5" opacity="1" fill="{{laser-purple-body}}"/>
-          <path d="M230 168 232.5 191.5 250 194 232.5 196.5 230 220 227.5 196.5 210 194 227.5 191.5Z" fill="none" stroke="{{laser-background}}" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
-          <line x1="230" y1="168" x2="230" y2="220" fill="none" stroke="{{laser-background}}" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"/>
-          <line x1="220" y1="184" x2="240" y2="204" fill="none" stroke="{{laser-background}}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
-          <line x1="220" y1="204" x2="240" y2="184" fill="none" stroke="{{laser-background}}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M230 168 232.5 191.5 250 194 232.5 196.5 230 220 227.5 196.5 210 194 227.5 191.5Z" fill="{{laser-purple-body}}" opacity="1"/>
-          <line x1="230" y1="168" x2="230" y2="220" fill="none" opacity="1" stroke="{{laser-purple-body}}" stroke-linecap="round" stroke-width="1.35"/>
-          <line x1="220" y1="184" x2="240" y2="204" fill="none" opacity="1" stroke="{{laser-purple-body}}" stroke-linecap="round" stroke-width="1.2"/>
-          <line x1="220" y1="204" x2="240" y2="184" fill="none" opacity="1" stroke="{{laser-purple-body}}" stroke-linecap="round" stroke-width="1.2"/>
-          <circle cx="230" cy="194" r="2.7" fill="{{laser-core}}" opacity="1"/>
+          <circle cx="230" cy="194" r="27" opacity="0.4" filter="url(#wide-glow)" fill="{{laser-purple-body}}"/>
+          <circle cx="230" cy="194" r="11" opacity="0.78" filter="url(#tight-glow)" fill="{{laser-purple-body}}"/>
+          <path d="M0 -26C0.6292 -16.8333 1.2708 -9.7729 3.1219 -3.9719C7.4729 -1.6708 13.0333 -0.6292 21 0C13.0333 0.6292 7.4729 1.6708 3.1219 3.9719C1.2708 9.7729 0.6292 16.8333 0 26C-0.6292 16.8333 -1.2708 9.7729 -3.1219 3.9719C-7.4729 1.6708 -13.0333 0.6292 -21 0C-13.0333 -0.6292 -7.4729 -1.6708 -3.1219 -3.9719C-1.2708 -9.7729 -0.6292 -16.8333 0 -26Z" transform="translate(230 194)" fill="none" stroke="{{laser-background}}" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M0 -26C0.6292 -16.8333 1.2708 -9.7729 3.1219 -3.9719C7.4729 -1.6708 13.0333 -0.6292 21 0C13.0333 0.6292 7.4729 1.6708 3.1219 3.9719C1.2708 9.7729 0.6292 16.8333 0 26C-0.6292 16.8333 -1.2708 9.7729 -3.1219 3.9719C-7.4729 1.6708 -13.0333 0.6292 -21 0C-13.0333 -0.6292 -7.4729 -1.6708 -3.1219 -3.9719C-1.2708 -9.7729 -0.6292 -16.8333 0 -26Z" transform="translate(230 194)" fill="{{laser-purple-body}}" opacity="1"/>
+          <path d="M0 -26C0.6292 -16.8333 1.2708 -9.7729 3.1219 -3.9719C7.4729 -1.6708 13.0333 -0.6292 21 0C13.0333 0.6292 7.4729 1.6708 3.1219 3.9719C1.2708 9.7729 0.6292 16.8333 0 26C-0.6292 16.8333 -1.2708 9.7729 -3.1219 3.9719C-7.4729 1.6708 -13.0333 0.6292 -21 0C-13.0333 -0.6292 -7.4729 -1.6708 -3.1219 -3.9719C-1.2708 -9.7729 -0.6292 -16.8333 0 -26Z" transform="translate(230 194) scale(.65)" fill="{{laser-core}}" opacity="1"/>
         </g>
       </g>
     </g>
