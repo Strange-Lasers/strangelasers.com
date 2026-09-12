@@ -2,12 +2,14 @@
 
 The site uses Cloudflare Workers Static Assets for its production and shareable preview environments. Each environment deploys automatically from its owning branch through GitHub Actions.
 
+Eleventy generates the deployment bundle in `dist/` using Nunjucks templates and shared data from `src/`. Both Wrangler configurations serve this directory. The passthrough list in `eleventy.config.mjs` copies public assets into it; templates, content data, build dependencies, and repository documentation stay outside the bundle. Template rendering happens during the build and requires no Worker runtime or additional Cloudflare service.
+
 | Environment | Branch | Hostname | Worker | Wrangler configuration |
 | --- | --- | --- | --- | --- |
 | Production | `main` | `strangelasers.com` | `strangelasers-production` | `wrangler.production.jsonc` |
-| Preview | `preview` | `preview.strangelasers.com` | `strangelasers-staging` | `wrangler.preview.jsonc` |
+| Preview | `preview` | `preview.strangelasers.com` | `strangelasers-preview` | `wrangler.preview.jsonc` |
 
-`www2.strangelasers.com` remains attached to the preview Worker as a compatibility alias for previously shared links. The existing Worker name is retained so its deployment history and rollback versions remain available.
+`www2.strangelasers.com` remains attached to the preview Worker as a compatibility alias for previously shared links. The preview Worker is named `strangelasers-preview`; both hostnames share its assets and deployment history.
 
 Worker ingress is account-level configuration: `strangelasers.com` is a Custom Domain for the production Worker, while `preview.strangelasers.com` and `www2.strangelasers.com` are Custom Domains for the preview Worker. A zone-level redirect returns HTTP 308 from `www.strangelasers.com` to the matching apex path and preserves the query string. The Wrangler files intentionally omit `routes`, which keeps routine deployment tokens scoped to Worker code and prevents every asset deployment from reconciling otherwise unchanged hostname routing. Cloudflare documents that omitting both route keys leaves dashboard-managed routing unchanged in its [Wrangler configuration guidance](https://developers.cloudflare.com/workers/wrangler/configuration/#source-of-truth).
 
@@ -15,7 +17,7 @@ Worker ingress is account-level configuration: `strangelasers.com` is a Custom D
 
 The repository has `production` and `preview` GitHub environments. Each environment provides a secret named `CLOUDFLARE_API_TOKEN` and a variable named `CLOUDFLARE_ACCOUNT_ID`. Restrict the production environment to `main` and the preview environment to `preview`.
 
-The workflow in `.github/workflows/deploy.yml` selects the GitHub environment and Wrangler configuration from the pushed branch. It performs a dry run before each deployment and serializes deployments per branch.
+The workflow in `.github/workflows/deploy.yml` selects the GitHub environment and Wrangler configuration from the pushed branch. It installs the Node.js version from `.node-version`, runs `npm ci`, and runs `npm run check` to build the site and verify templates and brand assets. It performs a dry run before each deployment and serializes deployments per branch.
 
 ## Publishing a preview
 
@@ -29,9 +31,11 @@ Fast-forward `main` to an accepted revision and push it. GitHub records the depl
 
 ## Manual recovery
 
-The branch-specific commands are:
+Install the Node.js version in `.node-version`, restore the locked dependencies, and generate and verify `dist/` before using the branch-specific deployment commands:
 
 ```sh
+npm ci
+npm run check
 npx --yes wrangler@4.129.1 deploy --config wrangler.preview.jsonc
 npx --yes wrangler@4.129.1 deploy --config wrangler.production.jsonc
 ```

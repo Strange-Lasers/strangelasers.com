@@ -6,10 +6,8 @@ const EYE_COLOR_QUERY_PARAMETER = "eye-color";
 const EYE_COOLDOWN_QUERY_PARAMETER = "eye-cooldown";
 const FPS_QUERY_PARAMETER = "fps";
 const RENDERER_QUERY_PARAMETER = "renderer";
-const ROTATION_SPEED_QUERY_PARAMETER = "rotationSpeed";
 const SVG_RENDERER_VALUE = "svg";
 const WEBGL_RENDERER_VALUE = "webgl";
-const MOTION_API_NAME = "StrangeLasersMotion";
 const WEBGL_API_NAME = "StrangeLasersWebGL";
 const WEBGL_STATUS = Object.freeze({
   active: "active",
@@ -27,10 +25,8 @@ const WEBGL_CANVAS_CLASS = "projected-webgl";
 const STATIC_FALLBACK_ATTRIBUTE = "data-static-fallback";
 const EYE_TRACKING_ACTIVE_CLASS = "eye-tracking-active";
 const FPS_COUNTER_CLASS = "fps-counter";
-const ROTATION_SPEED_RANGE_SELECTOR = "[data-speed-range]";
-const ROTATION_SPEED_NUMBER_SELECTOR = "[data-speed-number]";
-const ROTATION_SPEED_PRESETS_SELECTOR = "[data-speed-presets]";
-const TUNER_RESET_SELECTOR = "[data-visual-tuner-reset]";
+const SPEED_RANGE_SELECTOR = "[data-speed-range]";
+const SPEED_NUMBER_SELECTOR = "[data-speed-number]";
 const FRAME_BACK_SELECTOR = "[data-frame-back]";
 const PLAY_TOGGLE_SELECTOR = "[data-play-toggle]";
 const FRAME_FORWARD_SELECTOR = "[data-frame-forward]";
@@ -46,19 +42,6 @@ const MOTION_INTRO_START_DELAY_MS =
 const MOTION_INTRO_DURATION_MS = 1500;
 const FPS_SAMPLE_DURATION_MS = 1000;
 const DEFAULT_PLAYBACK_RATE = 0.5;
-const DEFAULT_ROTATION_SPEED = 1;
-const ROTATION_SPEED_PRESETS = Object.freeze([
-  0.55,
-  0.6,
-  0.65,
-  0.7,
-  0.75,
-  0.8,
-  0.85,
-  0.9,
-  0.95,
-  1,
-]);
 const ANIMATION_FRAME_RATE = 60;
 const ANIMATION_FRAME_DURATION_MS = 1000 / ANIMATION_FRAME_RATE;
 const ANIMATION_FRAME_COUNT = Math.round(
@@ -177,6 +160,23 @@ const BRAND_COLORS = Object.freeze({
   }),
 });
 
+function paletteNumber(property) {
+  const value = Number(paletteColor(property));
+  if (!Number.isFinite(value) || value < 0) {
+    throw new Error(`Invalid brand number ${property}`);
+  }
+  return value;
+}
+
+const MARK_TREATMENT = Object.freeze({
+  highlightWidth: paletteNumber("--laser-mark-highlight-width"),
+  highlightOpacity: paletteNumber("--laser-mark-highlight-opacity"),
+  coreWidth: paletteNumber("--laser-mark-core-width"),
+  eyeOutlineWidth: paletteNumber("--laser-eye-outline-width"),
+  eyeBlendStart: paletteNumber("--laser-eye-blend-start"),
+  eyeBlendEnd: paletteNumber("--laser-eye-blend-end"),
+});
+
 const BEAM_LAYERS = Object.freeze([
   Object.freeze({
     bloom: Object.freeze({
@@ -221,9 +221,9 @@ const BEAM_LAYERS = Object.freeze([
       width: 24,
     }),
     className: "projected-beam projected-beam--highlight",
-    color: "highlight",
-    opacity: 0.9,
-    width: 14,
+    color: "core",
+    opacity: MARK_TREATMENT.highlightOpacity,
+    width: MARK_TREATMENT.highlightWidth,
   }),
   Object.freeze({
     bloom: Object.freeze({
@@ -234,7 +234,7 @@ const BEAM_LAYERS = Object.freeze([
     className: "projected-beam projected-beam--core",
     color: "core",
     opacity: 1,
-    width: 3.5,
+    width: MARK_TREATMENT.coreWidth,
   }),
 ]);
 
@@ -308,8 +308,7 @@ let motionIntroBloom = 0;
 let motionIntroProgress = 1;
 let motionIntroStartTimestamp;
 let frameNumberControl;
-let playbackRate =
-  DEFAULT_PLAYBACK_RATE * DEFAULT_ROTATION_SPEED;
+let playbackRate = DEFAULT_PLAYBACK_RATE;
 let previousEyeTrackingTimestamp;
 let previousAnimationTimestamp;
 
@@ -371,6 +370,7 @@ function createDefinitions(prefix) {
     wide: `${prefix}-wide-glow`,
   };
   const lensGradientId = `${prefix}-lens`;
+  const eyeEdgeGradientId = `${prefix}-eye-edge`;
   const occlusionGradientId = `${prefix}-occlusion-gradient`;
   const occlusionMaskId = `${prefix}-occlusion-mask`;
 
@@ -409,6 +409,26 @@ function createDefinitions(prefix) {
     }),
   );
   definitions.append(lensGradient);
+
+  const eyeEdgeGradient = createSvgElement("linearGradient", {
+    id: eyeEdgeGradientId,
+    x1: "0%",
+    y1: "0%",
+    x2: "0%",
+    y2: "100%",
+  });
+  for (const [offset, color] of [
+    [0, BRAND_COLORS.purple.body],
+    [MARK_TREATMENT.eyeBlendStart, BRAND_COLORS.purple.body],
+    [MARK_TREATMENT.eyeBlendEnd, BRAND_COLORS.cyan.body],
+    [1, BRAND_COLORS.cyan.body],
+  ]) {
+    eyeEdgeGradient.append(createSvgElement("stop", {
+      offset,
+      "stop-color": color,
+    }));
+  }
+  definitions.append(eyeEdgeGradient);
 
   const occlusionGradient = createSvgElement("radialGradient", {
     id: occlusionGradientId,
@@ -452,6 +472,7 @@ function createDefinitions(prefix) {
     definitions,
     filterIds,
     lensGradientId,
+    eyeEdgeGradientId,
     occlusionMaskId,
   };
 }
@@ -554,7 +575,7 @@ function createEndpoint(kind, beam, glowGradientId) {
   return endpoint;
 }
 
-function createEye(filterIds, lensGradientId) {
+function createEye(filterIds, lensGradientId, eyeEdgeGradientId) {
   const eye = createSvgElement("g", {
     class: "projected-eye",
   });
@@ -568,6 +589,14 @@ function createEye(filterIds, lensGradientId) {
       r: EYE_GLOW_RADIUS,
       stroke: BRAND_COLORS.purple.body,
       "stroke-width": EYE_GLOW_STROKE_WIDTH,
+    }),
+    createSvgElement("circle", {
+      cx: VIEWBOX_CENTER,
+      cy: VIEWBOX_CENTER,
+      fill: "none",
+      r: EYE_LENS_RADIUS,
+      stroke: `url(#${eyeEdgeGradientId})`,
+      "stroke-width": MARK_TREATMENT.eyeOutlineWidth,
     }),
     createSvgElement("circle", {
       cx: VIEWBOX_CENTER,
@@ -695,6 +724,9 @@ function webglRendererConfig(sample) {
       layers: ENDPOINT_LAYERS,
     },
     eye: {
+      blendStart: MARK_TREATMENT.eyeBlendStart,
+      blendEnd: MARK_TREATMENT.eyeBlendEnd,
+      outlineWidth: MARK_TREATMENT.eyeOutlineWidth,
       dotGlowBlur: FILTER_CONFIG.tight.blur,
       dotGlowOpacity: EYE_DOT_GLOW_OPACITY,
       dotGlowRadius:
@@ -755,6 +787,7 @@ function createProjectedMark(sample, index) {
     definitions,
     filterIds,
     lensGradientId,
+    eyeEdgeGradientId,
     occlusionMaskId,
   } = createDefinitions(prefix);
   const endpointGlowIds = Object.fromEntries(
@@ -848,7 +881,7 @@ function createProjectedMark(sample, index) {
     definitions,
     baseDepth,
     baseWeaveDepth,
-    createEye(filterIds, lensGradientId),
+    createEye(filterIds, lensGradientId, eyeEdgeGradientId),
     eyeDot,
     frontDepth,
     frontWeaveDepth,
@@ -2726,7 +2759,7 @@ function controlDataNumber(control, property) {
   return Number.parseFloat(control.dataset[property]);
 }
 
-function normalizeRotationSpeed(value, control) {
+function normalizePlaybackRate(value, control) {
   const minimum = controlNumber(control, "min");
   const maximum = controlNumber(control, "max");
   const step = controlNumber(control, "step");
@@ -2744,7 +2777,7 @@ function exponentialProgress(start, end, value) {
   return Math.log(value / start) / Math.log(end / start);
 }
 
-function rotationSpeedForSlider(control) {
+function playbackRateForSlider(control) {
   const minimumPosition = controlNumber(control, "min");
   const maximumPosition = controlNumber(control, "max");
   const middlePosition =
@@ -2775,7 +2808,7 @@ function rotationSpeedForSlider(control) {
   );
 }
 
-function sliderPositionForRotationSpeed(value, control) {
+function sliderPositionForPlaybackRate(value, control) {
   const minimumPosition = controlNumber(control, "min");
   const maximumPosition = controlNumber(control, "max");
   const middlePosition =
@@ -2807,119 +2840,49 @@ function sliderPositionForRotationSpeed(value, control) {
   );
 }
 
-function updateRotationSpeedUrl(rotationSpeed) {
-  const url = new URL(window.location.href);
-
-  if (rotationSpeed === DEFAULT_ROTATION_SPEED) {
-    url.searchParams.delete(ROTATION_SPEED_QUERY_PARAMETER);
-  } else {
-    url.searchParams.set(
-      ROTATION_SPEED_QUERY_PARAMETER,
-      rotationSpeed.toFixed(2),
-    );
-  }
-
-  window.history.replaceState(
-    window.history.state,
-    "",
-    url,
-  );
-}
-
-function setupRotationSpeedControls() {
-  const range = document.querySelector(
-    ROTATION_SPEED_RANGE_SELECTOR,
-  );
-  const number = document.querySelector(
-    ROTATION_SPEED_NUMBER_SELECTOR,
-  );
-  const presets = document.querySelector(
-    ROTATION_SPEED_PRESETS_SELECTOR,
-  );
-  const reset = document.querySelector(TUNER_RESET_SELECTOR);
-  const presetButtons = [];
+function setupSpeedControls() {
+  const range = document.querySelector(SPEED_RANGE_SELECTOR);
+  const number = document.querySelector(SPEED_NUMBER_SELECTOR);
 
   if (!range || !number) {
     return;
   }
 
-  const setRotationSpeed = (value, updateUrl) => {
-    const normalized = normalizeRotationSpeed(value, number);
+  const setPlaybackRate = (value) => {
+    const normalized = normalizePlaybackRate(value, number);
 
     if (animationFrameId !== undefined) {
       advanceAnimation(performance.now());
     }
 
-    playbackRate = DEFAULT_PLAYBACK_RATE * normalized;
+    playbackRate = normalized;
     range.value = String(
-      sliderPositionForRotationSpeed(normalized, range),
+      sliderPositionForPlaybackRate(normalized, range),
     );
     range.setAttribute(
       "aria-valuetext",
       `${normalized.toFixed(2)}x`,
     );
     number.value = normalized.toFixed(2);
-
-    for (const button of presetButtons) {
-      button.setAttribute(
-        "aria-pressed",
-        String(
-          Number.parseFloat(button.dataset.rotationSpeed) ===
-            normalized,
-        ),
-      );
-    }
-
-    if (updateUrl) {
-      updateRotationSpeedUrl(normalized);
-    }
   };
 
-  if (presets) {
-    for (const rotationSpeed of ROTATION_SPEED_PRESETS) {
-      const button = document.createElement("button");
-      button.className = "smoke-tuner__preset-button";
-      button.type = "button";
-      button.textContent = `${rotationSpeed.toFixed(2)}x`;
-      button.dataset.rotationSpeed = String(rotationSpeed);
-      button.setAttribute("aria-pressed", "false");
-      button.addEventListener("click", () => {
-        setRotationSpeed(rotationSpeed, true);
-      });
-      presets.append(button);
-      presetButtons.push(button);
-    }
-  }
-
   range.addEventListener("input", () => {
-    setRotationSpeed(rotationSpeedForSlider(range), true);
+    setPlaybackRate(playbackRateForSlider(range));
   });
   number.addEventListener("input", () => {
     const value = controlNumber(number, "value");
 
     if (number.validity.valid && Number.isFinite(value)) {
-      setRotationSpeed(value, true);
+      setPlaybackRate(value);
     }
   });
   number.addEventListener("change", () => {
     const value = controlNumber(number, "value");
-    setRotationSpeed(
-      Number.isFinite(value) ? value : DEFAULT_ROTATION_SPEED,
-      true,
+    setPlaybackRate(
+      Number.isFinite(value) ? value : DEFAULT_PLAYBACK_RATE,
     );
   });
-  reset?.addEventListener("click", () => {
-    setRotationSpeed(DEFAULT_ROTATION_SPEED, true);
-  });
-  const queryValue = Number.parseFloat(
-    motionQuery.get(ROTATION_SPEED_QUERY_PARAMETER),
-  );
-  setRotationSpeed(
-    Number.isFinite(queryValue)
-      ? queryValue
-      : DEFAULT_ROTATION_SPEED,
-    false,
-  );
+  setPlaybackRate(controlNumber(number, "value"));
 }
 
 function setupTransportControls() {
@@ -3019,16 +2982,7 @@ function renderMotionMarks() {
 }
 
 motionPreference.addEventListener("change", updateMotion);
-window[MOTION_API_NAME] = Object.freeze({
-  stats: () => ({
-    phase: animationPhase,
-    playbackRate,
-    rotationSpeed:
-      playbackRate / DEFAULT_PLAYBACK_RATE,
-    running: animationFrameId !== undefined,
-  }),
-});
-setupRotationSpeedControls();
+setupSpeedControls();
 setupTransportControls();
 setupFrameCounter();
 setupFpsCounter();

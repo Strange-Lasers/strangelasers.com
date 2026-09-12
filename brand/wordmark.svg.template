@@ -17,26 +17,26 @@
       <line x1="180" y1="192.1" x2="228" y2="194" stroke="black" stroke-width="8"/>
     </mask>
     <linearGradient id="cyan-beam" gradientUnits="userSpaceOnUse" x1="60" y1="0" x2="700" y2="0">
-      <stop offset="0" stop-color="#11bfe9"/>
-      <stop offset="0.5" stop-color="#78ebff"/>
-      <stop offset="1" stop-color="#11bfe9"/>
+      <stop offset="0" stop-color="{{laser-cyan-body}}"/>
+      <stop offset="0.5" stop-color="{{laser-cyan-highlight}}"/>
+      <stop offset="1" stop-color="{{laser-cyan-body}}"/>
     </linearGradient>
     <linearGradient id="purple-beam" gradientUnits="userSpaceOnUse" x1="60" y1="0" x2="700" y2="0">
-      <stop offset="0" stop-color="#7857ff"/>
-      <stop offset="0.5" stop-color="#a19af7"/>
-      <stop offset="1" stop-color="#7857ff"/>
+      <stop offset="0" stop-color="{{laser-purple-body}}"/>
+      <stop offset="0.5" stop-color="{{laser-purple-highlight}}"/>
+      <stop offset="1" stop-color="{{laser-purple-body}}"/>
     </linearGradient>
   </defs>
   <g aria-hidden="true">
     <g>
       <g>
         <g>
-          <line x1="75" y1="96" x2="685" y2="72" filter="url(#wide-glow)" fill="none" opacity="0.2" stroke-linecap="round" stroke-width="42" stroke="#11bfe9"/>
-          <line x1="75" y1="96" x2="685" y2="72" filter="url(#tight-glow)" fill="none" opacity="0.44" stroke-linecap="round" stroke-width="18" stroke="#11bfe9"/>
-          <line x1="685" y1="212" x2="75" y2="188" filter="url(#wide-glow)" fill="none" opacity="0.2" stroke-linecap="round" stroke-width="42" stroke="#7857ff"/>
-          <line x1="685" y1="212" x2="75" y2="188" filter="url(#tight-glow)" fill="none" opacity="0.44" stroke-linecap="round" stroke-width="18" stroke="#7857ff"/>
-          <circle cx="75" cy="96" r="8" opacity="0.22" filter="url(#tight-glow)" fill="#11bfe9"/>
-          <rect x="677" y="204" width="16" height="16" rx="3" opacity="0.22" filter="url(#tight-glow)" fill="#7857ff"/>
+          <line x1="75" y1="96" x2="685" y2="72" filter="url(#wide-glow)" fill="none" opacity="0.2" stroke-linecap="round" stroke-width="42" stroke="{{laser-cyan-body}}"/>
+          <line x1="75" y1="96" x2="685" y2="72" filter="url(#tight-glow)" fill="none" opacity="0.44" stroke-linecap="round" stroke-width="18" stroke="{{laser-cyan-body}}"/>
+          <line x1="685" y1="212" x2="75" y2="188" filter="url(#wide-glow)" fill="none" opacity="0.2" stroke-linecap="round" stroke-width="42" stroke="{{laser-purple-body}}"/>
+          <line x1="685" y1="212" x2="75" y2="188" filter="url(#tight-glow)" fill="none" opacity="0.44" stroke-linecap="round" stroke-width="18" stroke="{{laser-purple-body}}"/>
+          <circle cx="75" cy="96" r="8" opacity="0.22" filter="url(#tight-glow)" fill="{{laser-cyan-body}}"/>
+          <rect x="677" y="204" width="16" height="16" rx="3" opacity="0.22" filter="url(#tight-glow)" fill="{{laser-purple-body}}"/>
         </g>
       </g>
     </g>
@@ -47,15 +47,15 @@
         <g>
           <g>
             <line x1="75" y1="96" x2="685" y2="72" fill="none" stroke-linecap="round" stroke-width="7" stroke="url(#cyan-beam)"/>
-            <line x1="75" y1="96" x2="685" y2="72" fill="none" opacity="0.88" stroke="#f7fdff" stroke-linecap="round" stroke-width="0.7"/>
-            <line x1="75" y1="96" x2="685" y2="72" fill="none" opacity="1" stroke="#f7fdff" stroke-linecap="round" stroke-width="0.25"/>
-            <circle cx="75" cy="96" r="3" fill="#f7fdff" opacity="1"/>
+            <line x1="75" y1="96" x2="685" y2="72" fill="none" opacity="0.88" stroke="{{laser-core}}" stroke-linecap="round" stroke-width="0.7"/>
+            <line x1="75" y1="96" x2="685" y2="72" fill="none" opacity="1" stroke="{{laser-core}}" stroke-linecap="round" stroke-width="0.25"/>
+            <circle cx="75" cy="96" r="3" fill="{{laser-core}}" opacity="1"/>
           </g>
           <g>
             <line x1="685" y1="212" x2="75" y2="188" fill="none" stroke-linecap="round" stroke-width="7" stroke="url(#purple-beam)"/>
-            <line x1="685" y1="212" x2="75" y2="188" fill="none" opacity="0.88" stroke="#f7fdff" stroke-linecap="round" stroke-width="0.7"/>
-            <line x1="685" y1="212" x2="75" y2="188" fill="none" opacity="1" stroke="#f7fdff" stroke-linecap="round" stroke-width="0.25"/>
-            <rect x="682" y="209" width="6" height="6" rx="1" fill="#f7fdff" opacity="1"/>
+            <line x1="685" y1="212" x2="75" y2="188" fill="none" opacity="0.88" stroke="{{laser-core}}" stroke-linecap="round" stroke-width="0.7"/>
+            <line x1="685" y1="212" x2="75" y2="188" fill="none" opacity="1" stroke="{{laser-core}}" stroke-linecap="round" stroke-width="0.25"/>
+            <rect x="682" y="209" width="6" height="6" rx="1" fill="{{laser-core}}" opacity="1"/>
           </g>
         </g>
       </g>
@@ -64,7 +64,7 @@
   <g>
     <g>
       <g mask="url(#strange-angle-a-through-cut)">
-        <g transform="translate(95 130) scale(1.55)" stroke="#050b14" stroke-width="1.7" stroke-linejoin="round" paint-order="stroke" fill="#7857ff">
+        <g transform="translate(95 130) scale(1.55)" stroke="{{laser-background}}" stroke-width="1.7" stroke-linejoin="round" paint-order="stroke" fill="{{laser-purple-body}}">
           <g>
             <g>
               <g transform="translate(0 0)">
@@ -93,7 +93,7 @@
         </g>
       </g>
       <g mask="url(#lasers-angle-a-through-cut)">
-        <g transform="translate(95 240) scale(1.55)" stroke="#050b14" stroke-width="1.7" stroke-linejoin="round" paint-order="stroke" fill="#78ebff">
+        <g transform="translate(95 240) scale(1.55)" stroke="{{laser-background}}" stroke-width="1.7" stroke-linejoin="round" paint-order="stroke" fill="{{laser-cyan-highlight}}">
           <g>
             <g>
               <g transform="translate(0 0)">
@@ -124,20 +124,20 @@
     <g>
       <g transform="rotate(-2.2530980802667666 378 84)">
         <g>
-          <circle cx="378" cy="84" r="27" opacity="0.4" filter="url(#wide-glow)" fill="#11bfe9"/>
-          <circle cx="378" cy="84" r="11" opacity="0.78" filter="url(#tight-glow)" fill="#11bfe9"/>
-          <path d="M0 -26C0.6292 -16.8333 1.2708 -9.7729 3.1219 -3.9719C7.4729 -1.6708 13.0333 -0.6292 21 0C13.0333 0.6292 7.4729 1.6708 3.1219 3.9719C1.2708 9.7729 0.6292 16.8333 0 26C-0.6292 16.8333 -1.2708 9.7729 -3.1219 3.9719C-7.4729 1.6708 -13.0333 0.6292 -21 0C-13.0333 -0.6292 -7.4729 -1.6708 -3.1219 -3.9719C-1.2708 -9.7729 -0.6292 -16.8333 0 -26Z" transform="translate(378 84)" fill="none" stroke="#050b14" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M0 -26C0.6292 -16.8333 1.2708 -9.7729 3.1219 -3.9719C7.4729 -1.6708 13.0333 -0.6292 21 0C13.0333 0.6292 7.4729 1.6708 3.1219 3.9719C1.2708 9.7729 0.6292 16.8333 0 26C-0.6292 16.8333 -1.2708 9.7729 -3.1219 3.9719C-7.4729 1.6708 -13.0333 0.6292 -21 0C-13.0333 -0.6292 -7.4729 -1.6708 -3.1219 -3.9719C-1.2708 -9.7729 -0.6292 -16.8333 0 -26Z" transform="translate(378 84)" fill="#11bfe9" opacity="1"/>
-          <path d="M0 -26C0.6292 -16.8333 1.2708 -9.7729 3.1219 -3.9719C7.4729 -1.6708 13.0333 -0.6292 21 0C13.0333 0.6292 7.4729 1.6708 3.1219 3.9719C1.2708 9.7729 0.6292 16.8333 0 26C-0.6292 16.8333 -1.2708 9.7729 -3.1219 3.9719C-7.4729 1.6708 -13.0333 0.6292 -21 0C-13.0333 -0.6292 -7.4729 -1.6708 -3.1219 -3.9719C-1.2708 -9.7729 -0.6292 -16.8333 0 -26Z" transform="translate(378 84) scale(.65)" fill="#f7fdff" opacity="1"/>
+          <circle cx="378" cy="84" r="27" opacity="0.4" filter="url(#wide-glow)" fill="{{laser-cyan-body}}"/>
+          <circle cx="378" cy="84" r="11" opacity="0.78" filter="url(#tight-glow)" fill="{{laser-cyan-body}}"/>
+          <path d="M0 -26C0.6292 -16.8333 1.2708 -9.7729 3.1219 -3.9719C7.4729 -1.6708 13.0333 -0.6292 21 0C13.0333 0.6292 7.4729 1.6708 3.1219 3.9719C1.2708 9.7729 0.6292 16.8333 0 26C-0.6292 16.8333 -1.2708 9.7729 -3.1219 3.9719C-7.4729 1.6708 -13.0333 0.6292 -21 0C-13.0333 -0.6292 -7.4729 -1.6708 -3.1219 -3.9719C-1.2708 -9.7729 -0.6292 -16.8333 0 -26Z" transform="translate(378 84)" fill="none" stroke="{{laser-background}}" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M0 -26C0.6292 -16.8333 1.2708 -9.7729 3.1219 -3.9719C7.4729 -1.6708 13.0333 -0.6292 21 0C13.0333 0.6292 7.4729 1.6708 3.1219 3.9719C1.2708 9.7729 0.6292 16.8333 0 26C-0.6292 16.8333 -1.2708 9.7729 -3.1219 3.9719C-7.4729 1.6708 -13.0333 0.6292 -21 0C-13.0333 -0.6292 -7.4729 -1.6708 -3.1219 -3.9719C-1.2708 -9.7729 -0.6292 -16.8333 0 -26Z" transform="translate(378 84)" fill="{{laser-cyan-body}}" opacity="1"/>
+          <path d="M0 -26C0.6292 -16.8333 1.2708 -9.7729 3.1219 -3.9719C7.4729 -1.6708 13.0333 -0.6292 21 0C13.0333 0.6292 7.4729 1.6708 3.1219 3.9719C1.2708 9.7729 0.6292 16.8333 0 26C-0.6292 16.8333 -1.2708 9.7729 -3.1219 3.9719C-7.4729 1.6708 -13.0333 0.6292 -21 0C-13.0333 -0.6292 -7.4729 -1.6708 -3.1219 -3.9719C-1.2708 -9.7729 -0.6292 -16.8333 0 -26Z" transform="translate(378 84) scale(.65)" fill="{{laser-core}}" opacity="1"/>
         </g>
       </g>
       <g transform="rotate(2.2530980802667666 230 194)">
         <g>
-          <circle cx="230" cy="194" r="27" opacity="0.4" filter="url(#wide-glow)" fill="#7857ff"/>
-          <circle cx="230" cy="194" r="11" opacity="0.78" filter="url(#tight-glow)" fill="#7857ff"/>
-          <path d="M0 -26C0.6292 -16.8333 1.2708 -9.7729 3.1219 -3.9719C7.4729 -1.6708 13.0333 -0.6292 21 0C13.0333 0.6292 7.4729 1.6708 3.1219 3.9719C1.2708 9.7729 0.6292 16.8333 0 26C-0.6292 16.8333 -1.2708 9.7729 -3.1219 3.9719C-7.4729 1.6708 -13.0333 0.6292 -21 0C-13.0333 -0.6292 -7.4729 -1.6708 -3.1219 -3.9719C-1.2708 -9.7729 -0.6292 -16.8333 0 -26Z" transform="translate(230 194)" fill="none" stroke="#050b14" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M0 -26C0.6292 -16.8333 1.2708 -9.7729 3.1219 -3.9719C7.4729 -1.6708 13.0333 -0.6292 21 0C13.0333 0.6292 7.4729 1.6708 3.1219 3.9719C1.2708 9.7729 0.6292 16.8333 0 26C-0.6292 16.8333 -1.2708 9.7729 -3.1219 3.9719C-7.4729 1.6708 -13.0333 0.6292 -21 0C-13.0333 -0.6292 -7.4729 -1.6708 -3.1219 -3.9719C-1.2708 -9.7729 -0.6292 -16.8333 0 -26Z" transform="translate(230 194)" fill="#7857ff" opacity="1"/>
-          <path d="M0 -26C0.6292 -16.8333 1.2708 -9.7729 3.1219 -3.9719C7.4729 -1.6708 13.0333 -0.6292 21 0C13.0333 0.6292 7.4729 1.6708 3.1219 3.9719C1.2708 9.7729 0.6292 16.8333 0 26C-0.6292 16.8333 -1.2708 9.7729 -3.1219 3.9719C-7.4729 1.6708 -13.0333 0.6292 -21 0C-13.0333 -0.6292 -7.4729 -1.6708 -3.1219 -3.9719C-1.2708 -9.7729 -0.6292 -16.8333 0 -26Z" transform="translate(230 194) scale(.65)" fill="#f7fdff" opacity="1"/>
+          <circle cx="230" cy="194" r="27" opacity="0.4" filter="url(#wide-glow)" fill="{{laser-purple-body}}"/>
+          <circle cx="230" cy="194" r="11" opacity="0.78" filter="url(#tight-glow)" fill="{{laser-purple-body}}"/>
+          <path d="M0 -26C0.6292 -16.8333 1.2708 -9.7729 3.1219 -3.9719C7.4729 -1.6708 13.0333 -0.6292 21 0C13.0333 0.6292 7.4729 1.6708 3.1219 3.9719C1.2708 9.7729 0.6292 16.8333 0 26C-0.6292 16.8333 -1.2708 9.7729 -3.1219 3.9719C-7.4729 1.6708 -13.0333 0.6292 -21 0C-13.0333 -0.6292 -7.4729 -1.6708 -3.1219 -3.9719C-1.2708 -9.7729 -0.6292 -16.8333 0 -26Z" transform="translate(230 194)" fill="none" stroke="{{laser-background}}" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M0 -26C0.6292 -16.8333 1.2708 -9.7729 3.1219 -3.9719C7.4729 -1.6708 13.0333 -0.6292 21 0C13.0333 0.6292 7.4729 1.6708 3.1219 3.9719C1.2708 9.7729 0.6292 16.8333 0 26C-0.6292 16.8333 -1.2708 9.7729 -3.1219 3.9719C-7.4729 1.6708 -13.0333 0.6292 -21 0C-13.0333 -0.6292 -7.4729 -1.6708 -3.1219 -3.9719C-1.2708 -9.7729 -0.6292 -16.8333 0 -26Z" transform="translate(230 194)" fill="{{laser-purple-body}}" opacity="1"/>
+          <path d="M0 -26C0.6292 -16.8333 1.2708 -9.7729 3.1219 -3.9719C7.4729 -1.6708 13.0333 -0.6292 21 0C13.0333 0.6292 7.4729 1.6708 3.1219 3.9719C1.2708 9.7729 0.6292 16.8333 0 26C-0.6292 16.8333 -1.2708 9.7729 -3.1219 3.9719C-7.4729 1.6708 -13.0333 0.6292 -21 0C-13.0333 -0.6292 -7.4729 -1.6708 -3.1219 -3.9719C-1.2708 -9.7729 -0.6292 -16.8333 0 -26Z" transform="translate(230 194) scale(.65)" fill="{{laser-core}}" opacity="1"/>
         </g>
       </g>
     </g>

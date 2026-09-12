@@ -1,0 +1,28 @@
+{
+  "name": "Strange Lasers",
+  "url": "https://strangelasers.com/",
+  "description": "writes unusual, carefully made software",
+  "tagline": "We write software",
+  "alternateTagline": "Open-source the world",
+  "footer": "Open-source software, made with care.",
+  "links": {
+    "about": {
+      "label": "About",
+      "url": "about/",
+      "icon": null,
+      "external": false
+    },
+    "github": {
+      "label": "GitHub",
+      "url": "https://github.com/Strange-Lasers",
+      "icon": "github",
+      "external": true
+    },
+    "stowplan": {
+      "label": "Stowplan",
+      "url": "https://stowplan.lasers.app",
+      "icon": "stowplan-icon.svg",
+      "external": true
+    }
+  }
+}

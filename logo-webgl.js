@@ -34,6 +34,7 @@
     ring: 5,
     roundedRectangle: 1,
     circleGlow: 6,
+    gradientRing: 7,
   });
 
   const STROKE_VERTEX_SHADER = `#version 300 es
@@ -245,6 +246,7 @@
     uniform vec3 u_gradient_color_0;
     uniform vec3 u_gradient_color_1;
     uniform vec3 u_gradient_color_2;
+    uniform vec2 u_gradient_range;
     uniform vec2 u_half_size;
     uniform int u_mode;
     uniform float u_occlusion;
@@ -393,6 +395,20 @@
       ) - u_stroke_width * 0.5;
       float alpha = coverage(ring_distance) *
         u_color.a * mask;
+      if (u_mode == ${SHAPE_MODE.gradientRing}) {
+        float position = v_local_position.y / (u_radius * 2.0) + 0.5;
+        float progress = clamp(
+          (position - u_gradient_range.x) /
+            (u_gradient_range.y - u_gradient_range.x),
+          0.0,
+          1.0
+        );
+        output_color = premultiplied(
+          mix(u_gradient_color_0, u_gradient_color_1, progress),
+          alpha
+        );
+        return;
+      }
       output_color = premultiplied(u_color.rgb, alpha);
     }
   `;
@@ -788,6 +804,7 @@
             "u_gradient_color_0",
             "u_gradient_color_1",
             "u_gradient_color_2",
+            "u_gradient_range",
             "u_half_size",
             "u_mode",
             "u_occlusion",
@@ -1309,6 +1326,7 @@
       center,
       color,
       cornerRadius = 0,
+      gradientColors = this.colors.lens,
       halfSize,
       mode,
       occlusion = false,
@@ -1333,15 +1351,20 @@
       gl.uniform1f(uniforms.u_corner_radius, cornerRadius);
       gl.uniform3fv(
         uniforms.u_gradient_color_0,
-        this.colors.lens[0],
+        gradientColors[0],
       );
       gl.uniform3fv(
         uniforms.u_gradient_color_1,
-        this.colors.lens[1],
+        gradientColors[1],
       );
       gl.uniform3fv(
         uniforms.u_gradient_color_2,
-        this.colors.lens[2],
+        gradientColors[2],
+      );
+      gl.uniform2f(
+        uniforms.u_gradient_range,
+        this.config.eye.blendStart,
+        this.config.eye.blendEnd,
       );
       gl.uniform2f(
         uniforms.u_half_size,
@@ -1443,6 +1466,21 @@
         radius: eye.glowRadius,
         screen: true,
         strokeWidth: eye.glowStrokeWidth,
+      });
+      const outlineExtent =
+        eye.lensRadius + eye.outlineWidth * 0.5 + 1;
+      this.drawShape({
+        center,
+        color: [...this.colors.core, 1],
+        gradientColors: [
+          this.colors.purple.body,
+          this.colors.cyan.body,
+          this.colors.cyan.body,
+        ],
+        halfSize: { x: outlineExtent, y: outlineExtent },
+        mode: SHAPE_MODE.gradientRing,
+        radius: eye.lensRadius,
+        strokeWidth: eye.outlineWidth,
       });
       this.drawShape({
         center,

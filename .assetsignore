@@ -5,7 +5,16 @@
 .wrangler
 **/.DS_Store
 **/node_modules
-CONTRIBUTING.md
+brand
+scripts
+test
+src
+dist
+.node-version
+eleventy.config.mjs
+package.json
+package-lock.json
+AGENTS.md
 DEPLOYMENT.md
 LICENSE
 README.md
