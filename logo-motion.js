@@ -160,6 +160,23 @@ const BRAND_COLORS = Object.freeze({
   }),
 });
 
+function paletteNumber(property) {
+  const value = Number(paletteColor(property));
+  if (!Number.isFinite(value) || value < 0) {
+    throw new Error(`Invalid brand number ${property}`);
+  }
+  return value;
+}
+
+const MARK_TREATMENT = Object.freeze({
+  highlightWidth: paletteNumber("--laser-mark-highlight-width"),
+  highlightOpacity: paletteNumber("--laser-mark-highlight-opacity"),
+  coreWidth: paletteNumber("--laser-mark-core-width"),
+  eyeOutlineWidth: paletteNumber("--laser-eye-outline-width"),
+  eyeBlendStart: paletteNumber("--laser-eye-blend-start"),
+  eyeBlendEnd: paletteNumber("--laser-eye-blend-end"),
+});
+
 const BEAM_LAYERS = Object.freeze([
   Object.freeze({
     bloom: Object.freeze({
@@ -204,9 +221,9 @@ const BEAM_LAYERS = Object.freeze([
       width: 24,
     }),
     className: "projected-beam projected-beam--highlight",
-    color: "highlight",
-    opacity: 0.9,
-    width: 14,
+    color: "core",
+    opacity: MARK_TREATMENT.highlightOpacity,
+    width: MARK_TREATMENT.highlightWidth,
   }),
   Object.freeze({
     bloom: Object.freeze({
@@ -217,7 +234,7 @@ const BEAM_LAYERS = Object.freeze([
     className: "projected-beam projected-beam--core",
     color: "core",
     opacity: 1,
-    width: 3.5,
+    width: MARK_TREATMENT.coreWidth,
   }),
 ]);
 
@@ -353,6 +370,7 @@ function createDefinitions(prefix) {
     wide: `${prefix}-wide-glow`,
   };
   const lensGradientId = `${prefix}-lens`;
+  const eyeEdgeGradientId = `${prefix}-eye-edge`;
   const occlusionGradientId = `${prefix}-occlusion-gradient`;
   const occlusionMaskId = `${prefix}-occlusion-mask`;
 
@@ -391,6 +409,26 @@ function createDefinitions(prefix) {
     }),
   );
   definitions.append(lensGradient);
+
+  const eyeEdgeGradient = createSvgElement("linearGradient", {
+    id: eyeEdgeGradientId,
+    x1: "0%",
+    y1: "0%",
+    x2: "0%",
+    y2: "100%",
+  });
+  for (const [offset, color] of [
+    [0, BRAND_COLORS.purple.body],
+    [MARK_TREATMENT.eyeBlendStart, BRAND_COLORS.purple.body],
+    [MARK_TREATMENT.eyeBlendEnd, BRAND_COLORS.cyan.body],
+    [1, BRAND_COLORS.cyan.body],
+  ]) {
+    eyeEdgeGradient.append(createSvgElement("stop", {
+      offset,
+      "stop-color": color,
+    }));
+  }
+  definitions.append(eyeEdgeGradient);
 
   const occlusionGradient = createSvgElement("radialGradient", {
     id: occlusionGradientId,
@@ -434,6 +472,7 @@ function createDefinitions(prefix) {
     definitions,
     filterIds,
     lensGradientId,
+    eyeEdgeGradientId,
     occlusionMaskId,
   };
 }
@@ -536,7 +575,7 @@ function createEndpoint(kind, beam, glowGradientId) {
   return endpoint;
 }
 
-function createEye(filterIds, lensGradientId) {
+function createEye(filterIds, lensGradientId, eyeEdgeGradientId) {
   const eye = createSvgElement("g", {
     class: "projected-eye",
   });
@@ -550,6 +589,14 @@ function createEye(filterIds, lensGradientId) {
       r: EYE_GLOW_RADIUS,
       stroke: BRAND_COLORS.purple.body,
       "stroke-width": EYE_GLOW_STROKE_WIDTH,
+    }),
+    createSvgElement("circle", {
+      cx: VIEWBOX_CENTER,
+      cy: VIEWBOX_CENTER,
+      fill: "none",
+      r: EYE_LENS_RADIUS,
+      stroke: `url(#${eyeEdgeGradientId})`,
+      "stroke-width": MARK_TREATMENT.eyeOutlineWidth,
     }),
     createSvgElement("circle", {
       cx: VIEWBOX_CENTER,
@@ -677,6 +724,9 @@ function webglRendererConfig(sample) {
       layers: ENDPOINT_LAYERS,
     },
     eye: {
+      blendStart: MARK_TREATMENT.eyeBlendStart,
+      blendEnd: MARK_TREATMENT.eyeBlendEnd,
+      outlineWidth: MARK_TREATMENT.eyeOutlineWidth,
       dotGlowBlur: FILTER_CONFIG.tight.blur,
       dotGlowOpacity: EYE_DOT_GLOW_OPACITY,
       dotGlowRadius:
@@ -737,6 +787,7 @@ function createProjectedMark(sample, index) {
     definitions,
     filterIds,
     lensGradientId,
+    eyeEdgeGradientId,
     occlusionMaskId,
   } = createDefinitions(prefix);
   const endpointGlowIds = Object.fromEntries(
@@ -830,7 +881,7 @@ function createProjectedMark(sample, index) {
     definitions,
     baseDepth,
     baseWeaveDepth,
-    createEye(filterIds, lensGradientId),
+    createEye(filterIds, lensGradientId, eyeEdgeGradientId),
     eyeDot,
     frontDepth,
     frontWeaveDepth,

@@ -55,7 +55,7 @@ body {
 }
 
 .projected-beam--highlight {
-  opacity: var(--beam-highlight-opacity, 0.9);
+  opacity: var(--beam-highlight-opacity, var(--laser-mark-highlight-opacity));
 }
 
 .projected-beam--core {
@@ -119,7 +119,7 @@ body {
 
 .home-page {
   --home-mark-size: min(98vmin, 72rem);
-  --home-signature-size: min(25.48vmin, 18.72rem);
+  --home-signature-size: min(31.85vmin, 23.4rem);
   position: relative;
   min-height: 100vh;
   min-height: 100svh;
@@ -396,7 +396,7 @@ body {
 @media (max-width: 48rem) {
   .home-page {
     --home-mark-size: min(108vw, 68svh);
-    --home-signature-size: min(41.04vw, 25.84svh);
+    --home-signature-size: min(51.3vw, 32.3svh);
   }
 
   .home-link {
@@ -407,14 +407,14 @@ body {
 @media (max-width: 48rem) and (max-height: 44rem) and (orientation: portrait) {
   .home-page {
     --home-mark-size: min(88vw, 48svh);
-    --home-signature-size: min(33.44vw, 18.24svh);
+    --home-signature-size: min(41.8vw, 22.8svh);
   }
 }
 
 @media (max-height: 42rem) and (min-width: 48.01rem) {
   .home-page {
     --home-mark-size: min(105vmin, 44rem);
-    --home-signature-size: min(27.3vmin, 11.44rem);
+    --home-signature-size: min(34.125vmin, 14.3rem);
   }
 }
 

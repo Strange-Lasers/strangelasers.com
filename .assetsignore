@@ -5,6 +5,9 @@
 .wrangler
 **/.DS_Store
 **/node_modules
+brand
+scripts
+test
 DEPLOYMENT.md
 LICENSE
 README.md

@@ -8,4 +8,4 @@ The homepage keeps the SVG renderer through its opening still and bloom, then ha
 
 Production and shareable preview deployments use Cloudflare Workers Static Assets. See [DEPLOYMENT.md](DEPLOYMENT.md) for branch ownership, automatic deployment, and recovery instructions.
 
-Brand development sources and motion experiments are preserved on the frozen `archive/brand-development` branch.
+See [brand/README.md](brand/README.md) for the shared palette, editable SVG sources, asset regeneration, and verification commands. Earlier brand development sources and motion experiments are preserved on the frozen `archive/brand-development` branch.

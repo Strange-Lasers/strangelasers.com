@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="logo-title logo-desc">
+  <title id="logo-title">Strange Lasers mark</title>
+  <desc id="logo-desc">A symmetrical Counterflow laser eye with bright coherent cores and a restrained neon corona</desc>
+  <defs>
+    <linearGradient id="eye-edge" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0" stop-color="{{laser-purple-body}}"/>
+      <stop offset="{{laser-eye-blend-start}}" stop-color="{{laser-purple-body}}"/>
+      <stop offset="{{laser-eye-blend-end}}" stop-color="{{laser-cyan-body}}"/>
+      <stop offset="1" stop-color="{{laser-cyan-body}}"/>
+    </linearGradient>
+    <radialGradient id="background" cx="50%" cy="45%" r="72%">
+      <stop offset="0" stop-color="#102339"/>
+      <stop offset="0.55" stop-color="#091525"/>
+      <stop offset="1" stop-color="{{laser-background}}"/>
+    </radialGradient>
+    <linearGradient id="corona-rear" gradientUnits="userSpaceOnUse" x1="64" y1="0" x2="448" y2="0">
+      <stop offset="0" stop-color="{{laser-cyan-body}}"/>
+      <stop offset="0.5" stop-color="{{laser-cyan-highlight}}"/>
+      <stop offset="1" stop-color="{{laser-cyan-body}}"/>
+    </linearGradient>
+    <linearGradient id="corona-front" gradientUnits="userSpaceOnUse" x1="64" y1="0" x2="448" y2="0">
+      <stop offset="0" stop-color="{{laser-purple-body}}"/>
+      <stop offset="0.5" stop-color="{{laser-purple-highlight}}"/>
+      <stop offset="1" stop-color="{{laser-purple-body}}"/>
+    </linearGradient>
+    <filter id="corona-tight-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+    <filter id="corona-wide-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M70 362C110 84 402 84 442 362" stroke="{{laser-cyan-body}}" stroke-width="90" opacity="0.14" filter="url(#corona-wide-glow)"/>
+    <path d="M70 362C110 84 402 84 442 362" stroke="{{laser-cyan-body}}" stroke-width="48" opacity="0.22" filter="url(#corona-tight-glow)"/>
+    <path d="M70 362C110 84 402 84 442 362" stroke="url(#corona-rear)" stroke-width="30"/>
+    <path d="M70 362C110 84 402 84 442 362" stroke="{{laser-core}}" stroke-width="{{laser-mark-highlight-width}}" opacity="{{laser-mark-highlight-opacity}}"/>
+    <path d="M70 362C110 84 402 84 442 362" stroke="{{laser-core}}" stroke-width="{{laser-mark-core-width}}"/>
+    <path d="M64 142C124 426 388 426 448 142" stroke="{{laser-purple-body}}" stroke-width="90" opacity="0.14" filter="url(#corona-wide-glow)"/>
+    <path d="M64 142C124 426 388 426 448 142" stroke="{{laser-purple-body}}" stroke-width="48" opacity="0.22" filter="url(#corona-tight-glow)"/>
+    <path d="M64 142C124 426 388 426 448 142" stroke="url(#corona-front)" stroke-width="30"/>
+    <path d="M64 142C124 426 388 426 448 142" stroke="{{laser-core}}" stroke-width="{{laser-mark-highlight-width}}" opacity="{{laser-mark-highlight-opacity}}"/>
+    <path d="M64 142C124 426 388 426 448 142" stroke="{{laser-core}}" stroke-width="{{laser-mark-core-width}}"/>
+    <circle cx="64" cy="142" r="20" fill="{{laser-purple-body}}" opacity="0.2" filter="url(#corona-tight-glow)"/>
+    <rect x="428" y="122" width="40" height="40" rx="8" fill="{{laser-purple-body}}" opacity="0.2" filter="url(#corona-tight-glow)"/>
+    <rect x="50" y="342" width="40" height="40" rx="8" fill="{{laser-cyan-body}}" opacity="0.2" filter="url(#corona-tight-glow)"/>
+    <circle cx="442" cy="362" r="20" fill="{{laser-cyan-body}}" opacity="0.2" filter="url(#corona-tight-glow)"/>
+    <circle cx="64" cy="142" r="9" fill="{{laser-core}}"/>
+    <rect x="439" y="133" width="18" height="18" fill="{{laser-core}}"/>
+    <rect x="61" y="353" width="18" height="18" fill="{{laser-core}}"/>
+    <circle cx="442" cy="362" r="9" fill="{{laser-core}}"/>
+    <circle cx="256" cy="256" r="66" fill="none" stroke="{{laser-purple-body}}" stroke-width="14" opacity="0.16" filter="url(#corona-wide-glow)"/>
+    <circle cx="256" cy="256" r="47" fill="none" stroke="url(#eye-edge)" stroke-width="{{laser-eye-outline-width}}"/>
+    <circle cx="256" cy="256" r="47" fill="{{laser-background}}" stroke="{{laser-core}}" stroke-width="6"/>
+    <circle cx="256" cy="256" r="12" fill="{{laser-core}}"/>
+  </g>
+</svg>
