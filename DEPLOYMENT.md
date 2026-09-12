@@ -5,9 +5,9 @@ The site uses Cloudflare Workers Static Assets for its production and shareable 
 | Environment | Branch | Hostname | Worker | Wrangler configuration |
 | --- | --- | --- | --- | --- |
 | Production | `main` | `strangelasers.com` | `strangelasers-production` | `wrangler.production.jsonc` |
-| Preview | `preview` | `preview.strangelasers.com` | `strangelasers-staging` | `wrangler.preview.jsonc` |
+| Preview | `preview` | `preview.strangelasers.com` | `strangelasers-preview` | `wrangler.preview.jsonc` |
 
-`www2.strangelasers.com` remains attached to the preview Worker as a compatibility alias for previously shared links. The existing Worker name is retained so its deployment history and rollback versions remain available.
+`www2.strangelasers.com` remains attached to the preview Worker as a compatibility alias for previously shared links. The preview Worker is named `strangelasers-preview`; both hostnames share its assets and deployment history.
 
 Worker ingress is account-level configuration: `strangelasers.com` is a Custom Domain for the production Worker, while `preview.strangelasers.com` and `www2.strangelasers.com` are Custom Domains for the preview Worker. A zone-level redirect returns HTTP 308 from `www.strangelasers.com` to the matching apex path and preserves the query string. The Wrangler files intentionally omit `routes`, which keeps routine deployment tokens scoped to Worker code and prevents every asset deployment from reconciling otherwise unchanged hostname routing. Cloudflare documents that omitting both route keys leaves dashboard-managed routing unchanged in its [Wrangler configuration guidance](https://developers.cloudflare.com/workers/wrangler/configuration/#source-of-truth).
 
