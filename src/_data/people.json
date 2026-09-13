@@ -1,0 +1,62 @@
+[
+  {
+    "id": "james",
+    "name": "James",
+    "title": "Founder & Engineer",
+    "portrait": "james.png",
+    "homepage": "https://jklein.dev",
+    "socials": [
+      { "label": "LinkedIn", "url": "https://linkedin.com/in/james-klein-developer", "icon": "linkedin" },
+      { "label": "GitHub", "url": "https://github.com/j-256", "icon": "github" }
+    ],
+    "bio": {
+      "intro": "Usually has a prototype before the conversation is over.",
+      "detail": "questions assumptions and has a soft spot for software that quietly does its job for years. Strange Lasers is his love letter to the open source software that gave him the freedom to learn, build, and find his own path."
+    },
+    "interests": [
+      { "label": "Dissecting how things work", "cloudLabel": "Curiosity" },
+      { "label": "Helping and teaching", "cloudLabel": "Teaching", "cloudOffset": "0.3em" },
+      { "label": "Elegant simplicity", "cloudLabel": "Simplicity", "cloudOffset": "-0.05em" }
+    ]
+  },
+  {
+    "id": "bismeet",
+    "name": "Bismeet",
+    "title": "Founding Engineer",
+    "portrait": "bismeet.png",
+    "homepage": "",
+    "socials": [
+      { "label": "LinkedIn", "url": "https://linkedin.com/in/bismeet", "icon": "linkedin" },
+      { "label": "GitHub", "url": "https://github.com/Bismeet", "icon": "github" }
+    ],
+    "bio": {
+      "intro": "Usually somewhere down a rabbit hole.",
+      "detail": "likes building things that probably shouldn't work, then learning why they don't. Curiosity turns into a prototype, the prototype turns into a problem, and the problem usually turns into something new to learn."
+    },
+    "interests": [
+      { "label": "Happy accidents", "cloudLabel": "Think", "cloudOffset": "-10%" },
+      { "label": "Rabbit holes", "cloudLabel": "Build", "cloudOffset": "80%" },
+      { "label": "What ifs", "cloudLabel": "Break" }
+    ]
+  },
+  {
+    "id": "rohith",
+    "name": "Rohith",
+    "title": "Founding Engineer",
+    "portrait": "rohith.jpg",
+    "homepage": "https://meetrohith.netlify.app",
+    "socials": [
+      { "label": "LinkedIn", "url": "https://www.linkedin.com/in/meetrohith", "icon": "linkedin" },
+      { "label": "GitHub", "url": "https://github.com/Rohith13", "icon": "github" }
+    ],
+    "bio": {
+      "intro": "Stays calm, stays curious, ships with purpose.",
+      "detail": "is an optimist who believes technology should feel human. Engineer, solopreneur, and author. He is calm on the surface, curious underneath. Strange Lasers is where that curiosity roams free: just good people and the joy of building things that matter."
+    },
+    "interests": [
+      { "label": "Calm problem-solving", "cloudLabel": "Calm", "cloudOffset": "0.3em" },
+      { "label": "Ideas into products", "cloudLabel": "Ideas", "cloudOffset": "30%" },
+      { "label": "Purpose over hype", "cloudLabel": "Purpose", "cloudOffset": "0.1em" }
+    ]
+  }
+]

@@ -286,6 +286,8 @@ body {
 
 .home-links {
   display: flex;
+  width: max-content;
+  align-items: center;
   justify-content: flex-end;
   gap: clamp(0.3rem, 0.65vmin, 0.5rem);
   animation: signature-reveal var(--links-reveal-duration) ease-out var(--links-reveal-delay) both;
@@ -333,6 +335,81 @@ body {
   height: clamp(0.8rem, 1.6vmin, 1rem);
   flex: none;
   fill: currentcolor;
+}
+
+.home-link-arrow {
+  display: inline-grid;
+  place-items: center;
+  font-size: 1.3rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  transform: translateY(-0.15em);
+}
+
+.eye-about-link {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  left: 50%;
+  width: max(44px, calc(var(--home-mark-size) * 0.2));
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  color: #c7d1d4;
+  cursor: pointer;
+  text-decoration: none;
+}
+.eye-about-link:focus-visible {
+  outline: 1px solid var(--laser-cyan-highlight);
+  outline-offset: 8px;
+}
+.home-about-link {
+  display: inline-flex;
+  min-height: 44px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  padding-left: 0.6rem;
+  color: rgb(243 247 255 / 62%);
+  font-size: clamp(0.58rem, 1.15vmin, 0.74rem);
+  font-weight: 540;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 180ms ease;
+}
+.home-about-link:hover { color: var(--laser-cyan-highlight); }
+.home-about-link:focus-visible { outline: 2px solid var(--laser-cyan-highlight); outline-offset: 3px; }
+.eye-about-label {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1rem 1rem 1.25rem;
+  transform: translate(-5px, -50%);
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  font: 11px ui-monospace, "SFMono-Regular", Consolas, monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 10px #000, 0 0 5px #000;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+.eye-about-label::before {
+  width: 1.4rem;
+  height: 1px;
+  background: #78898e;
+  content: "";
+}
+.eye-about-label span { color: var(--laser-cyan-highlight); font-size: 15px; }
+.eye-about-link:hover .eye-about-label,
+.eye-about-link:focus-visible .eye-about-label {
+  opacity: 1;
+  transform: translate(0, -50%);
+  pointer-events: auto;
 }
 
 .sr-only {
@@ -441,11 +518,18 @@ body {
     visibility: visible;
   }
 
-  html:not(.force-animation) .home-link {
+  html:not(.force-animation) .home-link,
+  html:not(.force-animation) .home-about-link,
+  html:not(.force-animation) .eye-about-label {
     transition: none;
   }
 
   html:not(.force-animation) .tagline-text {
     animation: none;
   }
+}
+
+@media (max-width: 500px) {
+  .eye-about-label { padding-left: 0.6rem; gap: 0.4rem; font-size: 10px; }
+  .eye-about-label::before { width: 0.8rem; }
 }

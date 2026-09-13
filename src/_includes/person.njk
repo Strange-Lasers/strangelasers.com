@@ -1,0 +1,55 @@
+<article id="{{ person.id }}" class="person{% if loop.index % 2 == 0 %} person--reverse{% endif %}" aria-labelledby="{{ person.id }}-name" tabindex="-1">
+  <div class="interest-cloud" aria-hidden="true">
+    {% set positions = ["one", "two", "three"] %}
+    {% set peaks = [0.32, 0.5, 0.68] %}
+    {% for interest in person.interests %}
+      {% if loop.index0 < positions.length %}
+        <span class="interest interest--{{ positions[loop.index0] }}" data-peak="{{ peaks[loop.index0] }}"{% if interest.cloudOffset %} style="--interest-offset-x: {{ interest.cloudOffset }}"{% endif %}>{{ interest.cloudLabel | default(interest.label) }}</span>
+      {% endif %}
+    {% endfor %}
+  </div>
+  <div class="person-layout page-width">
+    <figure class="portrait">
+      <div class="portrait-window">
+        <img src="portraits/{{ person.portrait }}" alt="{{ person.name }}'s portrait" width="800" height="800"{% if not loop.first %} loading="lazy"{% endif %} decoding="async">
+      </div>
+      {% if showPortraitCaptions %}
+        <figcaption><span>{{ loop.index | personNumber }} / {{ person.name }}</span><span>{{ person.title }}</span></figcaption>
+      {% endif %}
+    </figure>
+    <div class="person-copy">
+      <p class="eyebrow person-title"><span class="person-number">{{ loop.index | personNumber }}</span> {{ person.title }}</p>
+      <h2 id="{{ person.id }}-name"><span class="given-name">{{ person.name }}</span><span class="name-dot">.</span></h2>
+      {% if person.homepage or person.socials.length %}
+        <ul class="person-links" aria-label="{{ person.name }}'s links">
+          {% if person.homepage %}
+            <li class="person-homepage">
+              <a href="{{ person.homepage }}" target="_blank" rel="noopener noreferrer" aria-label="{{ person.name }}'s homepage: {{ person.homepage | displayUrl }}">{{ person.homepage | displayUrl }}</a>
+            </li>
+          {% endif %}
+          {% for social in person.socials %}
+            <li>
+              <a class="person-social" href="{{ social.url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ person.name }} on {{ social.label }}" title="{{ social.label }}">
+                {% if social.icon %}
+                  {% include "icons/" + social.icon + ".svg" %}
+                {% else %}
+                  {{ social.label }}
+                {% endif %}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+      <div class="person-bio">
+        <p class="person-intro">{{ person.bio.intro }}</p>
+        <p class="person-detail">{{ person.name }} {{ person.bio.detail }}</p>
+      </div>
+      <div class="elsewhere">
+        <p class="eyebrow">Drawn to</p>
+        <ul class="interest-list" aria-label="{{ person.name }}'s interests">
+          {% for interest in person.interests %}<li>{{ interest.label }}</li>{% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</article>
