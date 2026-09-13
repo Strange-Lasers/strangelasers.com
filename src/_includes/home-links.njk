@@ -2,6 +2,8 @@
 <a class="{% if link.icon %}home-link{% else %}home-about-link{% endif %}" href="{{ link.url }}"{% if link.external %} target="_blank" rel="noopener noreferrer"{% endif %}>
   {% if link.icon == "github" %}
     {% include "icons/github.svg" %}
+  {% elif link.icon == "arrow-up-right" %}
+    <span class="home-link-icon home-link-arrow" aria-hidden="true">&#8599;</span>
   {% elif link.icon %}
     <img class="home-link-icon" src="{{ link.icon }}" alt="" width="64" height="64">
   {% endif %}

@@ -23,6 +23,12 @@
       "url": "https://stowplan.lasers.app",
       "icon": "stowplan-icon.svg",
       "external": true
+    },
+    "lasers.app": {
+      "label": "More",
+      "url": "https://lasers.app",
+      "icon": "arrow-up-right",
+      "external": true
     }
   }
 }
