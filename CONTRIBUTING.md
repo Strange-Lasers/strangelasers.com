@@ -23,7 +23,7 @@ Homepage link labels and destinations come from `site.links` in `src/_data/site.
 
 Edit the people in `src/_data/people.json` and place their images in `about/portraits/`. Titles, biographies, and interests require content review before publication. Keep applicable third-party attribution in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-Each person has a stable `id` for links, a single display `name`, and a `title`. A biography renders `bio.intro` as its own paragraph, followed by a paragraph containing the display name and `bio.detail`. Each interest has a `label`; an optional `cloudLabel` supplies its background wording. The first interests fill the available decorative positions, and the visible list includes every interest.
+Each person has a stable `id` for links, a single display `name`, and a `title`. A biography renders `bio.intro` as its own paragraph, followed by a paragraph containing the display name and `bio.detail`. Each interest has a `label` for the visible "Drawn to" list; an optional `backgroundLabel` supplies the large, faint wording behind the portrait and biography. The first interests fill the available decorative positions, and the visible list includes every interest.
 
 Portrait captions are controlled by `showPortraitCaptions` in `src/about/index.njk`. Profile numbering, alternating layouts, portrait alternative text, and jump navigation follow the people array automatically. The shared person template adds a decorative dot after every name.
 
@@ -31,9 +31,11 @@ Set a person's `homepage` to their full HTTP or HTTPS URL. The link below their 
 
 ### Interest positioning
 
-Background interest anchors and horizontal drift follow the alternating portrait layout, with separate middle insets for the normal and reversed rows. The `--interest-top-inset`, `--interest-middle-inset`, and `--interest-bottom-inset` properties on `.person` in `about/about.css` set each label's inset from its anchored edge; positive values move it inward. Override these properties on a person's ID selector, such as `#bismeet`, to adjust that profile independently. The mobile layout uses a smaller default bottom inset.
+Background interest anchors and horizontal drift follow the alternating portrait layout, with separate middle insets for the normal and reversed rows. The `--interest-top-inset`, `--interest-middle-inset`, and `--interest-bottom-inset` properties on `.person` in `about/about.css` set the shared horizontal insets for the upper, middle, and lower labels; positive values move them inward. The mobile layout uses a smaller default inset for the lower label. Keep individual placement adjustments in each interest's data fields.
 
-Each interest can set `cloudOffset` to a CSS length or percentage for an independent horizontal adjustment. Positive values move right and negative values move left on either row layout, in addition to the scrolling motion. Use `em` for an adjustment relative to the word's font size, or percentages relative to the word's own width; `100%` moves it right by one full word width.
+Each interest can set `backgroundOffsetX` to a CSS length or percentage for an independent horizontal adjustment. Positive values move right and negative values move left on either row layout, in addition to the scrolling motion. Use `em` for an adjustment relative to the word's font size, or percentages relative to the word's own width; `100%` moves it right by one full word width.
+
+Set `backgroundInsetY` to a CSS length or percentage to override an interest's vertical placement. The upper and middle labels measure from the top of the profile section; the lower label measures from the bottom. Percentages use the section's height. For example, `"backgroundInsetY": "39%"` places the middle label 39% from the top before scrolling motion. The override applies on desktop and mobile; omit it to retain the responsive defaults.
 
 ## Verification
 

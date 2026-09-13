@@ -1,10 +1,12 @@
 <article id="{{ person.id }}" class="person{% if loop.index % 2 == 0 %} person--reverse{% endif %}" aria-labelledby="{{ person.id }}-name" tabindex="-1">
-  <div class="interest-cloud" aria-hidden="true">
+  <div class="interest-background" aria-hidden="true">
     {% set positions = ["one", "two", "three"] %}
     {% set peaks = [0.32, 0.5, 0.68] %}
     {% for interest in person.interests %}
       {% if loop.index0 < positions.length %}
-        <span class="interest interest--{{ positions[loop.index0] }}" data-peak="{{ peaks[loop.index0] }}"{% if interest.cloudOffset %} style="--interest-offset-x: {{ interest.cloudOffset }}"{% endif %}>{{ interest.cloudLabel | default(interest.label) }}</span>
+        <span class="interest interest--{{ positions[loop.index0] }}" data-peak="{{ peaks[loop.index0] }}"
+          {% if interest.backgroundOffsetX or interest.backgroundInsetY %}style="{% if interest.backgroundOffsetX %}--interest-offset-x: {{ interest.backgroundOffsetX }};{% endif %}{% if interest.backgroundInsetY %} --interest-inset-y: {{ interest.backgroundInsetY }};{% endif %}"{% endif %}
+        >{{ interest.backgroundLabel | default(interest.label) }}</span>
       {% endif %}
     {% endfor %}
   </div>

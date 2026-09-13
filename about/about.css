@@ -166,11 +166,11 @@ figcaption { display: flex; justify-content: space-between; gap: 1rem; margin-to
   --interest-direction: -1;
 }
 
-.interest-cloud { position: absolute; z-index: -1; inset: 0; overflow: hidden; pointer-events: none; user-select: none; }
+.interest-background { position: absolute; z-index: -1; inset: 0; overflow: hidden; pointer-events: none; user-select: none; }
 .interest { position: absolute; width: max-content; max-width: none; color: #94a4ac; font-size: clamp(5rem, 13vw, 14rem); font-weight: 500; letter-spacing: -0.055em; line-height: 1; text-transform: uppercase; opacity: 0.045; transform: translate3d(calc(var(--interest-x, 0px) * var(--interest-direction, 1) + var(--interest-offset-x, 0px)), var(--interest-y, 0px), 0); }
-.interest--one { top: 6%; left: var(--interest-top-inset); }
-.interest--two { top: 45%; right: var(--interest-middle-inset); }
-.interest--three { bottom: 4%; left: var(--interest-bottom-inset); }
+.interest--one { top: var(--interest-inset-y, 6%); left: var(--interest-top-inset); }
+.interest--two { top: var(--interest-inset-y, 45%); right: var(--interest-middle-inset); }
+.interest--three { bottom: var(--interest-inset-y, 4%); left: var(--interest-bottom-inset); }
 .person--reverse .interest--one { left: auto; right: var(--interest-top-inset); }
 .person--reverse .interest--two { right: auto; left: var(--interest-middle-inset); }
 .person--reverse .interest--three { left: auto; right: var(--interest-bottom-inset); }
@@ -233,9 +233,9 @@ figcaption { display: flex; justify-content: space-between; gap: 1rem; margin-to
   .person-bio { margin-top: 1.5rem; font-size: 0.94rem; }
   .elsewhere { margin-top: 1.5rem; }
   .interest { font-size: 20vw; }
-  .interest--one { top: 2%; }
-  .interest--two { top: 34%; }
-  .interest--three { bottom: 2%; }
+  .interest--one { top: var(--interest-inset-y, 2%); }
+  .interest--two { top: var(--interest-inset-y, 34%); }
+  .interest--three { bottom: var(--interest-inset-y, 2%); }
   .people-nav { display: none; }
   .outro { padding-block: 6rem 5rem; }
   .outro > .eyebrow { font-size: 0.58rem; margin-bottom: 1.75rem; }
@@ -250,11 +250,11 @@ figcaption { display: flex; justify-content: space-between; gap: 1rem; margin-to
   html:not(.force-animation) { scroll-behavior: auto; }
   html:not(.force-animation) *, html:not(.force-animation) *::before, html:not(.force-animation) *::after { transition: none !important; }
   html:not(.force-animation) .field-drawing, html:not(.force-animation) .portrait img, html:not(.force-animation) .text-link > span { transform: none !important; }
-  html:not(.force-animation) .interest-cloud { display: none; }
+  html:not(.force-animation) .interest-background { display: none; }
 }
 
 @media print {
-  .site-header, .optical-field, .interest-cloud, .people-nav, .skip-link, .meet-link { display: none; }
+  .site-header, .optical-field, .interest-background, .people-nav, .skip-link, .meet-link { display: none; }
   :root { --background: #fff; --foreground: #111; --muted: #444; --faint: #444; --accent: #111; --line: #bbb; --gutter: 1rem; }
   .intro { min-height: 0; padding-block: 2rem; }
   .person { min-height: 0; padding-block: 3rem; break-inside: avoid; }
