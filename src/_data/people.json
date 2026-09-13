@@ -27,7 +27,10 @@
     "portrait": "bismeet.png",
     "nameDot": true,
     "homepage": "",
-    "socials": [],
+    "socials": [
+      { "label": "LinkedIn", "url": "https://linkedin.com/in/bismeet", "icon": "linkedin" },
+      { "label": "GitHub", "url": "https://github.com/Bismeet", "icon": "github" }
+    ],
     "bio": {
       "intro": "Usually somewhere down a rabbit hole.",
       "detail": "likes building things that probably shouldn't work, then learning why they don't. Curiosity turns into a prototype, the prototype turns into a problem, and the problem usually turns into something new to learn."
@@ -45,7 +48,10 @@
     "portrait": "rohith.png",
     "nameDot": true,
     "homepage": "",
-    "socials": [],
+    "socials": [
+      { "label": "LinkedIn", "url": "https://www.linkedin.com/in/meetrohith", "icon": "linkedin" },
+      { "label": "GitHub", "url": "https://github.com/Rohith13", "icon": "github" }
+    ],
     "bio": {
       "intro": "Usually contemplating life and the universe.",
       "detail": "TODO"
