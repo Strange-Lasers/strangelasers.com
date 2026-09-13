@@ -43,6 +43,53 @@ Run `npm run check` before committing. It verifies generated brand SVGs, builds 
 
 For page changes, review desktop and mobile layouts, keyboard navigation, reduced motion, and behavior without JavaScript. For brand changes, follow the [brand verification instructions](brand/README.md#regeneration), including the raster, opening-frame, and renderer checks when those assets are affected.
 
+### Before and after screenshots
+
+Pull requests targeting `main` or `preview` require before and after screenshots for visual changes. Use two existing checkouts: one with the base version and one with the proposed changes. Uncommitted edits are included. From a checkout containing the screenshot tooling, install its dependencies and the capture browser:
+
+```sh
+npm ci
+npm run screenshots:install
+```
+
+On Linux hosts that lack Chromium's system libraries, use `npm run screenshots:install -- --with-deps` to install them with the browser.
+
+Run `npm ci` in each input checkout if its build dependencies are missing. Then capture both versions with one command:
+
+```sh
+npm run screenshots -- ../before-checkout . --page /about/ --selector '#rohith'
+```
+
+The command builds both checkouts, serves their `dist/` directories on temporary loopback ports, aligns the selected element, and captures matching desktop and mobile views. It closes the browser and servers when finished. The default desktop viewport is 1440 by 1000 CSS pixels and the mobile viewport is 390 by 844. At the default 2x pixel density, the PNGs are 2880 by 2000 and 780 by 1688 pixels, preserving the layout while making text and details sharper.
+
+Use `--scale 1`, `--scale 2`, `--scale 3`, or `--scale 4` to choose pixel density. Density multiplies both PNG dimensions without changing the viewport layout; for example, the default desktop viewport at `--scale 3` produces a 4320 by 3000 PNG. Use `--viewport` to change the layout size or select only desktop or mobile.
+
+Open `index.html` in the printed output directory to compare the pairs, then attach the separate PNGs to the PR's before/after table. Click a thumbnail to open the larger viewer. Click the enlarged image to zoom into that area at full resolution; click again to fit the image to the window. The Before/After buttons, Left/Right keys, and Space while the image area has focus switch versions while preserving the zoom and scroll position. The Full resolution button also switches between the original pixels and fit-to-window view. Escape or Close returns to the report. Open PNG links to the selected original image, and thumbnails still open PNGs directly without JavaScript. The report embeds its viewer code, so it works locally when moved together with its PNG files.
+
+`capture.json` records the input commit IDs and dirty state, capture settings, browser version, image dimensions, and actual alignment. Output goes into an ignored `.screenshots/` directory; `--output` selects another empty directory. Failed runs retain `failure.json` and any completed images for diagnosis.
+
+Useful variations:
+
+```sh
+# Align by an existing page anchor and capture only mobile
+npm run screenshots -- ../before-checkout . --page '/about/#rohith' --viewport mobile
+
+# Focus on a heading with a taller viewport and greater pixel density
+npm run screenshots -- ../before-checkout . -p /about/ -s '#rohith h2' -w 390x1200 -d 3
+
+# Capture the reduced-motion presentation
+npm run screenshots -- ../before-checkout . -p /about/ -s '#rohith' --motion reduced
+
+# Reuse builds you have already prepared
+npm run screenshots -- ../before-checkout . --no-build --page /about/
+```
+
+Use a unique CSS selector present in both versions. Without a selector, the command uses the page's `#anchor`, or the top of the page if there is no anchor. It positions the target 32 CSS pixels below the viewport top; `--offset` changes that spacing. If page boundaries or layout changes prevent the two targets from aligning, the command fails with the measured positions so you can choose a different selector or viewport. It also rejects missing pages, broken images, and page script errors.
+
+Normal motion is the default, preserving the About page's decorative interests. Each page uses a controlled JavaScript clock that advances by `--time` milliseconds, then pauses; the default is 6000, allowing the homepage's wordmark and navigation reveals to finish. CSS transitions are disabled and CSS animations are held at the same elapsed time. `--motion reduced` selects the accessible reduced-motion presentation, which hides some artwork. Remove `?animate` when testing reduced motion, since that query deliberately overrides the preference. Screenshots show a single state; use a recording when reviewing animation behavior. Rendering can still differ across browser versions and operating systems, so capture both sides together on the same machine.
+
+Run `npm run screenshots -- --help` for all options. Contributors changing the capture tooling should also run `npm run screenshots:test` after installing Chromium; this exercises real captures, alignment, pixel density, and failure handling. The regular `npm run check` covers CLI parsing and local serving without requiring a browser download.
+
 ### Animation diagnostics
 
 Append these query parameters to the local page URL when comparing animation behavior:
