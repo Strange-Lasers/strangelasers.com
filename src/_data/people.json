@@ -14,7 +14,7 @@
       "detail": "questions assumptions and has a soft spot for software that quietly does its job for years. Strange Lasers is his love letter to the open source software that gave him the freedom to learn, build, and find his own path."
     },
     "interests": [
-      { "label": "How things work", "cloudLabel": "Curiosity" },
+      { "label": "Exploring how things work", "cloudLabel": "Curiosity" },
       { "label": "Helping and teaching", "cloudLabel": "Teaching" },
       { "label": "Elegant simplicity", "cloudLabel": "Simplicity" }
     ]
@@ -34,9 +34,9 @@
       "detail": "likes building things that probably shouldn't work, then learning why they don't. Curiosity turns into a prototype, the prototype turns into a problem, and the problem usually turns into something new to learn."
     },
     "interests": [
-      { "label": "TODO" },
-      { "label": "TODO" },
-      { "label": "TODO" }
+      { "label": "Happy accidents", "cloudLabel": "Think" },
+      { "label": "Rabbit holes", "cloudLabel": "Build" },
+      { "label": "What ifs", "cloudLabel": "Break" }
     ]
   },
   {
