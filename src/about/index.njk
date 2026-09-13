@@ -8,7 +8,7 @@ showPortraitCaptions: false
 ---
 {% extends "document.njk" %}
 {% block description %}Meet the people behind {{ site.name }}, an independent open-source software collective.{% endblock %}
-{% block styles %}<link rel="stylesheet" href="about.css">{% endblock %}
+{% block styles %}<link rel="stylesheet" href="about.css?v={{ 'about/about.css' | assetVersion }}">{% endblock %}
 {% block head %}<script src="about.js" defer></script>{% endblock %}
 {% block content %}
     <a class="skip-link" href="#people">Skip to the people</a>

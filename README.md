@@ -21,6 +21,8 @@ npm run dev
 
 The development server serves `http://localhost:4175/` and rebuilds when templates, data, or public assets change. Use `npm run build` to generate a clean `dist/` bundle, or `npm run check` to build and run the site and brand checks. Serve or deploy `dist/`, not the repository root. Generated HTML and `node_modules/` are ignored by Git.
 
+Stylesheet URLs include a version derived from their contents, so CSS edits receive fresh URLs even when a preview proxy or CDN caches the previous styles.
+
 | Source | Purpose |
 | --- | --- |
 | `src/_data/people.json` | Names, titles, portraits, homepages, social links, biographies, and interests |
