@@ -120,7 +120,17 @@ h1 > span { color: var(--muted); }
 .meet-link:hover .scroll-arrow { transform: translateY(4px); }
 
 .people:focus, .person:focus { outline: none; }
-.person { position: relative; display: flex; min-height: max(48rem, 108svh); align-items: center; padding-block: 7rem; isolation: isolate; }
+.person {
+  --interest-top-inset: -2%;
+  --interest-middle-inset: 8%;
+  --interest-bottom-inset: 13%;
+  position: relative;
+  display: flex;
+  min-height: max(48rem, 108svh);
+  align-items: center;
+  padding-block: 7rem;
+  isolation: isolate;
+}
 .person-layout { display: grid; grid-template-columns: 0.9fr 1fr; gap: clamp(4rem, 12vw, 12rem); align-items: center; }
 .portrait { position: relative; max-width: 25rem; }
 .portrait-window { position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: #171c1e; }
@@ -150,13 +160,20 @@ figcaption { display: flex; justify-content: space-between; gap: 1rem; margin-to
 .interest-list { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; margin: 0.75rem 0 0; padding: 0; list-style: none; color: #a9b2b5; font-family: var(--mono); font-size: 0.62rem; line-height: 1.8; }
 .person--reverse .portrait { grid-column: 2; grid-row: 1; justify-self: end; }
 .person--reverse .person-copy { grid-column: 1; grid-row: 1; }
-.person--reverse { --accent: var(--laser-purple-highlight); }
+.person--reverse {
+  --accent: var(--laser-purple-highlight);
+  --interest-middle-inset: 3%;
+  --interest-direction: -1;
+}
 
 .interest-cloud { position: absolute; z-index: -1; inset: 0; overflow: hidden; pointer-events: none; user-select: none; }
-.interest { position: absolute; width: max-content; max-width: none; color: #94a4ac; font-size: clamp(5rem, 13vw, 14rem); font-weight: 500; letter-spacing: -0.055em; line-height: 1; text-transform: uppercase; opacity: 0.045; transform: translate3d(var(--interest-x, 0px), var(--interest-y, 0px), 0); }
-.interest--one { top: 6%; left: -2%; }
-.interest--two { top: 45%; right: -8%; }
-.interest--three { bottom: 4%; left: 13%; }
+.interest { position: absolute; width: max-content; max-width: none; color: #94a4ac; font-size: clamp(5rem, 13vw, 14rem); font-weight: 500; letter-spacing: -0.055em; line-height: 1; text-transform: uppercase; opacity: 0.045; transform: translate3d(calc(var(--interest-x, 0px) * var(--interest-direction, 1) + var(--interest-offset-x, 0px)), var(--interest-y, 0px), 0); }
+.interest--one { top: 6%; left: var(--interest-top-inset); }
+.interest--two { top: 45%; right: var(--interest-middle-inset); }
+.interest--three { bottom: 4%; left: var(--interest-bottom-inset); }
+.person--reverse .interest--one { left: auto; right: var(--interest-top-inset); }
+.person--reverse .interest--two { right: auto; left: var(--interest-middle-inset); }
+.person--reverse .interest--three { left: auto; right: var(--interest-bottom-inset); }
 
 .people-nav { position: fixed; z-index: 4; top: 50%; right: 1.1rem; display: grid; transform: translateY(-50%); }
 .people-nav a { position: relative; display: flex; width: 44px; height: 44px; align-items: center; justify-content: center; color: var(--faint); font-size: 0.58rem; transition: color 180ms ease; }
@@ -204,7 +221,7 @@ figcaption { display: flex; justify-content: space-between; gap: 1rem; margin-to
   .intro-copy { max-width: 20rem; font-size: 0.94rem; }
   .field-drawing { top: 13%; left: 3%; width: 150vw; max-width: none; }
   .optical-field { opacity: calc(0.18 * var(--field-strength, 1)); }
-  .person { min-height: auto; padding-block: 4.5rem; }
+  .person { --interest-bottom-inset: 2%; min-height: auto; padding-block: 4.5rem; }
   .person-layout { grid-template-columns: 1fr; gap: 2.75rem; }
   .portrait { width: 78%; max-width: 23rem; }
   .portrait-window { aspect-ratio: 5 / 6; }
@@ -218,7 +235,7 @@ figcaption { display: flex; justify-content: space-between; gap: 1rem; margin-to
   .interest { font-size: 20vw; }
   .interest--one { top: 2%; }
   .interest--two { top: 34%; }
-  .interest--three { bottom: 2%; left: 2%; }
+  .interest--three { bottom: 2%; }
   .people-nav { display: none; }
   .outro { padding-block: 6rem 5rem; }
   .outro > .eyebrow { font-size: 0.58rem; margin-bottom: 1.75rem; }

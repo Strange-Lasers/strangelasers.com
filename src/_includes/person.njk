@@ -4,7 +4,7 @@
     {% set peaks = [0.32, 0.5, 0.68] %}
     {% for interest in person.interests %}
       {% if loop.index0 < positions.length %}
-        <span class="interest interest--{{ positions[loop.index0] }}" data-peak="{{ peaks[loop.index0] }}">{{ interest.cloudLabel | default(interest.label) }}</span>
+        <span class="interest interest--{{ positions[loop.index0] }}" data-peak="{{ peaks[loop.index0] }}"{% if interest.cloudOffset %} style="--interest-offset-x: {{ interest.cloudOffset }}"{% endif %}>{{ interest.cloudLabel | default(interest.label) }}</span>
       {% endif %}
     {% endfor %}
   </div>

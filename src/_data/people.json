@@ -15,8 +15,8 @@
     },
     "interests": [
       { "label": "Exploring how things work", "cloudLabel": "Curiosity" },
-      { "label": "Helping and teaching", "cloudLabel": "Teaching" },
-      { "label": "Elegant simplicity", "cloudLabel": "Simplicity" }
+      { "label": "Helping and teaching", "cloudLabel": "Teaching", "cloudOffset": "0.3em" },
+      { "label": "Elegant simplicity", "cloudLabel": "Simplicity", "cloudOffset": "-0.05em" }
     ]
   },
   {
@@ -34,8 +34,8 @@
       "detail": "likes building things that probably shouldn't work, then learning why they don't. Curiosity turns into a prototype, the prototype turns into a problem, and the problem usually turns into something new to learn."
     },
     "interests": [
-      { "label": "Happy accidents", "cloudLabel": "Think" },
-      { "label": "Rabbit holes", "cloudLabel": "Build" },
+      { "label": "Happy accidents", "cloudLabel": "Think", "cloudOffset": "-10%" },
+      { "label": "Rabbit holes", "cloudLabel": "Build", "cloudOffset": "80%" },
       { "label": "What ifs", "cloudLabel": "Break" }
     ]
   },
@@ -54,9 +54,9 @@
       "detail": "TODO"
     },
     "interests": [
-      { "label": "Writing" },
-      { "label": "Reading" },
-      { "label": "Mindfulness" }
+      { "label": "Writing", "cloudOffset": "0.05em" },
+      { "label": "Reading", "cloudOffset": "0.2em" },
+      { "label": "Mindfulness", "cloudOffset": "calc(-100% / 11)" }
     ]
   }
 ]
