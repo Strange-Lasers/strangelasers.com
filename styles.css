@@ -369,8 +369,7 @@ body {
   flex: none;
   align-items: center;
   justify-content: center;
-  padding: 0 0.6rem;
-  margin-right: 0.2rem;
+  padding-left: 0.6rem;
   color: rgb(243 247 255 / 62%);
   font-size: clamp(0.58rem, 1.15vmin, 0.74rem);
   font-weight: 540;
