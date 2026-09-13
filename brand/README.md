@@ -43,7 +43,7 @@ node scripts/build-brand.mjs --png --opening
 
 `--png` requires ImageMagick 7 (`magick`) with SVG rendering support. `--opening` requires `agent-browser`, its installed Chromium browser, and the site's locked dependencies installed with `npm ci`. Neither optional tool is needed for the default brand build, tests, or deployment checks. The opening export builds the site, captures the actual SVG renderer from `dist/index.html` at phase zero with literal computed styles, then rebuilds the site to include the captured asset. This keeps the placeholder aligned with the live animation. Regenerate it after changes to opening geometry or render styles as well.
 
-The static check does not re-render PNGs or the opening frame. When changing those outputs, visually inspect the homepage at desktop and mobile sizes, with reduced motion, forced SVG (`?renderer=svg`), forced WebGL (`?animate&renderer=webgl`), and scripts unavailable. Check the transparent assets on both light and dark backgrounds. Increase the asset version queries in the shared templates under `src/_includes/` when refreshing browser caches is necessary.
+The static check does not re-render PNGs or the opening frame. When changing those outputs, visually inspect the homepage at desktop and mobile sizes, with reduced motion, forced SVG (`?renderer=svg`), forced WebGL (`?animate&renderer=webgl`), and scripts unavailable. Check the transparent assets on both light and dark backgrounds. Increase image asset version queries in the shared templates under `src/_includes/` when refreshing browser caches is necessary. Stylesheet URLs are [versioned from their contents automatically](../DESIGN.md#build-structure).
 
 For a larger transparent PNG, choose the desired output width:
 
