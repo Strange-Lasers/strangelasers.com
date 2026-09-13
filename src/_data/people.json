@@ -44,19 +44,19 @@
     "name": "Rohith",
     "title": "Founding Engineer",
     "portrait": "rohith.jpg",
-    "homepage": "",
+    "homepage": "https://meetrohith.netlify.app",
     "socials": [
       { "label": "LinkedIn", "url": "https://www.linkedin.com/in/meetrohith", "icon": "linkedin" },
       { "label": "GitHub", "url": "https://github.com/Rohith13", "icon": "github" }
     ],
     "bio": {
-      "intro": "Usually contemplating life and the universe.",
-      "detail": "is a writer and a thinker."
+      "intro": "Stays calm, stays curious, ships with purpose.",
+      "detail": "is an optimist who builds digital experiences with one belief: technology should feel human. Engineer, solopreneur, and author who makes things meant to be easier and kinder to use. Calm on the surface, curious underneath. Strange Lasers is where that curiosity gets to roam freely: good team, no steady roadmap, just the joy of building things that matter."
     },
     "interests": [
-      { "label": "Writing", "cloudOffset": "0.05em" },
-      { "label": "Reading", "cloudOffset": "calc(0.2em - 100% / 70)" },
-      { "label": "Mindfulness", "cloudOffset": "calc(-100% / 11)" }
+      { "label": "Calm problem-solving", "cloudLabel": "Calm", "cloudOffset": "0.3em" },
+      { "label": "Ideas into products", "cloudLabel": "Ideas", "cloudOffset": "30%" },
+      { "label": "Purpose over hype", "cloudLabel": "Purpose", "cloudOffset": "0.1em" }
     ]
   }
 ]
