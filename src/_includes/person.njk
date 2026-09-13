@@ -12,7 +12,6 @@
     <figure class="portrait">
       <div class="portrait-window">
         <img src="portraits/{{ person.portrait }}" alt="{{ person.name }}'s portrait" width="800" height="800"{% if not loop.first %} loading="lazy"{% endif %} decoding="async">
-        <span class="portrait-cross" aria-hidden="true">+</span>
       </div>
       {% if showPortraitCaptions %}
         <figcaption><span>{{ loop.index | personNumber }} / {{ person.name }}</span><span>{{ person.role }}</span></figcaption>
