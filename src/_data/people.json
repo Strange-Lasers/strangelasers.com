@@ -6,8 +6,16 @@
     "portrait": "james.png",
     "homepage": "https://jklein.dev",
     "socials": [
-      { "label": "LinkedIn", "url": "https://linkedin.com/in/james-klein-developer", "icon": "linkedin" },
-      { "label": "GitHub", "url": "https://github.com/j-256", "icon": "github" }
+      {
+        "label": "LinkedIn",
+        "url": "https://linkedin.com/in/james-klein-developer",
+        "icon": "linkedin"
+      },
+      {
+        "label": "GitHub",
+        "url": "https://github.com/j-256",
+        "icon": "github"
+      }
     ],
     "bio": {
       "intro": "Usually has a prototype before the conversation is over.",
@@ -26,17 +34,37 @@
     "portrait": "bismeet.png",
     "homepage": "",
     "socials": [
-      { "label": "LinkedIn", "url": "https://linkedin.com/in/bismeet", "icon": "linkedin" },
-      { "label": "GitHub", "url": "https://github.com/Bismeet", "icon": "github" }
+      {
+        "label": "LinkedIn",
+        "url": "https://linkedin.com/in/bismeet",
+        "icon": "linkedin"
+      },
+      {
+        "label": "GitHub",
+        "url": "https://github.com/Bismeet",
+        "icon": "github"
+      }
     ],
     "bio": {
       "intro": "Usually somewhere down a rabbit hole.",
-      "detail": "likes building things that probably shouldn't work, then learning why they don't. Curiosity turns into a prototype, the prototype turns into a problem, and the problem usually turns into something new to learn."
+      "detail": "likes building things that probably shouldn't work, just to find out why. Curiosity turns into a prototype, the prototype turns into a problem, and the problem usually turns into something new to learn."
     },
     "interests": [
-      { "label": "Happy accidents", "cloudLabel": "Think", "cloudOffset": "-10%" },
-      { "label": "Rabbit holes", "cloudLabel": "Build", "cloudOffset": "80%" },
-      { "label": "What ifs", "cloudLabel": "Break" }
+      {
+        "label": "Happy Accidents",
+        "cloudLabel": "Think",
+        "cloudOffset": "-75%"
+      },
+      {
+        "label": "Rabbit Holes",
+        "cloudLabel": "Build",
+        "cloudOffset": "50%"
+      },
+      {
+        "label": "What Ifs",
+        "cloudLabel": "Break",
+        "cloudOffset": "-40%"
+      }
     ]
   },
   {
@@ -46,8 +74,16 @@
     "portrait": "rohith.jpg",
     "homepage": "https://meetrohith.netlify.app",
     "socials": [
-      { "label": "LinkedIn", "url": "https://www.linkedin.com/in/meetrohith", "icon": "linkedin" },
-      { "label": "GitHub", "url": "https://github.com/Rohith13", "icon": "github" }
+      {
+        "label": "LinkedIn",
+        "url": "https://www.linkedin.com/in/meetrohith",
+        "icon": "linkedin"
+      },
+      {
+        "label": "GitHub",
+        "url": "https://github.com/Rohith13",
+        "icon": "github"
+      }
     ],
     "bio": {
       "intro": "Stays calm, stays curious, ships with purpose.",
