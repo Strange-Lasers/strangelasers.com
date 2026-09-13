@@ -24,12 +24,12 @@
         <ul class="person-links" aria-label="{{ person.name }}'s links">
           {% if person.homepage %}
             <li class="person-homepage">
-              <a href="{{ person.homepage }}" aria-label="{{ person.name }}'s homepage: {{ person.homepage | displayUrl }}">{{ person.homepage | displayUrl }}</a>
+              <a href="{{ person.homepage }}" target="_blank" rel="noopener noreferrer" aria-label="{{ person.name }}'s homepage: {{ person.homepage | displayUrl }}">{{ person.homepage | displayUrl }}</a>
             </li>
           {% endif %}
           {% for social in person.socials %}
             <li>
-              <a class="person-social" href="{{ social.url }}" aria-label="{{ person.name }} on {{ social.label }}" title="{{ social.label }}">
+              <a class="person-social" href="{{ social.url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ person.name }} on {{ social.label }}" title="{{ social.label }}">
                 {% if social.icon %}
                   {% include "icons/" + social.icon + ".svg" %}
                 {% else %}

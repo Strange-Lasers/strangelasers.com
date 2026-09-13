@@ -39,7 +39,7 @@ Background interest anchors and horizontal drift follow the alternating portrait
 
 Each interest can set `cloudOffset` to a CSS length or percentage for an independent horizontal adjustment. Positive values move right and negative values move left on either row layout, in addition to the scrolling motion. Use `em` for an adjustment relative to the word's font size, or percentages relative to the word's own width; `100%` moves it right by one full word width.
 
-Set a person's `homepage` to their full HTTP or HTTPS URL. The link below their name displays that URL without the protocol while retaining the full destination. Add optional `socials` entries with a `label` and full `url`. An optional `icon` names an SVG in `src/_includes/icons/` without the extension, such as `github` or `linkedin`; omit it to display the social label as text. Icon links have accessible labels and tooltips. Leave `homepage` empty and `socials` empty, or omit either field, when no links are supplied; an empty link row does not render.
+Set a person's `homepage` to their full HTTP or HTTPS URL. The link below their name displays that URL without the protocol while retaining the full destination. Add optional `socials` entries with a `label` and full `url`. An optional `icon` names an SVG in `src/_includes/icons/` without the extension, such as `github` or `linkedin`; omit it to display the social label as text. Icon links have accessible labels and tooltips. External links open in a new tab; site navigation and jump links stay in the same tab. Leave `homepage` empty and `socials` empty, or omit either field, when no links are supplied; an empty link row does not render.
 
 ## About page prototype
 
