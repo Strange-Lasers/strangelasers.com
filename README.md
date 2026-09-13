@@ -43,7 +43,7 @@ The `/about/` page introduces the team through portraits, short biographies, and
 
 Run `npm run dev` and open `http://localhost:4175/about/` to review the page.
 
-Edit the people in `src/_data/people.json` and place their images in `about/portraits/`. Roles, biographies, and interests require content review before publication. Portrait captions are controlled by `showPortraitCaptions` in `src/about/index.njk`; each person's `nameDot` controls the decorative dot after their name. Keep applicable third-party attribution in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Edit the people in `src/_data/people.json` and place their images in `about/portraits/`. Roles, biographies, and interests require content review before publication. Portrait captions are controlled by `showPortraitCaptions` in `src/about/index.njk`. The shared person template adds a decorative dot after every name. Keep applicable third-party attribution in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 The page uses native scrolling and anchor navigation. JavaScript adds parallax, fading background interests, and the active-person indicator; it schedules frames only in response to page events. With reduced motion enabled, portraits and optical linework stay still, background interest effects are hidden, and interests remain readable in each biography. Append `?animate` to explicitly preview motion regardless of the system preference, using the same override as the homepage. All content and links also work without JavaScript. The page's styles and scroll behavior live in `about/`. It reuses the site's palette, brand assets, and initialization script.
 

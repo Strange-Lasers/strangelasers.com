@@ -19,7 +19,7 @@
     </figure>
     <div class="person-copy">
       <p class="eyebrow person-role"><span class="person-number">{{ loop.index | personNumber }}</span> {{ person.role }}</p>
-      <h2 id="{{ person.id }}-name"><span class="given-name">{{ person.name }}</span>{% if person.nameDot %}<span class="name-dot">.</span>{% endif %}</h2>
+      <h2 id="{{ person.id }}-name"><span class="given-name">{{ person.name }}</span><span class="name-dot">.</span></h2>
       {% if person.homepage or person.socials.length %}
         <ul class="person-links" aria-label="{{ person.name }}'s links">
           {% if person.homepage %}

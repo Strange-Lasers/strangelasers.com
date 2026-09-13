@@ -56,7 +56,7 @@ test("people data drives profiles, interests, accessible labels, and jump links"
     const children = elements(profile);
     const heading = children.find((node) => node.tagName === "h2");
     assert.equal(attribute(profile, "id"), person.id);
-    assert.equal(text(heading), person.name + (person.nameDot ? "." : ""));
+    assert.equal(text(heading), person.name + ".");
     assert.equal(elements(heading).filter((node) => node.tagName === "p").length, 0, "Biography must follow the name heading");
     assert.equal(hasClass(profile, "person--reverse") || false, index % 2 === 1);
     assert.equal(attribute(links[index], "href"), "#" + person.id);

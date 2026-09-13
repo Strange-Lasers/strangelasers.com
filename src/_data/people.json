@@ -4,7 +4,6 @@
     "name": "James",
     "role": "Engineering & Networking",
     "portrait": "james.png",
-    "nameDot": true,
     "homepage": "https://jklein.dev",
     "socials": [
       { "label": "LinkedIn", "url": "https://linkedin.com/in/james-klein-developer", "icon": "linkedin" },
@@ -25,7 +24,6 @@
     "name": "Bismeet",
     "role": "TODO",
     "portrait": "bismeet.png",
-    "nameDot": true,
     "homepage": "",
     "socials": [
       { "label": "LinkedIn", "url": "https://linkedin.com/in/bismeet", "icon": "linkedin" },
@@ -46,7 +44,6 @@
     "name": "Rohith",
     "role": "TODO",
     "portrait": "rohith.png",
-    "nameDot": true,
     "homepage": "",
     "socials": [
       { "label": "LinkedIn", "url": "https://www.linkedin.com/in/meetrohith", "icon": "linkedin" },
