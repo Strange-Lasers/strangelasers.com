@@ -74,7 +74,7 @@ test("an added person renders everywhere and special characters remain text", as
     ...people[0],
     id: "template-probe",
     name: 'A <B> & "C"',
-    role: "R&D <tools>",
+    title: "R&D <tools>",
     interests: [{ label: "Graphics <canvas> & shaders" }],
   };
   const site = new Eleventy(undefined, undefined, {

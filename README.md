@@ -23,7 +23,7 @@ The development server serves `http://localhost:4175/` and rebuilds when templat
 
 | Source | Purpose |
 | --- | --- |
-| `src/_data/people.json` | Names, roles, portraits, homepages, social links, biographies, and interests |
+| `src/_data/people.json` | Names, titles, portraits, homepages, social links, biographies, and interests |
 | `src/_data/site.json` | Site identity, organization type, taglines, and external links |
 | `src/_includes/person.njk` | Shared person markup, labels, and interest lists |
 | `src/_includes/home.njk` | Homepage mark, signature, and navigation |
@@ -43,7 +43,7 @@ The `/about/` page introduces the team through portraits, short biographies, and
 
 Run `npm run dev` and open `http://localhost:4175/about/` to review the page.
 
-Edit the people in `src/_data/people.json` and place their images in `about/portraits/`. Roles, biographies, and interests require content review before publication. Portrait captions are controlled by `showPortraitCaptions` in `src/about/index.njk`. The shared person template adds a decorative dot after every name. Keep applicable third-party attribution in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Edit the people in `src/_data/people.json` and place their images in `about/portraits/`. Titles, biographies, and interests require content review before publication. Portrait captions are controlled by `showPortraitCaptions` in `src/about/index.njk`. The shared person template adds a decorative dot after every name. Keep applicable third-party attribution in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 The page uses native scrolling and anchor navigation. JavaScript adds parallax, fading background interests, and the active-person indicator; it schedules frames only in response to page events. With reduced motion enabled, portraits and optical linework stay still, background interest effects are hidden, and interests remain readable in each biography. Append `?animate` to explicitly preview motion regardless of the system preference, using the same override as the homepage. All content and links also work without JavaScript. The page's styles and scroll behavior live in `about/`. It reuses the site's palette, brand assets, and initialization script.
 
@@ -53,7 +53,7 @@ The homepage provides a text-only About link beside GitHub and Stowplan, plus a 
 
 ### Before release
 
-- Review the names, roles, biographies, interests, portraits, alternative text, and applicable portrait licensing notices
+- Review the names, titles, biographies, interests, portraits, alternative text, and applicable portrait licensing notices
 - Confirm the remaining company copy and public link destinations; keep the footer wording "Open-source software, made with care."
 - Recheck desktop and mobile layouts, keyboard navigation, motion preferences, and both navigation paths
 - Obtain approval for the final content and integration before merging into `main`; pushing and deploying require separate authorization

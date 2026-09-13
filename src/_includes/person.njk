@@ -14,11 +14,11 @@
         <img src="portraits/{{ person.portrait }}" alt="{{ person.name }}'s portrait" width="800" height="800"{% if not loop.first %} loading="lazy"{% endif %} decoding="async">
       </div>
       {% if showPortraitCaptions %}
-        <figcaption><span>{{ loop.index | personNumber }} / {{ person.name }}</span><span>{{ person.role }}</span></figcaption>
+        <figcaption><span>{{ loop.index | personNumber }} / {{ person.name }}</span><span>{{ person.title }}</span></figcaption>
       {% endif %}
     </figure>
     <div class="person-copy">
-      <p class="eyebrow person-role"><span class="person-number">{{ loop.index | personNumber }}</span> {{ person.role }}</p>
+      <p class="eyebrow person-title"><span class="person-number">{{ loop.index | personNumber }}</span> {{ person.title }}</p>
       <h2 id="{{ person.id }}-name"><span class="given-name">{{ person.name }}</span><span class="name-dot">.</span></h2>
       {% if person.homepage or person.socials.length %}
         <ul class="person-links" aria-label="{{ person.name }}'s links">

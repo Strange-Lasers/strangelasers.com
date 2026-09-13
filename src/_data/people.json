@@ -2,7 +2,7 @@
   {
     "id": "james",
     "name": "James",
-    "role": "Engineering & Networking",
+    "title": "Founder & Engineer",
     "portrait": "james.png",
     "homepage": "https://jklein.dev",
     "socials": [
@@ -22,7 +22,7 @@
   {
     "id": "bismeet",
     "name": "Bismeet",
-    "role": "TODO",
+    "title": "Founding Engineer",
     "portrait": "bismeet.png",
     "homepage": "",
     "socials": [
@@ -42,7 +42,7 @@
   {
     "id": "rohith",
     "name": "Rohith",
-    "role": "TODO",
+    "title": "Founding Engineer",
     "portrait": "rohith.jpg",
     "homepage": "",
     "socials": [
