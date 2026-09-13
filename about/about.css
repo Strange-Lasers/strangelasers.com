@@ -132,6 +132,16 @@ figcaption { display: flex; justify-content: space-between; gap: 1rem; margin-to
 .person h2 { margin-left: -0.045em; font-size: clamp(5rem, 8.2vw, 8.5rem); font-weight: 430; letter-spacing: -0.05em; line-height: 0.96; }
 .given-name { display: inline; }
 .name-dot { color: var(--accent); }
+.person-links { display: flex; flex-wrap: wrap; max-width: 23rem; align-items: center; gap: 0.15rem 0.5rem; margin: 1rem 0 0; padding: 0; list-style: none; font-family: var(--mono); font-size: 0.75rem; line-height: 1.6; }
+.person-links li { min-width: 0; max-width: 100%; }
+.person-links a { display: flex; min-height: 44px; align-items: center; }
+.person-homepage { margin-right: 0.5rem; }
+.person-homepage a { color: var(--accent); overflow-wrap: anywhere; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 0.35em; }
+.person-homepage a:hover { text-decoration-color: currentcolor; }
+.person-social { min-width: 44px; justify-content: center; color: var(--muted); }
+.person-social:hover, .person-social:focus-visible { color: var(--accent); }
+.person-social svg { display: block; width: 1.1rem; height: 1.1rem; fill: currentcolor; }
+.person-links + .person-bio { margin-top: 1rem; }
 .person-bio { max-width: 23rem; margin-top: 2rem; color: #b2b9bb; font-size: 0.96rem; line-height: 1.85; }
 .person-intro { color: var(--foreground); font-size: 1.15em; font-weight: 500; line-height: 1.45; }
 .person-bio p + p { margin-top: 0.75em; }

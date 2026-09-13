@@ -91,7 +91,8 @@ test("an added person renders everywhere and special characters remain text", as
   assert.equal(text(children.find((node) => hasClass(node, "given-name"))), added.name);
   assert.ok(nodes.some((node) => attribute(node, "href") === "#" + added.id && attribute(node, "aria-label") === added.name));
   assert.equal(attribute(children.find((node) => node.tagName === "img"), "alt"), added.name + "'s portrait");
-  assert.equal(text(children.find((node) => node.tagName === "li")), added.interests[0].label);
+  const interestList = children.find((node) => hasClass(node, "interest-list"));
+  assert.equal(text(elements(interestList).find((node) => node.tagName === "li")), added.interests[0].label);
   assert.doesNotMatch(html, /<B>|<tools>|<canvas>/);
 });
 

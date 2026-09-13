@@ -20,6 +20,26 @@
     <div class="person-copy">
       <p class="eyebrow person-role"><span class="person-number">{{ loop.index | personNumber }}</span> {{ person.role }}</p>
       <h2 id="{{ person.id }}-name"><span class="given-name">{{ person.name }}</span>{% if person.nameDot %}<span class="name-dot">.</span>{% endif %}</h2>
+      {% if person.homepage or person.socials.length %}
+        <ul class="person-links" aria-label="{{ person.name }}'s links">
+          {% if person.homepage %}
+            <li class="person-homepage">
+              <a href="{{ person.homepage }}" aria-label="{{ person.name }}'s homepage: {{ person.homepage | displayUrl }}">{{ person.homepage | displayUrl }}</a>
+            </li>
+          {% endif %}
+          {% for social in person.socials %}
+            <li>
+              <a class="person-social" href="{{ social.url }}" aria-label="{{ person.name }} on {{ social.label }}" title="{{ social.label }}">
+                {% if social.icon %}
+                  {% include "icons/" + social.icon + ".svg" %}
+                {% else %}
+                  {{ social.label }}
+                {% endif %}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
       <div class="person-bio">
         <p class="person-intro">{{ person.bio.intro }}</p>
         <p class="person-detail">{{ person.name }} {{ person.bio.detail }}</p>

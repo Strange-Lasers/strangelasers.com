@@ -18,6 +18,7 @@ export default function (eleventyConfig) {
     throwOnUndefined: true,
   });
   eleventyConfig.addFilter("personNumber", (index) => String(index).padStart(PERSON_NUMBER_WIDTH, "0"));
+  eleventyConfig.addFilter("displayUrl", (url) => url.replace(/^https?:\/\//i, ""));
   for (const asset of PUBLIC_ASSETS) eleventyConfig.addPassthroughCopy(asset);
 
   return {

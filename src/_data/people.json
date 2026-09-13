@@ -5,6 +5,11 @@
     "role": "Engineering & Networking",
     "portrait": "james.png",
     "nameDot": true,
+    "homepage": "https://jklein.dev",
+    "socials": [
+      { "label": "LinkedIn", "url": "https://linkedin.com/in/james-klein-developer", "icon": "linkedin" },
+      { "label": "GitHub", "url": "https://github.com/j-256", "icon": "github" }
+    ],
     "bio": {
       "intro": "Usually has a prototype before the conversation is over.",
       "detail": "questions assumptions and has a soft spot for software that quietly does its job for years. Strange Lasers is his love letter to the open source software that gave him the freedom to learn, build, and find his own path."
@@ -21,6 +26,8 @@
     "role": "TODO",
     "portrait": "bismeet.png",
     "nameDot": true,
+    "homepage": "",
+    "socials": [],
     "bio": {
       "intro": "Usually somewhere down a rabbit hole.",
       "detail": "likes building things that probably shouldn't work, then learning why they don't. Curiosity turns into a prototype, the prototype turns into a problem, and the problem usually turns into something new to learn."
@@ -37,6 +44,8 @@
     "role": "TODO",
     "portrait": "rohith.png",
     "nameDot": true,
+    "homepage": "",
+    "socials": [],
     "bio": {
       "intro": "Usually contemplating life and the universe.",
       "detail": "TODO"

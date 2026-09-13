@@ -23,7 +23,7 @@ The development server serves `http://localhost:4175/` and rebuilds when templat
 
 | Source | Purpose |
 | --- | --- |
-| `src/_data/people.json` | Names, roles, portraits, biographies, and interests |
+| `src/_data/people.json` | Names, roles, portraits, homepages, social links, biographies, and interests |
 | `src/_data/site.json` | Site identity, organization type, taglines, and external links |
 | `src/_includes/person.njk` | Shared person markup, labels, and interest lists |
 | `src/_includes/home.njk` | Homepage mark, signature, and navigation |
@@ -32,6 +32,8 @@ The development server serves `http://localhost:4175/` and rebuilds when templat
 | `eleventy.config.mjs` | Template configuration and the public asset passthrough list |
 
 Each person has a stable `id` for links and a single display `name`. Profile numbering, alternating layouts, portrait alternative text, and jump navigation follow the people array automatically. A biography renders `bio.intro` as its own paragraph, followed by a paragraph containing the display name and `bio.detail`. Each interest has a `label`; an optional `cloudLabel` supplies its background wording. The first interests fill the available decorative positions, and the visible list includes every interest. Nunjucks escapes data values as text and fails the build when a required rendered value is missing.
+
+Set a person's `homepage` to their full HTTP or HTTPS URL. The link below their name displays that URL without the protocol while retaining the full destination. Add optional `socials` entries with a `label` and full `url`. An optional `icon` names an SVG in `src/_includes/icons/` without the extension, such as `github` or `linkedin`; omit it to display the social label as text. Icon links have accessible labels and tooltips. Leave `homepage` empty and `socials` empty, or omit either field, when no links are supplied; an empty link row does not render.
 
 ## About page prototype
 
