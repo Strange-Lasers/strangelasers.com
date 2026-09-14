@@ -9,6 +9,7 @@ const PUBLIC_ASSETS = [
   "logo-webgl.js",
   "site-init.js",
   "manifest.webmanifest",
+  "_headers",
   "about/*.css",
   "about/*.js",
   "about/portraits/*.{png,jpg,jpeg,webp,avif}",
@@ -23,6 +24,7 @@ export default function (eleventyConfig) {
   });
   eleventyConfig.addFilter("personNumber", (index) => String(index).padStart(PERSON_NUMBER_WIDTH, "0"));
   eleventyConfig.addFilter("displayUrl", (url) => url.replace(/^https?:\/\//i, ""));
+  eleventyConfig.addFilter("canonicalUrl", (url, origin) => new URL(url.replace(/index\.html$/, ""), origin).href);
   eleventyConfig.addFilter("assetVersion", (path) => createHash("sha256")
     .update(readFileSync(new URL(path, import.meta.url)))
     .digest("hex").slice(0, ASSET_VERSION_LENGTH));

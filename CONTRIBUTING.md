@@ -37,6 +37,8 @@ Each interest can set `backgroundOffsetX` to a CSS length or percentage for an i
 
 Set `backgroundInsetY` to a CSS length or percentage to override an interest's vertical placement. The upper and middle labels measure from the top of the profile section; the lower label measures from the bottom. Percentages use the section's height. For example, `"backgroundInsetY": "39%"` places the middle label 39% from the top before scrolling motion. The override applies on desktop and mobile; omit it to retain the responsive defaults.
 
+The build generates `robots.txt` and `sitemap.xml` from the site origin and page collection. Pages with `noindex: true` stay out of the sitemap. The shared document template gives every page its own canonical URL.
+
 ## Verification
 
 Run `npm run check` before committing. It verifies generated brand SVGs, builds the site, and runs the site and brand tests. Use `npm run build` when only a clean `dist/` bundle is needed.
@@ -105,7 +107,7 @@ Combine parameters with `&`, for example `http://localhost:4175/?animate&rendere
 
 ## About page review
 
-The About content is a draft available on the `preview` branch and preview site while its content is under review. Continue editing on `feat/about-us` and merge accepted changes into `preview`. Only the reviewed page belongs on `main`.
+The About page is public and indexable on `main`. Review changes to team content on the `preview` branch and preview site before publication. Preview hostnames receive `X-Robots-Tag: noindex` through the shared `_headers` file.
 
 Run `npm run dev` and open `http://localhost:4175/about/` to review the page.
 

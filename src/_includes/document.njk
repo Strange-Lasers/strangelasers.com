@@ -7,6 +7,7 @@
     {% if noindex | default(false) %}<meta name="robots" content="noindex">{% endif %}
     <meta name="description" content="{% block description %}{{ site.name }} {{ site.description }}{% endblock %}">
     <title>{% block pageTitle %}{{ title }} | {{ site.name }}{% endblock %}</title>
+    <link rel="canonical" href="{{ page.url | canonicalUrl(site.url) }}">
     {% block head %}{% endblock %}
     <link rel="icon" href="{{ assetPrefix }}mark.svg?v=brand-spectrum" type="image/svg+xml">
     {% block manifest %}{% endblock %}

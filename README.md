@@ -24,4 +24,4 @@ Open `http://localhost:4175/`. The development server rebuilds when templates, d
 | [brand/README.md](brand/README.md) | Shared palette, editable SVG sources, asset regeneration, and visual verification |
 | [DEPLOYMENT.md](DEPLOYMENT.md) | Branch ownership, automatic deployment, and recovery instructions |
 
-The About page is a draft on `preview` while its content is under review. See the [About page review process](CONTRIBUTING.md#about-page-review) before preparing it for production.
+The About page is published at `/about/` and included in the sitemap. Use the [About page review process](CONTRIBUTING.md#about-page-review) when changing team content.

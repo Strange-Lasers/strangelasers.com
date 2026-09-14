@@ -3,13 +3,23 @@ permalink: /about/index.html
 title: About us
 themeColor: "#050607"
 assetPrefix: "../"
-noindex: true
+noindex: false
 showPortraitCaptions: false
 ---
 {% extends "document.njk" %}
 {% block description %}Meet the people behind {{ site.name }}, an independent open-source software collective.{% endblock %}
 {% block styles %}<link rel="stylesheet" href="about.css?v={{ 'about/about.css' | assetVersion }}">{% endblock %}
-{% block head %}<script src="about.js" defer></script>{% endblock %}
+{% block head %}
+<meta property="og:title" content="{{ title }} | {{ site.name }}">
+<meta property="og:description" content="Meet the people behind {{ site.name }}, an independent open-source software collective.">
+<meta property="og:url" content="{{ page.url | canonicalUrl(site.url) }}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ site.name }}">
+<meta property="og:image" content="{{ site.url }}icon-512.png?v=brand-spectrum">
+<meta property="og:image:alt" content="{{ site.name }} logo">
+<meta name="twitter:card" content="summary">
+<script src="about.js" defer></script>
+{% endblock %}
 {% block content %}
     <a class="skip-link" href="#people">Skip to the people</a>
 

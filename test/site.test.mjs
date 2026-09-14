@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
-import { dirname, extname, join, resolve } from "node:path";
+import { dirname, extname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { parse } from "parse5";
@@ -111,12 +111,13 @@ test("homepage About links work without preview controls or forced motion", () =
   assert.deepEqual(scripts(home), ["/site-init.js", "/logo-webgl.js", "/logo-motion.js"]);
   assert.equal(home.some((node) => attribute(node, "name") === "robots"), false);
   const about = elements(parse(readOutput("about/index.html")));
-  assert.ok(about.some((node) => attribute(node, "name") === "robots" && attribute(node, "content") === "noindex"));
+  assert.equal(about.some((node) => attribute(node, "name") === "robots"), false);
 });
 
 test("deployment contains only public assets and preserves renderer and brand bytes", () => {
   const extensions = new Set([".html", ".css", ".js", ".svg", ".png", ".jpg", ".jpeg", ".webp", ".avif", ".webmanifest"]);
-  for (const path of files(OUTPUT)) assert.ok(extensions.has(extname(path)), "Unexpected published file: " + path);
+  const crawlerFiles = new Set(["robots.txt", "sitemap.xml", "_headers"]);
+  for (const path of files(OUTPUT)) assert.ok(extensions.has(extname(path)) || crawlerFiles.has(relative(OUTPUT, path)), "Unexpected published file: " + path);
   for (const path of ["src", "node_modules", "brand", "scripts", "test", "package.json", "eleventy.config.mjs", "README.md"]) {
     assert.equal(existsSync(join(OUTPUT, path)), false, path + " must not be published");
   }

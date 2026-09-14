@@ -7,9 +7,11 @@
 <meta property="og:description" content="{{ site.tagline }}">
 <meta property="og:image" content="{{ site.url }}icon-512.png?v=brand-spectrum">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ site.name }}">
+<meta property="og:image:alt" content="{{ site.name }} logo">
+<meta name="twitter:card" content="summary">
 {% if not noindex %}
 <meta property="og:url" content="{{ site.url }}">
-<link rel="canonical" href="{{ site.url }}">
 {% endif %}
 {% endblock %}
 {% block manifest %}<link data-site-manifest href="manifest.webmanifest">{% endblock %}

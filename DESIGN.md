@@ -22,7 +22,7 @@ The homepage provides a text-only About link beside GitHub, Stowplan, and More, 
 
 ## About page
 
-The `/about/` page introduces the team through portraits, short biographies, and scroll-driven glimpses of their interests. It is linked from the homepage and carries a `noindex` directive while its content is under review. See the [About page review process](CONTRIBUTING.md#about-page-review) for its publication requirements.
+The `/about/` page introduces the team through portraits, short biographies, and scroll-driven glimpses of their interests. It is linked from the homepage, has its own canonical URL, and is included in the public sitemap. See the [About page review process](CONTRIBUTING.md#about-page-review) for its publication requirements.
 
 The page uses native scrolling and anchor navigation. JavaScript adds parallax, fading background interests, and the active-person indicator; it schedules frames only in response to page events. The page's styles and scroll behavior live in `about/about.css` and `about/about.js`. It reuses the site's palette, brand assets, and initialization script, `site-init.js`.
 
