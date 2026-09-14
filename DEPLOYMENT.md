@@ -17,7 +17,7 @@ Worker ingress is account-level configuration: `strangelasers.com` is a Custom D
 
 The repository has `production` and `preview` GitHub environments. Each environment provides a secret named `CLOUDFLARE_API_TOKEN` and a variable named `CLOUDFLARE_ACCOUNT_ID`. Restrict the production environment to `main` and the preview environment to `preview`.
 
-The workflow in `.github/workflows/deploy.yml` selects the GitHub environment and Wrangler configuration from the pushed branch. It installs the Node.js version from `.node-version`, runs `npm ci`, and runs `npm run check` to build the site and verify templates and brand assets. It performs a dry run before each deployment and serializes deployments per branch.
+The workflow in `.github/workflows/deploy.yml` selects the GitHub environment and Wrangler configuration from the pushed branch. It installs the Node.js version from `.node-version`, runs `npm ci`, installs Chromium and its system libraries with `npm run screenshots:install -- --with-deps`, and runs `npm run check` to build the site and project cover and verify templates and brand assets. It performs a dry run before each deployment and serializes deployments per branch.
 
 ## Publishing a preview
 
@@ -35,11 +35,12 @@ Install the Node.js version in `.node-version`, restore the locked dependencies,
 
 ```sh
 npm ci
+npm run screenshots:install
 npm run check
 npx --yes wrangler@4.129.1 deploy --config wrangler.preview.jsonc
 npx --yes wrangler@4.129.1 deploy --config wrangler.production.jsonc
 ```
 
-They use the standard `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` environment variables. These commands update Worker assets without altering ingress. Never place token values in the repository or command history.
+On Linux hosts that lack Chromium's system libraries, use `npm run screenshots:install -- --with-deps` for the browser installation step. The deployment commands use the standard `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` environment variables. These commands update Worker assets without altering ingress. Never place token values in the repository or command history.
 
 The site is an assets-only Worker with no server-side handler or bindings. Static asset requests do not consume the Workers request quota. The repository is far below the [Workers Free static-asset limits](https://developers.cloudflare.com/workers/platform/limits/#static-assets), verified 2026-09-09.

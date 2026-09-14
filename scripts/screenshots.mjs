@@ -8,7 +8,7 @@ import { pathToFileURL } from "node:url";
 import { parseArgs } from "node:util";
 import { installViewer, viewerMarkup, viewerStyles } from "./screenshot-viewer.mjs";
 
-const PRESETS = Object.freeze({ desktop: { width: 1440, height: 1000 }, mobile: { width: 390, height: 844 } });
+export const PRESETS = Object.freeze({ desktop: { width: 1440, height: 1000 }, mobile: { width: 390, height: 844 } });
 const EXIT = Object.freeze({ runtime: 1, usage: 2, dependency: 3 });
 const TIMEOUT_MS = 30000;
 const BUILD_TIMEOUT_MS = 120000;
@@ -28,7 +28,7 @@ Both paths refer to existing checkout roots, including their uncommitted edits.
   -d, --scale NUMBER      Integer pixel density from 1 to 4 (default 2)
   -y, --offset NUMBER     Target's distance from viewport top in CSS px (default 32)
   -m, --motion MODE       normal or reduced (default normal)
-  -t, --time NUMBER       Animation time in ms, 100 to 10000 (default ${DEFAULT_CAPTURE_TIME_MS})
+  -t, --time NUMBER       Animation time in ms, 0 to 10000 (default ${DEFAULT_CAPTURE_TIME_MS})
   -o, --output DIRECTORY  Empty output directory (default .screenshots/<unique-run>)
       --no-build         Use each checkout's existing dist without rebuilding
 
@@ -77,7 +77,7 @@ export function parseOptions(args) {
     };
     const scale = number("scale", 1, 4);
     const offset = number("offset", 0, 4095);
-    const time = number("time", 100, 10000);
+    const time = number("time", 0, 10000);
     if (!["normal", "reduced"].includes(values.motion)) throw new Error("--motion must be normal or reduced");
     let views;
     if (values.viewport === "both") views = Object.entries(PRESETS);

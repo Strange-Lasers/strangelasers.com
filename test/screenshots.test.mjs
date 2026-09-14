@@ -19,6 +19,7 @@ test("screenshot CLI accepts option forms, positionals, anchors, and viewport pr
   assert.equal(parseOptions(["before", "-hp/about/"]).help, true);
   assert.equal(parseOptions(["before", "-p", "/about/#rohith"]).page, "/about/#rohith");
   assert.equal(parseOptions(["--", "-before"]).before.endsWith("-before"), true);
+  assert.equal(parseOptions(["before", "--time=0", "--motion=reduced"]).time, 0);
 });
 
 test("screenshot CLI rejects invalid or incomplete capture requests", () => {

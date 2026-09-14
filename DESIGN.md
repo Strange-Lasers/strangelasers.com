@@ -10,6 +10,8 @@ The explicit passthrough list in `eleventy.config.mjs` copies the CSS, SVG/WebGL
 
 Stylesheet URLs include a version derived from their contents. The `assetVersion` filter in `eleventy.config.mjs` hashes each stylesheet during template rendering, so CSS edits receive fresh URLs in the generated HTML even when a preview proxy or CDN caches the previous styles.
 
+After each filesystem build, the `eleventy.after` hook runs `scripts/build-cover.mjs` against the finished output. It uses the shared screenshot renderer with reduced motion and a clock paused at 0 ms to refresh `docs/screenshots/cover.png`. This includes development rebuilds; in-memory template renders do not generate a cover. The PNG stays outside the deployment bundle and is replaced only after a successful capture whose pixels differ from the existing file.
+
 ## Homepage rendering
 
 The homepage keeps the SVG renderer through its opening still and bloom, then hands the continuous animation to WebGL2. It falls back to SVG when WebGL2 is unavailable or loses its context. The motion logic lives in `logo-motion.js`, with the WebGL renderer in `logo-webgl.js`. The [animation diagnostics](CONTRIBUTING.md#animation-diagnostics) let contributors compare renderers and motion preferences.

@@ -10,10 +10,13 @@ Install the Node.js version in [.node-version](.node-version), then run:
 
 ```sh
 npm ci
+npm run screenshots:install
 npm run dev
 ```
 
-Open `http://localhost:4175/`. The development server rebuilds when templates, data, or public assets change. Run `npm run check` before committing and `npm run build` to generate a clean `dist/` bundle. Serve or deploy `dist/`, not the repository root.
+Open `http://localhost:4175/`. The development server rebuilds when templates, data, or public assets change. Run `npm run check` before committing and `npm run build` to generate a clean `dist/` bundle. Every build also refreshes [the project cover](docs/screenshots/README.md) from the homepage at second zero with motion disabled. Serve or deploy `dist/`, not the repository root.
+
+The cover uses Playwright's Chromium browser. On Linux hosts that lack its system libraries, install them with `npm run screenshots:install -- --with-deps`.
 
 ## Documentation
 

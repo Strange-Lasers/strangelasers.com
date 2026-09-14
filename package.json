@@ -12,7 +12,7 @@
     "dev": "npm run clean && eleventy --serve --port=4175",
     "screenshots": "node scripts/screenshots.mjs",
     "screenshots:install": "playwright install chromium",
-    "screenshots:test": "node --test scripts/check-screenshots.mjs",
+    "screenshots:test": "node --test scripts/check-screenshots.mjs scripts/check-cover.mjs",
     "test": "npm run build && node --test",
     "check": "node scripts/build-brand.mjs --check && npm test"
   },
