@@ -19,6 +19,8 @@ The repository has `production` and `preview` GitHub environments. Each environm
 
 The workflow in `.github/workflows/deploy.yml` selects the GitHub environment and Wrangler configuration from the pushed branch. It installs the Node.js version from `.node-version`, runs `npm ci`, installs Chromium and its system libraries with `npm run screenshots:install -- --with-deps`, and runs `npm run check` to build the site and project cover and verify templates and brand assets. It performs a dry run before each deployment and serializes deployments per branch.
 
+Both environments retain the generated cover as a workflow artifact. After a successful production deployment, the `Publish project cover` job updates only `docs/screenshots/cover.png` on `main` when the image changed and the source revision is still the branch tip. Only that job receives repository contents write permission; the deployment job keeps read-only repository access. Preview runs do not publish to `main`.
+
 ## Publishing a preview
 
 Advance `preview` to the revision that should be shared, then push the branch. Do not treat deployment to preview as approval for production.
