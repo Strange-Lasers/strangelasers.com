@@ -13,6 +13,7 @@ Edit source templates and data instead of generated HTML in `dist/`. Generated H
 | `src/_includes/person.njk` | Shared person markup, labels, and interest lists |
 | `src/_includes/home.njk` | Homepage mark, signature, and navigation |
 | `src/_includes/home-links.njk` | Homepage links from the shared site data |
+| `src/_includes/home-smoke.njk` | Homepage smoke canvas and visual tuning panel |
 | `src/_includes/document.njk` | Shared document head and page structure |
 | `src/index.njk`, `src/about/*.njk` | Page settings and page-specific markup |
 | `eleventy.config.mjs` | Template configuration and the public asset passthrough list |
@@ -181,8 +182,24 @@ Append these query parameters to the local page URL when comparing animation beh
 | `?renderer=svg` | Force the homepage SVG renderer |
 | `?renderer=webgl` | Request the homepage WebGL renderer, with SVG fallback when unavailable |
 | `?animate` | Preview motion regardless of the system preference on the homepage or About page |
+| `?rotationSpeed=<multiplier>` | Set the center animation speed from `0.01x` to `100.00x` |
+| `?smoke=off` | Disable homepage smoke |
+| `?smoke=on` | Force smoke on and bypass its frame-rate safeguard |
+| `?tune` | Open the live visual controls without changing smoke behavior |
 
 Combine parameters with `&`, for example `http://localhost:4175/?animate&renderer=webgl`. Check reduced motion without the `animate` override too.
+
+### Smoke and visual tuning
+
+Use `http://localhost:4175/?animate&fps&tune` for the full review view. Add `smoke=on` when smoke must remain visible regardless of measured frame rate. Motion state is available from `StrangeLasersMotion.stats()` in DevTools, while smoke cadence and renderer measurements are available from `StrangeLasersSmoke.stats()`.
+
+Smoke appears immediately and continuously samples page cadence. If the frame rate collapses critically, it disables only the smoke so the logo animation keeps priority. Reduced motion keeps smoke off unless `?animate` is present.
+
+The tuning panel has collapsible sections for center animation rotation speed and smoke. Preset buttons provide common rotation speeds and starting points for distinct smoke looks; every slider remains editable after applying one. Drag the panel by its header or resize it from its lower-right corner to uncover an edge.
+
+Smoke controls cover cloud count, edge density, puff opacity, drifted density, brightness, size, inward reach, drift speed, breakup, softness, and laser tint. `Edge density` controls coverage at the frame. Below `1x`, `Drifted density` controls how many clouds remain visible as they move inward, so very low values allow occasional wisps instead of a continuous veil. Above `1x`, it scales their density. `Inward reach` independently controls how far every plume can develop while its source and dense core remain outside the frame.
+
+Every default sits at the midpoint of its control. Most multiplier controls use a logarithmic `0.01x` to `100.00x` range; drifted density extends down to `0.001x`, and inward reach extends up to `1000.00x`. Each slider has a synchronized numeric input. The panel updates the query string as values change, resets all visual controls together, and can copy a URL containing the complete settings.
 
 ## About page review
 

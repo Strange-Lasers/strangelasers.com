@@ -114,10 +114,16 @@ test("homepage About links work without preview controls or forced motion", () =
   assert.equal(existsSync(join(OUTPUT, "about/navigation-preview.html")), false);
   const scripts = (nodes) => nodes.filter((node) => node.tagName === "script" && attribute(node, "src"))
     .map((node) => new URL(attribute(node, "src"), ORIGIN).pathname);
-  assert.deepEqual(scripts(home), ["/site-init.js", "/logo-webgl.js", "/logo-motion.js"]);
+  assert.deepEqual(scripts(home), ["/site-init.js", "/logo-webgl.js", "/logo-motion.js", "/edge-smoke.js"]);
+  const smoke = home.find((node) => attribute(node, "data-edge-smoke") !== undefined);
+  assert.equal(smoke?.tagName, "canvas");
+  assert.equal(attribute(smoke, "aria-hidden"), "true");
+  const tuner = home.find((node) => attribute(node, "data-smoke-tuner") !== undefined);
+  assert.equal(attribute(tuner, "hidden"), "");
   assert.equal(home.some((node) => attribute(node, "name") === "robots"), false);
   const about = elements(parse(readOutput("about/index.html")));
   assert.equal(about.some((node) => attribute(node, "name") === "robots"), false);
+  assert.equal(scripts(about).includes("/edge-smoke.js"), false);
 });
 
 test("deployment contains only public assets and preserves renderer and brand bytes", () => {
@@ -127,7 +133,7 @@ test("deployment contains only public assets and preserves renderer and brand by
   for (const path of ["src", "node_modules", "brand", "scripts", "test", "package.json", "eleventy.config.mjs", "README.md"]) {
     assert.equal(existsSync(join(OUTPUT, path)), false, path + " must not be published");
   }
-  for (const path of ["logo-motion.js", "logo-webgl.js", "site-init.js", "styles.css", "palette.css", "wordmark.svg", "mark.svg", "mark-transparent.svg", "mark-motion-initial.svg"]) {
+  for (const path of ["logo-motion.js", "logo-webgl.js", "edge-smoke.js", "site-init.js", "styles.css", "palette.css", "wordmark.svg", "mark.svg", "mark-transparent.svg", "mark-motion-initial.svg"]) {
     assert.deepEqual(readFileSync(join(OUTPUT, path)), readFileSync(join(ROOT, path)), path);
   }
 });

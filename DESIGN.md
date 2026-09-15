@@ -18,6 +18,8 @@ The homepage keeps the SVG renderer through its opening still and bloom, then ha
 
 Both renderers read the shared palette in `palette.css`. The [brand guide](brand/README.md) owns the palette, static geometry, asset generation, and visual verification details. Earlier brand development sources and motion experiments are preserved on the frozen `archive/brand-development` branch.
 
+The homepage adds adaptive WebGL2 edge smoke through `edge-smoke.js`, independently of the logo renderer. Its canvas and optional visual tuning panel live in `src/_includes/home-smoke.njk`; the build copies the smoke script into the public bundle. Smoke yields to reduced motion, unavailable WebGL2, context loss, and critically low frame rates. The `?animate` and `?smoke=on` review overrides and the `?tune` controls are described in [smoke and visual tuning](CONTRIBUTING.md#smoke-and-visual-tuning).
+
 ### Navigation
 
 The homepage provides a text-only About link beside GitHub, Stowplan, and More, plus a steady link over the eye that reveals its label on hover or keyboard focus. Both About links open `/about/` without overriding motion preferences. More links to the product catalog at `https://lasers.app`, as does the About page's "See what we're making" link. External links open in a new tab with `noopener noreferrer`; site navigation and jump links stay in the same tab.

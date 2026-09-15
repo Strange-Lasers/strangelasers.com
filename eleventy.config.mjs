@@ -8,6 +8,7 @@ const PUBLIC_ASSETS = [
   "*.css",
   "logo-motion.js",
   "logo-webgl.js",
+  "edge-smoke.js",
   "site-init.js",
   "manifest.webmanifest",
   "_headers",

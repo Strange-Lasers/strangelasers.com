@@ -20,6 +20,8 @@
     <main class="home-page">
       <h1 id="site-title" class="sr-only">{{ site.name }}</h1>
 
+      {% include "home-smoke.njk" %}
+
       <div
         class="home-mark"
         data-motion-variant="gimbal"
@@ -70,5 +72,6 @@
 {% endblock %}
 {% block scripts %}
 <script src="logo-webgl.js?v=brand-spectrum"></script>
-<script src="logo-motion.js?v=brand-spectrum"></script>
+<script src="logo-motion.js?v={{ 'logo-motion.js' | assetVersion }}"></script>
+<script src="edge-smoke.js?v={{ 'edge-smoke.js' | assetVersion }}"></script>
 {% endblock %}
