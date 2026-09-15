@@ -5,8 +5,8 @@
     {% for interest in person.interests %}
       {% if loop.index0 < positions.length %}
         <span class="interest interest--{{ positions[loop.index0] }}" data-peak="{{ peaks[loop.index0] }}"
-          {% if interest.backgroundOffsetX or interest.backgroundInsetY %}style="{% if interest.backgroundOffsetX %}--interest-offset-x: {{ interest.backgroundOffsetX }};{% endif %}{% if interest.backgroundInsetY %} --interest-inset-y: {{ interest.backgroundInsetY }};{% endif %}"{% endif %}
-        >{{ interest.backgroundLabel | default(interest.label) }}</span>
+          {% if interest.background.offsetX or interest.background.insetY or interest.background.insetYMobile %}style="{% if interest.background.offsetX %}--interest-offset-x: {{ interest.background.offsetX }};{% endif %}{% if interest.background.insetY %} --interest-inset-y: {{ interest.background.insetY }};{% endif %}{% if interest.background.insetYMobile %} --interest-inset-y-mobile: {{ interest.background.insetYMobile }};{% endif %}"{% endif %}
+        >{{ interest.background.label | default(interest.label) }}</span>
       {% endif %}
     {% endfor %}
   </div>

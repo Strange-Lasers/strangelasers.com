@@ -2,7 +2,7 @@
   {
     "id": "james",
     "name": "James",
-    "title": "Founder & Engineer",
+    "title": "Founder & Lead Engineer",
     "portrait": "james.png",
     "homepage": "https://jklein.dev",
     "socials": [
@@ -14,9 +14,33 @@
       "detail": "questions assumptions and has a soft spot for software that quietly does its job for years. Strange Lasers is his love letter to the open source software that gave him the freedom to learn, build, and find his own path."
     },
     "interests": [
-      { "label": "Dissecting how things work", "backgroundLabel": "Curiosity" },
-      { "label": "Helping and teaching", "backgroundLabel": "Teaching", "backgroundOffsetX": "0.3em" },
-      { "label": "Elegant simplicity", "backgroundLabel": "Simplicity", "backgroundOffsetX": "-0.05em" }
+      {
+        "label": "Dissecting how things work",
+        "background": {
+          "label": "Curiosity",
+          "offsetX": "0px",
+          "insetY": "1.5%",
+          "insetYMobile": "-2%"
+        }
+      },
+      {
+        "label": "Helping and teaching",
+        "background": {
+          "label": "Teaching",
+          "offsetX": "0.3em",
+          "insetY": "28%",
+          "insetYMobile": "42%"
+        }
+      },
+      {
+        "label": "Elegant simplicity",
+        "background": {
+          "label": "Simplicity",
+          "offsetX": "-0.05em",
+          "insetY": "2%",
+          "insetYMobile": "10%"
+        }
+      }
     ]
   },
   {
@@ -34,9 +58,33 @@
       "detail": "likes building things that probably shouldn't work, just to find out why. Curiosity turns into a prototype, the prototype turns into a problem, and the problem usually turns into something new to learn."
     },
     "interests": [
-      { "label": "Happy Accidents", "backgroundLabel": "Think", "backgroundOffsetX": "-75%" },
-      { "label": "Rabbit Holes", "backgroundLabel": "Build", "backgroundOffsetX": "50%", "backgroundInsetY": "39%" },
-      { "label": "What Ifs", "backgroundLabel": "Break", "backgroundOffsetX": "-40%" }
+      {
+        "label": "Happy accidents",
+        "background": {
+          "label": "Think",
+          "offsetX": "-100%",
+          "insetY": "6%",
+          "insetYMobile": "-0.25em"
+        }
+      },
+      {
+        "label": "Rabbit holes",
+        "background": {
+          "label": "Build",
+          "offsetX": "75%",
+          "insetY": "39%",
+          "insetYMobile": "43%"
+        }
+      },
+      {
+        "label": "What ifs",
+        "background": {
+          "label": "Break",
+          "offsetX": "-40%",
+          "insetY": "2%",
+          "insetYMobile": "9%"
+        }
+      }
     ]
   },
   {
@@ -54,9 +102,33 @@
       "detail": "is an optimist who believes technology should feel human. Engineer, solopreneur, and author. He is calm on the surface, curious underneath. Strange Lasers is where that curiosity roams free: just good people and the joy of building things that matter."
     },
     "interests": [
-      { "label": "Calm problem-solving", "backgroundLabel": "Calm", "backgroundOffsetX": "0.3em" },
-      { "label": "Ideas into products", "backgroundLabel": "Ideas", "backgroundOffsetX": "30%" },
-      { "label": "Purpose over hype", "backgroundLabel": "Purpose", "backgroundOffsetX": "0.1em" }
+      {
+        "label": "Calm problem-solving",
+        "background": {
+          "label": "Calm",
+          "offsetX": "0.3em",
+          "insetY": "1.5%",
+          "insetYMobile": "-0.25em"
+        }
+      },
+      {
+        "label": "Ideas into products",
+        "background": {
+          "label": "Ideas",
+          "offsetX": "19%",
+          "insetY": "38%",
+          "insetYMobile": "45%"
+        }
+      },
+      {
+        "label": "Purpose over hype",
+        "background": {
+          "label": "Purpose",
+          "offsetX": "0.1em",
+          "insetY": "1%",
+          "insetYMobile": "8%"
+        }
+      }
     ]
   }
 ]

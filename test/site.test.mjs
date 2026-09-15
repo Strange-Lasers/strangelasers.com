@@ -75,7 +75,10 @@ test("an added person renders everywhere and special characters remain text", as
     id: "template-probe",
     name: 'A <B> & "C"',
     title: "R&D <tools>",
-    interests: [{ label: "Graphics <canvas> & shaders" }],
+    interests: [{
+      label: "Graphics <canvas> & shaders",
+      background: { label: "Light <beams> & depth", offsetX: "0.3em", insetY: "6%", insetYMobile: "27%" },
+    }],
   };
   const site = new Eleventy(undefined, undefined, {
     quietMode: true,
@@ -93,7 +96,10 @@ test("an added person renders everywhere and special characters remain text", as
   assert.equal(attribute(children.find((node) => node.tagName === "img"), "alt"), added.name + "'s portrait");
   const interestList = children.find((node) => hasClass(node, "interest-list"));
   assert.equal(text(elements(interestList).find((node) => node.tagName === "li")), added.interests[0].label);
-  assert.doesNotMatch(html, /<B>|<tools>|<canvas>/);
+  const background = children.find((node) => hasClass(node, "interest"));
+  assert.equal(text(background).trim(), added.interests[0].background.label);
+  assert.equal(attribute(background, "style").trim(), "--interest-offset-x: 0.3em; --interest-inset-y: 6%; --interest-inset-y-mobile: 27%;");
+  assert.doesNotMatch(html, /<B>|<tools>|<canvas>|<beams>/);
 });
 
 test("homepage About links work without preview controls or forced motion", () => {

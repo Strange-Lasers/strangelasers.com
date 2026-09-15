@@ -233,9 +233,9 @@ figcaption { display: flex; justify-content: space-between; gap: 1rem; margin-to
   .person-bio { margin-top: 1.5rem; font-size: 0.94rem; }
   .elsewhere { margin-top: 1.5rem; }
   .interest { font-size: 20vw; }
-  .interest--one { top: var(--interest-inset-y, 2%); }
-  .interest--two { top: var(--interest-inset-y, 34%); }
-  .interest--three { bottom: var(--interest-inset-y, 2%); }
+  .interest--one { top: var(--interest-inset-y-mobile, var(--interest-inset-y, 2%)); }
+  .interest--two { top: var(--interest-inset-y-mobile, var(--interest-inset-y, 34%)); }
+  .interest--three { bottom: var(--interest-inset-y-mobile, var(--interest-inset-y, 2%)); }
   .people-nav { display: none; }
   .outro { padding-block: 6rem 5rem; }
   .outro > .eyebrow { font-size: 0.58rem; margin-bottom: 1.75rem; }

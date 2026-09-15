@@ -23,7 +23,7 @@ Homepage link labels and destinations come from `site.links` in `src/_data/site.
 
 Edit the people in `src/_data/people.json` and place their images in `about/portraits/`. Titles, biographies, and interests require content review before publication. Keep applicable third-party attribution in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-Each person has a stable `id` for links, a single display `name`, and a `title`. A biography renders `bio.intro` as its own paragraph, followed by a paragraph containing the display name and `bio.detail`. Each interest has a `label` for the visible "Drawn to" list; an optional `backgroundLabel` supplies the large, faint wording behind the portrait and biography. The first interests fill the available decorative positions, and the visible list includes every interest.
+Each person has a stable `id` for links, a single display `name`, and a `title`. A biography renders `bio.intro` as its own paragraph, followed by a paragraph containing the display name and `bio.detail`. Each interest has a `label` for the visible "Drawn to" list and a `background` object containing the decorative label and placement values. The first interests fill the available decorative positions, and the visible list includes every interest.
 
 Portrait captions are controlled by `showPortraitCaptions` in `src/about/index.njk`. Profile numbering, alternating layouts, portrait alternative text, and jump navigation follow the people array automatically. The shared person template adds a decorative dot after every name.
 
@@ -31,11 +31,87 @@ Set a person's `homepage` to their full HTTP or HTTPS URL. The link below their 
 
 ### Interest positioning
 
-Background interest anchors and horizontal drift follow the alternating portrait layout, with separate middle insets for the normal and reversed rows. The `--interest-top-inset`, `--interest-middle-inset`, and `--interest-bottom-inset` properties on `.person` in `about/about.css` set the shared horizontal insets for the upper, middle, and lower labels; positive values move them inward. The mobile layout uses a smaller default inset for the lower label. Keep individual placement adjustments in each interest's data fields.
+Each interest in `src/_data/people.json` has a foreground `label` and a fully populated `background` object. Keep all background fields explicit, including values that match the defaults, so the data shows each word's complete placement. The shared [person template](src/_includes/person.njk) places the first, second, and third interests in the upper, middle, and lower background slots respectively. All interests appear in the foreground "Drawn to" list.
 
-Each interest can set `backgroundOffsetX` to a CSS length or percentage for an independent horizontal adjustment. Positive values move right and negative values move left on either row layout, in addition to the scrolling motion. Use `em` for an adjustment relative to the word's font size, or percentages relative to the word's own width; `100%` moves it right by one full word width.
+#### Per-interest fields
 
-Set `backgroundInsetY` to a CSS length or percentage to override an interest's vertical placement. The upper and middle labels measure from the top of the profile section; the lower label measures from the bottom. Percentages use the section's height. For example, `"backgroundInsetY": "39%"` places the middle label 39% from the top before scrolling motion. The override applies on desktop and mobile; omit it to retain the responsive defaults.
+```json
+{
+  "label": "Helping and teaching",
+  "background": {
+    "label": "Teaching",
+    "offsetX": "0.3em",
+    "insetY": "20%",
+    "insetYMobile": "42%"
+  }
+}
+```
+
+The template retains the following fallbacks for partial inputs; the people data supplies every field explicitly.
+
+| Field | Purpose | Renderer fallback |
+| --- | --- | --- |
+| `label` | Foreground wording in the interest list | Required |
+| `background.label` | Decorative wording, rendered uppercase | Uses `label` |
+| `background.offsetX` | Additional horizontal shift as a CSS length or percentage | `0px` |
+| `background.insetY` | Vertical placement as a CSS length or percentage, shared across desktop and mobile | Uses the slot's responsive default |
+| `background.insetYMobile` | Vertical placement override at viewport widths of 650 CSS pixels or less | Uses `background.insetY`, then the mobile slot default |
+
+The background object's placement fields map to `--interest-offset-x`, `--interest-inset-y`, and `--interest-inset-y-mobile` on the background word. Only the listed background fields are read by the template.
+
+Positive X offsets move right and negative offsets move left on either row layout, in addition to scrolling motion. Vertical insets measure from the slot's anchoring edge:
+
+| Background slot | Vertical anchor | Desktop default | Mobile default |
+| --- | --- | --- | --- |
+| Upper | Top | `6%` | `2%` |
+| Middle | Top | `45%` | `34%` |
+| Lower | Bottom | `4%` | `2%` |
+
+Increasing Y moves the upper and middle words down, but the lower word up. Negative insets move words outside their anchoring edge and can clip them at the profile boundary. For partial inputs, the mobile fallback order is `background.insetYMobile`, then `background.insetY`, then the mobile default. When filling missing fields, resolve mobile placement before adding a desktop default; copying the desktop default into both fields would change a word that previously used its separate mobile default.
+
+Units have different reference sizes depending on the control:
+
+| Value | Reference size | Example |
+| --- | --- | --- |
+| `em` in any placement field | Background word's font size | `0.3em` is a shift of 30% of the font size |
+| `%` in `background.offsetX` | Background word's own width | `50%` moves right by half the word's width |
+| `%` in either Y field | Profile section's height | `20%` places the anchoring edge one-fifth into the section |
+
+Use `em` for nudges that should scale with the lettering and Y percentages for placement within the profile section. Converting between them preserves placement only at the measured font size and section height; it does not preserve responsive behavior.
+
+#### Shared placement and sizing
+
+The [About stylesheet](about/about.css) defines the shared horizontal anchors on `.person`. In these names, "top", "middle", and "bottom" identify the word's slot; all these insets control horizontal placement, and their percentages use the profile section's width.
+
+| CSS variable | Default | Override |
+| --- | --- | --- |
+| `--interest-top-inset` | `-2%` | None |
+| `--interest-middle-inset` | `8%` | `3%` on reversed rows |
+| `--interest-bottom-inset` | `13%` | `2%` on mobile |
+| `--interest-direction` | `1` through the transform fallback | `-1` on reversed rows |
+
+Upper and lower words anchor left, while middle words anchor right. Reversed rows swap those sides. Positive horizontal insets move inward from the anchoring side. `--interest-direction` reverses the scroll-driven horizontal motion; it does not reverse the explicit `background.offsetX` adjustment.
+
+Background words use `font-size: clamp(5rem, 13vw, 14rem)` on desktop and `20vw` on mobile, with `line-height: 1` and `letter-spacing: -0.055em`. The background container clips overflow. Keep per-word adjustments beside their wording in `people.json`, since changing a word's length can require a different placement. Shared anchors, breakpoints, sizing, and motion belong in CSS and JavaScript and apply across profiles.
+
+#### Motion and visual review
+
+The placement controls set the base position. [About motion](about/about.js) adds the generated `--interest-x` and `--interest-y` offsets as the profile passes through the viewport. Its `MOTION` constants control the interest effects:
+
+| Constant | Value | Effect |
+| --- | --- | --- |
+| `interestTravel` | `170` | Horizontal movement in pixels per full unit of profile scroll progress |
+| `interestRise` | `55` | Vertical travel from `27.5px` below to `27.5px` above the base position |
+| `midpoint` | `0.5` | Scroll progress at which the added vertical offset is zero |
+| `interestWindow` | `0.16` | Distance in scroll progress on either side of a word's brightness peak |
+| `interestRestOpacity` | `0.018` | Opacity outside the brightness window |
+| `interestPeakOpacity` | `0.16` | Additional opacity at the peak, giving `0.178` total |
+
+The template assigns brightness peaks of `0.32`, `0.5`, and `0.68` to the upper, middle, and lower slots. Profile scroll progress runs from zero when its top reaches the viewport bottom to one when its bottom leaves the viewport top. Horizontal motion changes direction between neighboring slots as well as between normal and reversed rows. Without JavaScript, CSS supplies opacity `0.045`; reduced motion hides the background words while retaining the foreground interest list.
+
+Review words at their brightest scroll positions as well as while scrolling. Check the complete decorative word and its interaction with names, links, biographies, and interest lists on desktop and mobile, including narrow phones. A placement that looks clear while the word is faint can obstruct copy at its peak. Capture [matched before and after screenshots](#before-and-after-screenshots) with normal motion, using a foreground alignment target so a background-only adjustment does not change the scroll position between captures.
+
+### Generated discovery files
 
 The build generates `robots.txt` and `sitemap.xml` from the site origin and page collection. Pages with `noindex: true` stay out of the sitemap. The shared document template gives every page its own canonical URL.
 
