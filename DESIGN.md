@@ -10,7 +10,7 @@ The explicit passthrough list in `eleventy.config.mjs` copies the CSS, SVG/WebGL
 
 Stylesheet URLs include a version derived from their contents. The `assetVersion` filter in `eleventy.config.mjs` hashes each stylesheet during template rendering, so CSS edits receive fresh URLs in the generated HTML even when a preview proxy or CDN caches the previous styles.
 
-After each filesystem build, the `eleventy.after` hook runs `scripts/build-cover.mjs` against the finished output. It uses the shared screenshot renderer with reduced motion and a clock paused at 0 ms to refresh `docs/screenshots/cover.png`. This includes development rebuilds; in-memory template renders do not generate a cover. The PNG stays outside the deployment bundle and is replaced only after a successful capture whose pixels differ from the existing file.
+After each filesystem build, the `eleventy.after` hook runs `scripts/build-cover.mjs` against the finished output. It launches the digest-pinned Linux/amd64 browser image in `scripts/cover-runtime.json`, with the built site and capture code mounted read-only and external networking disabled. The container uses the shared screenshot renderer with reduced motion and a clock paused at 0 ms. Software compositing, baseline Skia CPU paths, and sRGB keep rendering independent of the host graphics hardware. This includes development rebuilds; in-memory template renders do not generate a cover. The PNG stays outside the deployment bundle and is replaced atomically only after a successful capture whose bytes differ from the existing file. Identical output preserves the file's modification time. CI builds through the same entry point and verifies the committed image without publishing a separate cover commit.
 
 ## Homepage rendering
 

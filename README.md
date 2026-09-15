@@ -10,13 +10,13 @@ Install the Node.js version in [.node-version](.node-version), then run:
 
 ```sh
 npm ci
-npm run screenshots:install
+npm run cover:install
 npm run dev
 ```
 
 Open `http://localhost:4175/`. The development server rebuilds when templates, data, or public assets change. Run `npm run check` before committing and `npm run build` to generate a clean `dist/` bundle. Every build also refreshes [the project cover](docs/screenshots/README.md) from the homepage at second zero with motion disabled. Serve or deploy `dist/`, not the repository root.
 
-The cover uses Playwright's Chromium browser. On Linux hosts that lack its system libraries, install them with `npm run screenshots:install -- --with-deps`.
+Cover generation requires a running Docker-compatible engine with `linux/amd64` support. It uses the same pinned Linux browser and fonts locally and in CI, so unchanged homepage output produces an identical PNG. See [the cover setup](docs/screenshots/README.md) for Docker Desktop and Colima instructions. Native before/after screenshot comparisons separately require `npm run screenshots:install`.
 
 ## Documentation
 

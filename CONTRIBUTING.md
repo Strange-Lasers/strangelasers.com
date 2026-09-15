@@ -117,7 +117,7 @@ The build generates `robots.txt` and `sitemap.xml` from the site origin and page
 
 ## Verification
 
-Run `npm run check` before committing. It verifies generated brand SVGs, builds the site, and runs the site and brand tests. Use `npm run build` to generate a clean `dist/` bundle. All builds, including development rebuilds, regenerate `docs/screenshots/cover.png` with motion disabled at 0 ms. Install Chromium with `npm run screenshots:install` before building and include a changed cover with the source changes that produced it. See [the cover notes](docs/screenshots/README.md) for capture settings.
+Run `npm run check` before committing. It verifies generated brand SVGs, builds the site, and runs the site and brand tests. Use `npm run build` to generate a clean `dist/` bundle. All builds, including development rebuilds, regenerate `docs/screenshots/cover.png` with motion disabled at 0 ms in the pinned Linux capture container. Start Docker and run `npm run cover:install` before building. Include a changed cover with the source changes that produced it; CI rejects a stale committed image. See [the cover notes](docs/screenshots/README.md) for setup, capture settings, and runtime upgrades.
 
 For page changes, review desktop and mobile layouts, keyboard navigation, reduced motion, and behavior without JavaScript. For brand changes, follow the [brand verification instructions](brand/README.md#regeneration), including the raster, opening-frame, and renderer checks when those assets are affected.
 
@@ -132,7 +132,7 @@ npm run screenshots:install
 
 On Linux hosts that lack Chromium's system libraries, use `npm run screenshots:install -- --with-deps` to install them with the browser.
 
-Run `npm ci` in each input checkout if its build dependencies are missing. Then capture both versions with one command:
+Run `npm ci` in each input checkout if its build dependencies are missing, and prepare its cover runtime with `npm run cover:install` before building. Then capture both versions with one command:
 
 ```sh
 npm run screenshots -- ../before-checkout . --page /about/ --selector '#rohith'
@@ -169,7 +169,7 @@ Use a unique CSS selector present in both versions. Without a selector, the comm
 
 Normal motion is the default, preserving the About page's decorative interests. Each page uses a controlled JavaScript clock that advances by `--time` milliseconds, then pauses; the default is 6000, allowing the homepage's wordmark and navigation reveals to finish. CSS transitions are disabled and CSS animations are held at the same elapsed time. `--motion reduced` selects the accessible reduced-motion presentation, which hides some artwork. Remove `?animate` when testing reduced motion, since that query deliberately overrides the preference. Screenshots show a single state; use a recording when reviewing animation behavior. Rendering can still differ across browser versions and operating systems, so capture both sides together on the same machine.
 
-Run `npm run screenshots -- --help` for all options. Contributors changing the capture tooling should also run `npm run screenshots:test` after installing Chromium; this exercises real captures, alignment, pixel density, cover regeneration, and failure handling. The regular `npm run check` builds the cover with Chromium and covers CLI parsing and local serving.
+Run `npm run screenshots -- --help` for all options. Contributors changing the capture tooling should also run `npm run screenshots:test` after installing native Chromium and the cover runtime; this exercises real captures, alignment, pixel density, cover regeneration, and failure handling. The regular `npm run check` builds the cover in the pinned container and covers CLI parsing and local serving.
 
 ### Animation diagnostics
 

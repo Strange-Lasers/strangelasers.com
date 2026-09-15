@@ -17,9 +17,9 @@ Worker ingress is account-level configuration: `strangelasers.com` is a Custom D
 
 The repository has `production` and `preview` GitHub environments. Each environment provides a secret named `CLOUDFLARE_API_TOKEN` and a variable named `CLOUDFLARE_ACCOUNT_ID`. Restrict the production environment to `main` and the preview environment to `preview`.
 
-The workflow in `.github/workflows/deploy.yml` selects the GitHub environment and Wrangler configuration from the pushed branch. It installs the Node.js version from `.node-version`, runs `npm ci`, installs Chromium and its system libraries with `npm run screenshots:install -- --with-deps`, and runs `npm run check` to build the site and project cover and verify templates and brand assets. It performs a dry run before each deployment and serializes deployments per branch.
+The workflow in `.github/workflows/deploy.yml` selects the GitHub environment and Wrangler configuration from the pushed branch. It installs the Node.js version from `.node-version`, runs `npm ci`, pulls the pinned cover container with `npm run cover:install`, and runs `npm run check` to build the site and project cover and verify templates and brand assets. It verifies that the regenerated cover matches the committed PNG, performs a dry run before each deployment, and serializes deployments per branch.
 
-Both environments retain the generated cover as a workflow artifact. After a successful production deployment, the `Publish project cover` job updates only `docs/screenshots/cover.png` on `main` when the image changed and the source revision is still the branch tip. Only that job receives repository contents write permission; the deployment job keeps read-only repository access. Preview runs do not publish to `main`.
+Both environments retain the generated cover as a workflow artifact and keep read-only repository access. A stale cover fails validation before deployment. Run `npm run check` locally and commit the changed PNG with its source changes; [cover generation](docs/screenshots/README.md) uses the same browser image, fonts, and architecture locally and in CI.
 
 ## Publishing a preview
 

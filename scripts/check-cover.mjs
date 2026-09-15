@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { mkdtemp, mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { buildCover } from "./build-cover.mjs";
 
@@ -20,7 +20,9 @@ h1 { animation: move 1s infinite; }
 </style><h1>${title}</h1></html>`;
 
 test("cover stays at second zero, refreshes changed pixels, and preserves the last valid image on failure", async () => {
-  const root = await mkdtemp(join(tmpdir(), "project-cover-"));
+  const scratch = fileURLToPath(new URL("../.screenshots/", import.meta.url));
+  await mkdir(scratch, { recursive: true });
+  const root = await mkdtemp(join(scratch, "project-cover-"));
   try {
     const output = join(root, "dist");
     const destination = join(root, "docs/screenshots/cover.png");
@@ -33,6 +35,12 @@ test("cover stays at second zero, refreshes changed pixels, and preserves the la
     assert.equal(original.readUInt32BE(20), 1000);
     assert.equal(await buildCover(output, destination), false);
     assert.equal((await stat(destination)).mtimeMs, modifiedAt, "Identical builds must not rewrite the PNG");
+
+    const relocated = join(root, 'other, "site"');
+    await mkdir(relocated);
+    await writeFile(join(relocated, "index.html"), fixture("Opening frame") + CLOCK_PROBE);
+    assert.equal(await buildCover(relocated, destination), false, "Checkout paths and Docker mount escaping must not affect the image");
+    assert.equal((await stat(destination)).mtimeMs, modifiedAt);
 
     await writeFile(join(output, "index.html"), fixture("Opening frame"));
     assert.equal(await buildCover(output, destination), false, "Timers and animation frames must leave the cover identical to the static opening frame");

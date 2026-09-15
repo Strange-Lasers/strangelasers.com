@@ -10,6 +10,8 @@
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "build": "npm run clean && eleventy",
     "dev": "npm run clean && eleventy --serve --port=4175",
+    "cover": "node scripts/cover.mjs",
+    "cover:install": "node scripts/cover.mjs --install",
     "screenshots": "node scripts/screenshots.mjs",
     "screenshots:install": "playwright install chromium",
     "screenshots:test": "node --test scripts/check-screenshots.mjs scripts/check-cover.mjs",
