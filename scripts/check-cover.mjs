@@ -31,8 +31,8 @@ test("cover stays at second zero, refreshes changed pixels, and preserves the la
     assert.equal(await buildCover(output, destination), true);
     const original = await readFile(destination);
     const modifiedAt = (await stat(destination)).mtimeMs;
-    assert.equal(original.readUInt32BE(16), 1440);
-    assert.equal(original.readUInt32BE(20), 1000);
+    assert.equal(original.readUInt32BE(16), 5760);
+    assert.equal(original.readUInt32BE(20), 4000);
     assert.equal(await buildCover(output, destination), false);
     assert.equal((await stat(destination)).mtimeMs, modifiedAt, "Identical builds must not rewrite the PNG");
 

@@ -1,6 +1,6 @@
 # Project cover
 
-The cover shows the built homepage at second zero with motion disabled through the reduced-motion preference. Its JavaScript clock stays paused at 0 ms, the mark keeps its opening pose, and the wordmark, primary tagline, and navigation are visible. The viewport and PNG are 1440 by 1000 pixels at 1x density.
+The cover shows the built homepage at second zero with motion disabled through the reduced-motion preference. Its JavaScript clock stays paused at 0 ms, the mark keeps its opening pose, and the wordmark, primary tagline, and navigation are visible. The viewport is 1440 by 1000 CSS pixels, captured at 4x density in a 5760 by 4000 PNG.
 
 ## Setup and use
 
@@ -29,3 +29,5 @@ Ordinary [before/after screenshots](../../CONTRIBUTING.md#before-and-after-scree
 ## Updating the capture runtime
 
 Update the pinned Playwright package and lockfile together with `scripts/cover-runtime.json`. Use the matching official Playwright image's Linux/amd64 manifest digest, preserving the architecture pin. `docker manifest inspect mcr.microsoft.com/playwright:vVERSION-noble` lists the platform manifests. Run `npm ci` and `npm run cover:install`, then `npm run check` and `npm run screenshots:test`. Review any resulting cover change as part of the runtime upgrade. The build rejects a mismatch between the installed Playwright client and the configured image version.
+
+The project cover is rendered at 4x pixel density while preserving its logical viewport, so enlarged previews retain more detail. Higher density does not increase the displayed text size; use zoom to inspect small labels.
