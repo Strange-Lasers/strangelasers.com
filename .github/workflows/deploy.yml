@@ -60,10 +60,10 @@ jobs:
           fi
 
       - name: Validate static asset bundle
-        run: npx --yes wrangler@4.129.1 deploy --dry-run --config "$WRANGLER_CONFIG"
+        run: npx --yes wrangler@4.151.3 deploy --dry-run --config "$WRANGLER_CONFIG"
 
       - name: Deploy static assets
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: npx --yes wrangler@4.129.1 deploy --config "$WRANGLER_CONFIG"
+        run: npx --yes wrangler@4.151.3 deploy --config "$WRANGLER_CONFIG"

@@ -19,7 +19,7 @@
     "check": "node scripts/build-brand.mjs --check && npm test"
   },
   "devDependencies": {
-    "@11ty/eleventy": "3.1.6",
+    "@11ty/eleventy": "3.1.7",
     "parse5": "8.0.1",
     "playwright": "1.63.0"
   }

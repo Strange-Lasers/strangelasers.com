@@ -19,6 +19,8 @@ The repository has `production` and `preview` GitHub environments. Each environm
 
 The workflow in `.github/workflows/deploy.yml` selects the GitHub environment and Wrangler configuration from the pushed branch. It installs the Node.js version from `.node-version`, runs `npm ci`, pulls the pinned cover container with `npm run cover:install`, and runs `npm run check` to build the site and project cover and verify templates and brand assets. It verifies that the regenerated cover matches the committed PNG, performs a dry run before each deployment, and serializes deployments per branch.
 
+Pull requests run `.github/workflows/verify.yml` with read-only repository access. It installs locked dependencies, verifies the site and committed cover, and checks the production asset bundle with a Wrangler dry run. It does not receive deployment credentials or update either Worker.
+
 Both environments retain the generated cover as a workflow artifact and keep read-only repository access. A stale cover fails validation before deployment. Run `npm run check` locally and commit the changed PNG with its source changes; [cover generation](docs/screenshots/README.md) uses the same browser image, fonts, and architecture locally and in CI.
 
 ## Publishing a preview
@@ -39,8 +41,8 @@ Install the Node.js version in `.node-version`, restore the locked dependencies,
 npm ci
 npm run screenshots:install
 npm run check
-npx --yes wrangler@4.129.1 deploy --config wrangler.preview.jsonc
-npx --yes wrangler@4.129.1 deploy --config wrangler.production.jsonc
+npx --yes wrangler@4.151.3 deploy --config wrangler.preview.jsonc
+npx --yes wrangler@4.151.3 deploy --config wrangler.production.jsonc
 ```
 
 On Linux hosts that lack Chromium's system libraries, use `npm run screenshots:install -- --with-deps` for the browser installation step. The deployment commands use the standard `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` environment variables. These commands update Worker assets without altering ingress. Never place token values in the repository or command history.
