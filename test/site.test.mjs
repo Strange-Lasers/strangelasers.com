@@ -77,7 +77,7 @@ test("an added person renders everywhere and special characters remain text", as
     title: "R&D <tools>",
     interests: [{
       label: "Graphics <canvas> & shaders",
-      background: { label: "Light <beams> & depth", offsetX: "0.3em", insetY: "6%", insetYMobile: "27%" },
+      background: { label: "Light <beams> & depth", offsetX: "0.3em", offsetXMobile: "-0.2em", y: "6%", yMobile: "27%" },
     }],
   };
   const site = new Eleventy(undefined, undefined, {
@@ -98,7 +98,7 @@ test("an added person renders everywhere and special characters remain text", as
   assert.equal(text(elements(interestList).find((node) => node.tagName === "li")), added.interests[0].label);
   const background = children.find((node) => hasClass(node, "interest"));
   assert.equal(text(background).trim(), added.interests[0].background.label);
-  assert.equal(attribute(background, "style").trim(), "--interest-offset-x: 0.3em; --interest-inset-y: 6%; --interest-inset-y-mobile: 27%;");
+  assert.equal(attribute(background, "style").trim(), "--interest-offset-x: 0.3em; --interest-offset-x-mobile: -0.2em; --interest-position-y: 6%; --interest-position-y-mobile: 27%;");
   assert.doesNotMatch(html, /<B>|<tools>|<canvas>|<beams>/);
 });
 
