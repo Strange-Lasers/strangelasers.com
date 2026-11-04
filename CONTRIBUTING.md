@@ -32,7 +32,7 @@ Set a person's `homepage` to their full HTTP or HTTPS URL. The link below their 
 
 ### Interest positioning
 
-Each interest in `src/_data/people.json` has a foreground `label` and a fully populated `background` object. Keep all background fields explicit, including values that match the defaults, so the data shows each word's complete placement. The shared [person template](src/_includes/person.njk) places the first, second, and third interests in the upper, middle, and lower background slots respectively. All interests appear in the foreground "Drawn to" list.
+Each interest in `src/_data/people.json` has a foreground `label` and a `background` object. Keep the label, base X offset, and both Y positions explicit, including values that match the defaults, so the data shows each word's placement. Add a mobile X offset only when it differs from the base value. The shared [person template](src/_includes/person.njk) places the first, second, and third interests in the upper, middle, and lower background slots respectively. All interests appear in the foreground "Drawn to" list.
 
 #### Per-interest fields
 
@@ -42,8 +42,8 @@ Each interest in `src/_data/people.json` has a foreground `label` and a fully po
   "background": {
     "label": "Teaching",
     "offsetX": "0.3em",
-    "insetY": "20%",
-    "insetYMobile": "42%"
+    "y": "20%",
+    "yMobile": "42%"
   }
 }
 ```
@@ -55,30 +55,31 @@ The template retains the following fallbacks for partial inputs; the people data
 | `label` | Foreground wording in the interest list | Required |
 | `background.label` | Decorative wording, rendered uppercase | Uses `label` |
 | `background.offsetX` | Additional horizontal shift as a CSS length or percentage | `0px` |
-| `background.insetY` | Vertical placement as a CSS length or percentage, shared across desktop and mobile | Uses the slot's responsive default |
-| `background.insetYMobile` | Vertical placement override at viewport widths of 650 CSS pixels or less | Uses `background.insetY`, then the mobile slot default |
+| `background.offsetXMobile` | Horizontal shift override at viewport widths of 650 CSS pixels or less | Uses `background.offsetX`, then `0px` |
+| `background.y` | Vertical position measured down from the profile's top edge, shared across desktop and mobile | Uses the slot's responsive default |
+| `background.yMobile` | Vertical position override at viewport widths of 650 CSS pixels or less | Uses `background.y`, then the mobile slot default |
 
-The background object's placement fields map to `--interest-offset-x`, `--interest-inset-y`, and `--interest-inset-y-mobile` on the background word. Only the listed background fields are read by the template.
+The background object's placement fields map to `--interest-offset-x`, `--interest-offset-x-mobile`, `--interest-position-y`, and `--interest-position-y-mobile` on the background word. Only the listed background fields are read by the template.
 
-Positive X offsets move right and negative offsets move left on either row layout, in addition to scrolling motion. Vertical insets measure from the slot's anchoring edge:
+Positive X offsets move right and negative offsets move left on either row layout, in addition to scrolling motion. The mobile X value replaces the base X value rather than adding to it. Every Y value measures down from the profile section's top edge:
 
-| Background slot | Vertical anchor | Desktop default | Mobile default |
+| Background slot | Word edge aligned to Y | Desktop default | Mobile default |
 | --- | --- | --- | --- |
 | Upper | Top | `6%` | `2%` |
 | Middle | Top | `45%` | `34%` |
-| Lower | Bottom | `4%` | `2%` |
+| Lower | Bottom | `96%` | `98%` |
 
-Increasing Y moves the upper and middle words down, but the lower word up. Negative insets move words outside their anchoring edge and can clip them at the profile boundary. For partial inputs, the mobile fallback order is `background.insetYMobile`, then `background.insetY`, then the mobile default. When filling missing fields, resolve mobile placement before adding a desktop default; copying the desktop default into both fields would change a word that previously used its separate mobile default.
+Increasing Y moves every word down. The lower word aligns its bottom edge to Y while CSS retains its bottom anchor with the complementary inset; for example, a bottom inset of `4%` becomes `y: "96%"` without moving the word. Values outside the section can clip at its boundary. For partial inputs, the mobile fallback order is `background.yMobile`, then `background.y`, then the mobile default. When filling missing fields, resolve mobile placement before adding a desktop default; copying the desktop default into both fields would change a word that previously used its separate mobile default.
 
 Units have different reference sizes depending on the control:
 
 | Value | Reference size | Example |
 | --- | --- | --- |
 | `em` in any placement field | Background word's font size | `0.3em` is a shift of 30% of the font size |
-| `%` in `background.offsetX` | Background word's own width | `50%` moves right by half the word's width |
-| `%` in either Y field | Profile section's height | `20%` places the anchoring edge one-fifth into the section |
+| `%` in either X field | Background word's own width | `50%` moves right by half the word's width |
+| `%` in either Y field | Profile section's height | `20%` places the aligned word edge one-fifth down the section |
 
-Use `em` for nudges that should scale with the lettering and Y percentages for placement within the profile section. Converting between them preserves placement only at the measured font size and section height; it does not preserve responsive behavior.
+Use `em` for horizontal nudges that should scale with the lettering, X percentages for shifts relative to the whole word, and Y percentages for placement within the profile section. Converting between units preserves placement only at the measured size; it does not preserve responsive behavior.
 
 #### Shared placement and sizing
 

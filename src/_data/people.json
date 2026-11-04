@@ -19,8 +19,8 @@
         "background": {
           "label": "Curiosity",
           "offsetX": "0px",
-          "insetY": "1.5%",
-          "insetYMobile": "-2%"
+          "y": "1.5%",
+          "yMobile": "-2%"
         }
       },
       {
@@ -28,8 +28,8 @@
         "background": {
           "label": "Teaching",
           "offsetX": "0.3em",
-          "insetY": "28%",
-          "insetYMobile": "42%"
+          "y": "31%",
+          "yMobile": "42%"
         }
       },
       {
@@ -37,8 +37,8 @@
         "background": {
           "label": "Simplicity",
           "offsetX": "-0.05em",
-          "insetY": "2%",
-          "insetYMobile": "10%"
+          "y": "95%",
+          "yMobile": "90%"
         }
       }
     ]
@@ -63,8 +63,8 @@
         "background": {
           "label": "Think",
           "offsetX": "-100%",
-          "insetY": "6%",
-          "insetYMobile": "-0.25em"
+          "y": "6%",
+          "yMobile": "-0.25em"
         }
       },
       {
@@ -72,8 +72,8 @@
         "background": {
           "label": "Build",
           "offsetX": "75%",
-          "insetY": "39%",
-          "insetYMobile": "43%"
+          "y": "39%",
+          "yMobile": "43%"
         }
       },
       {
@@ -81,8 +81,8 @@
         "background": {
           "label": "Break",
           "offsetX": "-40%",
-          "insetY": "2%",
-          "insetYMobile": "9%"
+          "y": "95%",
+          "yMobile": "91%"
         }
       }
     ]
@@ -107,8 +107,8 @@
         "background": {
           "label": "Calm",
           "offsetX": "0.3em",
-          "insetY": "1.5%",
-          "insetYMobile": "-0.25em"
+          "y": "5%",
+          "yMobile": "-0.25em"
         }
       },
       {
@@ -116,8 +116,8 @@
         "background": {
           "label": "Ideas",
           "offsetX": "19%",
-          "insetY": "38%",
-          "insetYMobile": "45%"
+          "y": "38%",
+          "yMobile": "45%"
         }
       },
       {
@@ -125,8 +125,53 @@
         "background": {
           "label": "Purpose",
           "offsetX": "0.1em",
-          "insetY": "1%",
-          "insetYMobile": "8%"
+          "y": "95%",
+          "yMobile": "92%"
+        }
+      }
+    ]
+  },
+  {
+    "id": "casey",
+    "name": "Casey",
+    "title": "Founding Engineer",
+    "portrait": "casey.jpg",
+    "homepage": "https://caseymershon.co",
+    "socials": [
+      { "label": "LinkedIn", "url": "https://www.linkedin.com/in/casey-mershon-23194b190", "icon": "linkedin" },
+      { "label": "GitHub", "url": "https://github.com/cmershon2", "icon": "github" }
+    ],
+    "bio": {
+      "intro": "Casey spent years in technical support untangling broken integrations and came away convinced that good software should be easy to understand and easy to fix.",
+      "detail": "gets to build the tools support always wished existed at Strange Lasers."
+    },
+    "interests": [
+      {
+        "label": "Making things by hand",
+        "background": {
+          "label": "Craft",
+          "offsetX": "-0.5em",
+          "y": "7%",
+          "yMobile": "-2.5%"
+        }
+      },
+      {
+        "label": "Code down to the cloud",
+        "background": {
+          "label": "Cloud",
+          "offsetX": "1.5em",
+          "offsetXMobile": "1.55em",
+          "y": "35%",
+          "yMobile": "42.5%"
+        }
+      },
+      {
+        "label": "Art that ships",
+        "background": {
+          "label": "Art",
+          "offsetX": "-0.6em",
+          "y": "92%",
+          "yMobile": "90%"
         }
       }
     ]
