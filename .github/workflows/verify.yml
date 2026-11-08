@@ -37,6 +37,12 @@ jobs:
       - name: Validate site
         run: npm run check
 
+      - name: Install layout check browser
+        run: npm run screenshots:install -- --with-deps
+
+      - name: Check About background visibility
+        run: npm run interests:test
+
       - name: Generate reproducible project cover
         run: npm run cover
 

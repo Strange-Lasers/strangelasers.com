@@ -19,7 +19,7 @@ jobs:
     if: github.ref_name == 'main' || github.ref_name == 'preview'
     name: Deploy ${{ github.ref_name == 'main' && 'production' || 'preview' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     environment:
       name: ${{ github.ref_name == 'main' && 'production' || 'preview' }}
       url: ${{ github.ref_name == 'main' && 'https://strangelasers.com/' || 'https://preview.strangelasers.com/' }}
@@ -43,6 +43,12 @@ jobs:
 
       - name: Validate deployment
         run: npm run check
+
+      - name: Install layout check browser
+        run: npm run screenshots:install -- --with-deps
+
+      - name: Check About background visibility
+        run: npm run interests:test
 
       - name: Generate reproducible project cover
         run: npm run cover
