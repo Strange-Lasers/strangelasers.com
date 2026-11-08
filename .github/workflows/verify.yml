@@ -34,8 +34,11 @@ jobs:
       - name: Install reproducible cover runtime
         run: npm run cover:install
 
-      - name: Validate site and cover
+      - name: Validate site
         run: npm run check
+
+      - name: Generate reproducible project cover
+        run: npm run cover
 
       - name: Verify committed project cover
         run: git diff --exit-code -- docs/screenshots/cover.png

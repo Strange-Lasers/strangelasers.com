@@ -1,12 +1,38 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { readFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 import runtime from "../scripts/cover-runtime.json" with { type: "json" };
 
 const script = fileURLToPath(new URL("../scripts/cover.mjs", import.meta.url));
 const withoutDocker = { PATH: "/nonexistent" };
+const BUILD_TIMEOUT_MS = 10000;
+
+test("site builds without Docker and leaves the documentation cover unchanged", async () => {
+  const root = fileURLToPath(new URL("../", import.meta.url));
+  const cover = join(root, "docs/screenshots/cover.png");
+  const original = await readFile(cover);
+  const modifiedAt = (await stat(cover)).mtimeMs;
+  const output = await mkdtemp(join(tmpdir(), "strangelasers-build-"));
+  try {
+    const result = spawnSync(process.execPath, [join(root, "node_modules/@11ty/eleventy/cmd.cjs"), "--output=" + output], {
+      cwd: root,
+      encoding: "utf8",
+      env: { ...process.env, ...withoutDocker },
+      timeout: BUILD_TIMEOUT_MS,
+    });
+    assert.equal(result.status, 0, result.stderr || result.error?.message);
+    for (const page of ["index.html", "about/index.html"]) {
+      assert.match(await readFile(join(output, page), "utf8"), /<!doctype html>/i);
+    }
+    await assert.rejects(readFile(join(output, "docs/screenshots/cover.png")), { code: "ENOENT" });
+    assert.deepEqual(await readFile(cover), original);
+    assert.equal((await stat(cover)).mtimeMs, modifiedAt);
+  } finally { await rm(output, { recursive: true, force: true }); }
+});
 
 test("cover help and invalid arguments do not require Docker", () => {
   for (const args of [["-h"], ["--help"], ["-ih"], ["--help", "--"]]) {

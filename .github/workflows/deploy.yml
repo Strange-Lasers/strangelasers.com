@@ -44,6 +44,9 @@ jobs:
       - name: Validate deployment
         run: npm run check
 
+      - name: Generate reproducible project cover
+        run: npm run cover
+
       - name: Retain generated project cover
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
@@ -55,7 +58,7 @@ jobs:
       - name: Verify committed project cover
         run: |
           if ! git diff --exit-code -- docs/screenshots/cover.png; then
-            echo "::error::Project cover is stale. Run npm run check and commit the generated PNG with its source changes."
+            echo "::error::Project cover is stale. Run npm run build followed by npm run cover, then commit the PNG with its source changes."
             exit 1
           fi
 
