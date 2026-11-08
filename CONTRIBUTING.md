@@ -13,7 +13,6 @@ Edit source templates and data instead of generated HTML in `dist/`. Generated H
 | `src/_includes/person.njk` | Shared person markup, labels, and interest lists |
 | `src/_includes/home.njk` | Homepage mark, signature, and navigation |
 | `src/_includes/home-links.njk` | Homepage links from the shared site data |
-| `src/_includes/home-smoke.njk` | Homepage smoke canvas and visual tuning panel |
 | `src/_includes/document.njk` | Shared document head and page structure |
 | `src/index.njk`, `src/about/*.njk` | Page settings and page-specific markup |
 | `eleventy.config.mjs` | Template configuration and the public asset passthrough list |
@@ -119,7 +118,11 @@ The build generates `robots.txt` and `sitemap.xml` from the site origin and page
 
 ## Verification
 
-Run `npm run check` before committing. It verifies generated brand SVGs, builds the site, and runs the site and brand tests. Use `npm run build` to generate a clean `dist/` bundle. All builds, including development rebuilds, regenerate `docs/screenshots/cover.png` with motion disabled at 0 ms in the pinned Linux capture container. Start Docker and run `npm run cover:install` before building. Include a changed cover with the source changes that produced it; CI rejects a stale committed image. See [the cover notes](docs/screenshots/README.md) for setup, capture settings, and runtime upgrades.
+Run `npm run check` before committing. It verifies generated brand SVGs, builds the site, and runs the site and brand tests. Use `npm run build` to generate a clean `dist/` bundle. These commands and the development server do not require Docker or regenerate the documentation cover.
+
+To check decorative interest placement in a browser, build the site, run `npm run screenshots:install`, then run `npm run interests:test`. The check scrolls every background word to its brightness peak and to both sides of its bright window at narrow phone, mobile breakpoint, tablet, and desktop widths. It checks the rendered word's opacity and requires at least 75% of its box to remain inside the viewport and clipping region. CI runs it before preview and production deployments. It cannot judge whether a faint word is legible or overlaps a portrait or biography, so continue reviewing the screenshots at peak positions.
+
+After changes that affect the homepage, build the site, start Docker, and run `npm run cover:install` followed by `npm run cover` to refresh `docs/screenshots/cover.png`. The explicit capture uses motion disabled at 0 ms in the pinned Linux container. Include a changed cover with the source changes that produced it; CI regenerates the cover explicitly and rejects a stale committed image. See [the cover notes](docs/screenshots/README.md) for setup, capture settings, and runtime upgrades.
 
 For page changes, review desktop and mobile layouts, keyboard navigation, reduced motion, and behavior without JavaScript. For brand changes, follow the [brand verification instructions](brand/README.md#regeneration), including the raster, opening-frame, and renderer checks when those assets are affected.
 
@@ -134,7 +137,7 @@ npm run screenshots:install
 
 On Linux hosts that lack Chromium's system libraries, use `npm run screenshots:install -- --with-deps` to install them with the browser.
 
-Run `npm ci` in each input checkout if its build dependencies are missing, and prepare its cover runtime with `npm run cover:install` before building. Then capture both versions with one command:
+Run `npm ci` in each input checkout if its build dependencies are missing. Then capture both versions with one command:
 
 ```sh
 npm run screenshots -- ../before-checkout . --page /about/ --selector '#rohith'
@@ -171,7 +174,7 @@ Use a unique CSS selector present in both versions. Without a selector, the comm
 
 Normal motion is the default, preserving the About page's decorative interests. Each page uses a controlled JavaScript clock that advances by `--time` milliseconds, then pauses; the default is 6000, allowing the homepage's wordmark and navigation reveals to finish. CSS transitions are disabled and CSS animations are held at the same elapsed time. `--motion reduced` selects the accessible reduced-motion presentation, which hides some artwork. Remove `?animate` when testing reduced motion, since that query deliberately overrides the preference. Screenshots show a single state; use a recording when reviewing animation behavior. Rendering can still differ across browser versions and operating systems, so capture both sides together on the same machine.
 
-Run `npm run screenshots -- --help` for all options. Contributors changing the capture tooling should also run `npm run screenshots:test` after installing native Chromium and the cover runtime; this exercises real captures, alignment, pixel density, cover regeneration, and failure handling. The regular `npm run check` builds the cover in the pinned container and covers CLI parsing and local serving.
+Run `npm run screenshots -- --help` for all options. Contributors changing the capture tooling should also run `npm run screenshots:test` after installing native Chromium and the cover runtime; this exercises real captures, alignment, pixel density, cover generation, and failure handling. The regular `npm run check` covers CLI parsing, local serving, and site builds without Docker.
 
 ### Animation diagnostics
 
@@ -183,24 +186,8 @@ Append these query parameters to the local page URL when comparing animation beh
 | `?renderer=svg` | Force the homepage SVG renderer |
 | `?renderer=webgl` | Request the homepage WebGL renderer, with SVG fallback when unavailable |
 | `?animate` | Preview motion regardless of the system preference on the homepage or About page |
-| `?rotationSpeed=<multiplier>` | Set the center animation speed from `0.01x` to `100.00x` |
-| `?smoke=off` | Disable homepage smoke |
-| `?smoke=on` | Force smoke on and bypass its frame-rate safeguard |
-| `?tune` | Open the live visual controls without changing smoke behavior |
 
 Combine parameters with `&`, for example `http://localhost:4175/?animate&renderer=webgl`. Check reduced motion without the `animate` override too.
-
-### Smoke and visual tuning
-
-Use `http://localhost:4175/?animate&fps&tune` for the full review view. Add `smoke=on` when smoke must remain visible regardless of measured frame rate. Motion state is available from `StrangeLasersMotion.stats()` in DevTools, while smoke cadence and renderer measurements are available from `StrangeLasersSmoke.stats()`.
-
-Smoke appears immediately and continuously samples page cadence. If the frame rate collapses critically, it disables only the smoke so the logo animation keeps priority. Reduced motion keeps smoke off unless `?animate` is present.
-
-The tuning panel has collapsible sections for center animation rotation speed and smoke. Preset buttons provide common rotation speeds and starting points for distinct smoke looks; every slider remains editable after applying one. Drag the panel by its header or resize it from its lower-right corner to uncover an edge.
-
-Smoke controls cover cloud count, edge density, puff opacity, drifted density, brightness, size, inward reach, drift speed, breakup, softness, and laser tint. `Edge density` controls coverage at the frame. Below `1x`, `Drifted density` controls how many clouds remain visible as they move inward, so very low values allow occasional wisps instead of a continuous veil. Above `1x`, it scales their density. `Inward reach` independently controls how far every plume can develop while its source and dense core remain outside the frame.
-
-Every default sits at the midpoint of its control. Most multiplier controls use a logarithmic `0.01x` to `100.00x` range; drifted density extends down to `0.001x`, and inward reach extends up to `1000.00x`. Each slider has a synchronized numeric input. The panel updates the query string as values change, resets all visual controls together, and can copy a URL containing the complete settings.
 
 ## About page review
 

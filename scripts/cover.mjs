@@ -10,9 +10,9 @@ Identical captures leave the file and its modification time unchanged.
 
 Requires Node.js 24+, npm ci dependencies, and a running Docker-compatible
 engine with linux/amd64 support. Run npm run cover:install before capturing.
-Builds and development rebuilds capture automatically; this command can
-recapture an existing dist/ directory. Docker's context and environment
-settings select the engine. No project-specific environment is required.
+Run npm run build first, then use this command to capture the finished site.
+Site builds and development rebuilds do not capture the cover or need Docker.
+Docker's context and environment settings select the engine.
 
 The resulting path or installed image goes to stdout; diagnostics go to stderr.
 Exit: 0 success, 1 capture/runtime failure, 2 usage error, 3 missing dependency.

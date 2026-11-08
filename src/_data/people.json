@@ -142,14 +142,14 @@
       { "label": "GitHub", "url": "https://github.com/cmershon2", "icon": "github" }
     ],
     "bio": {
-      "intro": "Casey spent years in technical support untangling broken integrations and came away convinced that good software should be easy to understand and easy to fix.",
-      "detail": "gets to build the tools support always wished existed at Strange Lasers."
+      "intro": "Usually turning someone else's problem into a project.",
+      "detail": "spent years in technical support untangling broken integrations and came away convinced that good software should be easy to understand and easy to fix. At Strange Lasers he gets to build the tools Support always wished existed."
     },
     "interests": [
       {
         "label": "Making things by hand",
         "background": {
-          "label": "Craft",
+          "label": "Tinker",
           "offsetX": "-0.5em",
           "y": "7%",
           "yMobile": "-2.5%"
@@ -158,9 +158,9 @@
       {
         "label": "Code down to the cloud",
         "background": {
-          "label": "Cloud",
-          "offsetX": "1.5em",
-          "offsetXMobile": "1.55em",
+          "label": "Fix",
+          "offsetX": "2.3em",
+          "offsetXMobile": "1.9em",
           "y": "35%",
           "yMobile": "42.5%"
         }
@@ -168,10 +168,10 @@
       {
         "label": "Art that ships",
         "background": {
-          "label": "Art",
+          "label": "Ship",
           "offsetX": "-0.6em",
           "y": "92%",
-          "yMobile": "90%"
+          "yMobile": "92%"
         }
       }
     ]

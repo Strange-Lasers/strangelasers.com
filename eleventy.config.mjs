@@ -1,6 +1,5 @@
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
-import { buildCover } from "./scripts/build-cover.mjs";
 
 const PUBLIC_ASSETS = [
   "*.svg",
@@ -8,7 +7,6 @@ const PUBLIC_ASSETS = [
   "*.css",
   "logo-motion.js",
   "logo-webgl.js",
-  "edge-smoke.js",
   "site-init.js",
   "manifest.webmanifest",
   "_headers",
@@ -33,9 +31,6 @@ export default function (eleventyConfig) {
   eleventyConfig.addWatchTarget("./*.css");
   eleventyConfig.addWatchTarget("./about/*.css");
   for (const asset of PUBLIC_ASSETS) eleventyConfig.addPassthroughCopy(asset);
-  eleventyConfig.on("eleventy.after", async ({ directories, outputMode }) => {
-    if (outputMode === "fs") await buildCover(directories.output);
-  });
 
   return {
     dir: { input: "src", output: "dist" },

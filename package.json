@@ -15,11 +15,12 @@
     "screenshots": "node scripts/screenshots.mjs",
     "screenshots:install": "playwright install chromium",
     "screenshots:test": "node --test scripts/check-screenshots.mjs scripts/check-cover.mjs",
+    "interests:test": "node --test scripts/check-interest-visibility.mjs",
     "test": "npm run build && node --test",
     "check": "node scripts/build-brand.mjs --check && npm test"
   },
   "devDependencies": {
-    "@11ty/eleventy": "3.1.6",
+    "@11ty/eleventy": "3.1.7",
     "parse5": "8.0.1",
     "playwright": "1.63.0"
   }

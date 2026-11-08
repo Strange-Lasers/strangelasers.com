@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { chromium } from "playwright";
 import { capture, PRESETS, serve } from "./screenshots.mjs";
 
-const COVER_OPTIONS = Object.freeze({ page: "/", scale: 1, motion: "reduced", time: 0, offset: 0 });
+const COVER_OPTIONS = Object.freeze({ page: "/", scale: 4, motion: "reduced", time: 0, offset: 0 });
 const BROWSER_ARGS = Object.freeze([
   "--disable-gpu",
   "--disable-skia-runtime-opts",
