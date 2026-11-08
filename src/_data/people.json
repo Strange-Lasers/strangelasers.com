@@ -19,7 +19,7 @@
         "background": {
           "label": "Curiosity",
           "offsetX": "0px",
-          "y": "1.5%",
+          "y": "4%",
           "yMobile": "-2%"
         }
       },
@@ -37,7 +37,7 @@
         "background": {
           "label": "Simplicity",
           "offsetX": "-0.05em",
-          "y": "95%",
+          "y": "94%",
           "yMobile": "90%"
         }
       }
@@ -63,7 +63,8 @@
         "background": {
           "label": "Think",
           "offsetX": "-100%",
-          "y": "6%",
+          "offsetXMobile": "-75%",
+          "y": "13.5%",
           "yMobile": "-0.25em"
         }
       },
@@ -71,8 +72,8 @@
         "label": "Rabbit holes",
         "background": {
           "label": "Build",
-          "offsetX": "75%",
-          "y": "39%",
+          "offsetX": "77%",
+          "y": "37.5%",
           "yMobile": "43%"
         }
       },
@@ -81,8 +82,7 @@
         "background": {
           "label": "Break",
           "offsetX": "-40%",
-          "y": "95%",
-          "yMobile": "91%"
+          "y": "92%"
         }
       }
     ]
@@ -107,7 +107,7 @@
         "background": {
           "label": "Calm",
           "offsetX": "0.3em",
-          "y": "5%",
+          "y": "7%",
           "yMobile": "-0.25em"
         }
       },
@@ -116,8 +116,9 @@
         "background": {
           "label": "Ideas",
           "offsetX": "19%",
-          "y": "38%",
-          "yMobile": "45%"
+          "offsetXMobile": "10%",
+          "y": "35%",
+          "yMobile": "44%"
         }
       },
       {
@@ -143,7 +144,7 @@
     ],
     "bio": {
       "intro": "Usually turning someone else's problem into a project.",
-      "detail": "spent years in technical support untangling broken integrations and came away convinced that good software should be easy to understand and easy to fix. At Strange Lasers he gets to build the tools Support always wished existed."
+      "detail": "spent years in Technical Support untangling broken integrations and came away convinced that good software should be easy to understand and easy to fix. At Strange Lasers he gets to build the tools Support always wished existed."
     },
     "interests": [
       {
@@ -159,8 +160,8 @@
         "label": "Code down to the cloud",
         "background": {
           "label": "Fix",
-          "offsetX": "2.3em",
-          "offsetXMobile": "1.9em",
+          "offsetX": "2.4em",
+          "offsetXMobile": "2em",
           "y": "35%",
           "yMobile": "42.5%"
         }
