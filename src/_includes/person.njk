@@ -6,7 +6,7 @@
       {% if loop.index0 < positions.length %}
         <span class="interest interest--{{ positions[loop.index0] }}" data-peak="{{ peaks[loop.index0] }}"
           {% if interest.background.offsetX or interest.background.offsetXMobile or interest.background.y or interest.background.yMobile %}style="{% if interest.background.offsetX %}--interest-offset-x: {{ interest.background.offsetX }};{% endif %}{% if interest.background.offsetXMobile %} --interest-offset-x-mobile: {{ interest.background.offsetXMobile }};{% endif %}{% if interest.background.y %} --interest-position-y: {{ interest.background.y }};{% endif %}{% if interest.background.yMobile %} --interest-position-y-mobile: {{ interest.background.yMobile }};{% endif %}"{% endif %}
-        >{{ interest.background.label | default(interest.label) }}</span>
+        ><span class="interest-baseline"></span>{{ interest.background.label | default(interest.label) }}</span>
       {% endif %}
     {% endfor %}
   </div>

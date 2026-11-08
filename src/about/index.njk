@@ -18,7 +18,7 @@ showPortraitCaptions: false
 <meta property="og:image" content="{{ site.url }}icon-512.png?v=brand-spectrum">
 <meta property="og:image:alt" content="{{ site.name }} logo">
 <meta name="twitter:card" content="summary">
-<script src="about.js" defer></script>
+<script src="about.js?v={{ 'about/about.js' | assetVersion }}" defer></script>
 {% endblock %}
 {% block content %}
     <a class="skip-link" href="#people">Skip to the people</a>

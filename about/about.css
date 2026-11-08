@@ -166,8 +166,9 @@ figcaption { display: flex; justify-content: space-between; gap: 1rem; margin-to
   --interest-direction: -1;
 }
 
-.interest-background { position: absolute; z-index: -1; inset: 0; overflow: hidden; pointer-events: none; user-select: none; }
-.interest { --interest-x-offset: var(--interest-offset-x, 0px); position: absolute; width: max-content; max-width: none; color: #94a4ac; font-size: clamp(5rem, 13vw, 14rem); font-weight: 500; letter-spacing: -0.055em; line-height: 1; text-transform: uppercase; opacity: 0.045; transform: translate3d(calc(var(--interest-x, 0px) * var(--interest-direction, 1) + var(--interest-x-offset)), var(--interest-y, 0px), 0); }
+.interest-background { position: absolute; z-index: -1; inset: 0; overflow-x: clip; overflow-y: visible; clip-path: inset(-1em 0); font-size: clamp(5rem, 13vw, 14rem); pointer-events: none; user-select: none; }
+.interest { --interest-x-offset: var(--interest-offset-x, 0px); position: absolute; width: max-content; max-width: none; color: #94a4ac; font-size: inherit; font-weight: 500; letter-spacing: -0.055em; line-height: 1; text-transform: uppercase; opacity: 0.045; transform: translate3d(calc(var(--interest-x, 0px) * var(--interest-direction, 1) + var(--interest-x-offset) + var(--interest-clear-x, 0px)), calc(var(--interest-y, 0px) + var(--interest-clear-y, 0px)), 0); }
+.interest-baseline { display: inline-block; width: 0; height: 0; vertical-align: baseline; }
 .interest--one { top: var(--interest-position-y, 6%); left: var(--interest-top-inset); }
 .interest--two { top: var(--interest-position-y, 45%); right: var(--interest-middle-inset); }
 .interest--three { bottom: calc(100% - var(--interest-position-y, 96%)); left: var(--interest-bottom-inset); }
@@ -232,8 +233,8 @@ figcaption { display: flex; justify-content: space-between; gap: 1rem; margin-to
   .person h2 { font-size: clamp(4.5rem, 17vw, 6.5rem); }
   .person-bio { margin-top: 1.5rem; font-size: 0.94rem; }
   .elsewhere { margin-top: 1.5rem; }
-  .interest { --interest-x-offset: var(--interest-offset-x-mobile, var(--interest-offset-x, 0px)); font-size: 20vw; }
-  #casey .interest-background { overflow-x: clip; overflow-y: visible; clip-path: inset(-4rem 0 0 0); }
+  .interest-background { font-size: 20vw; }
+  .interest { --interest-x-offset: var(--interest-offset-x-mobile, var(--interest-offset-x, 0px)); }
   .interest--one { top: var(--interest-position-y-mobile, var(--interest-position-y, 2%)); }
   .interest--two { top: var(--interest-position-y-mobile, var(--interest-position-y, 34%)); }
   .interest--three { bottom: calc(100% - var(--interest-position-y-mobile, var(--interest-position-y, 98%))); }
