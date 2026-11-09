@@ -19,8 +19,7 @@
         "background": {
           "label": "Curiosity",
           "offsetX": "0px",
-          "y": "4%",
-          "yMobile": "-2%"
+          "y": "-2%"
         }
       },
       {
@@ -37,7 +36,7 @@
         "background": {
           "label": "Simplicity",
           "offsetX": "-0.05em",
-          "y": "94%",
+          "y": "101%",
           "yMobile": "90%"
         }
       }
@@ -126,7 +125,7 @@
         "background": {
           "label": "Purpose",
           "offsetX": "0.1em",
-          "y": "95%",
+          "y": "101%",
           "yMobile": "92%"
         }
       }
@@ -160,7 +159,7 @@
         "label": "Code down to the cloud",
         "background": {
           "label": "Fix",
-          "offsetX": "2.4em",
+          "offsetX": "2.6em",
           "offsetXMobile": "2em",
           "y": "35%",
           "yMobile": "42.5%"
